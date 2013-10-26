@@ -1,0 +1,84 @@
+(a) Team name
+mofumofu (Tohoku University)
+
+(b) For each member in the team: name, email, institution, department, and degree
+Ryosuke Okuta,ryousuke_okuta@shino.ecei.tohoku.ac.jp,Tohoku Universiry,Graduate School of Information Sciences, master course
+Tomoki Komatsu,tomoki_komatsu@shino.ecei.tohoku.ac.jp,Tohoku Universiry,Graduate School of Information Sciences,master course
+Takashi Katsura,katsura@shino.ecei.tohoku.ac.jp, Tohoku Universiry,Graduate School of Information Sciences,doctor course
+
+(c) Supervisor name (if your team has one)
+Yuhei Otomo
+
+(d) Brief description of your approach
+- Summarize the same Query.
+- Optimize the processing order of query.
+  Processed in order from the word count is small.
+  Remember the word which had been treated with other queries(for Hamming , ED).
+- Become unique words in a document.
+- Organized by word length in the document.
+- Use the SSE, the instruction popcnt.
+- String is packed struct(8,16,32 bytes).
+- Use Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances[1].
+- Original Bit Base Edit Distances Algorithm for Small Distance ( edit_distance.h ).
+- Perform an asynchronous computation in pthread.
+- And TUNING.
+
+[1] H. Hyyro. A Bit-Vector Algorithm for Computing Levenshtein and Damerau Edit Distances. Nordic Journal of Computing, 10:1-11, 2003.
+
+
+(e) Clear note about any third party code used in your submission
+
+################################################################################
+###     C++ B-tree     http://code.google.com/p/cpp-btree/
+################################################################################
+// Copyright 2013 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+// A btree_map<> implements the STL unique sorted associative container
+// interface and the pair associative container interface (a.k.a map<>) using a
+// btree. A btree_multimap<> implements the STL multiple sorted associative
+// container interface and the pair associtive container interface (a.k.a
+// multimap<>) using a btree. See btree.h for details of the btree
+// implementation and caveats.
+
+################################################################################
+###      C++ implementation of timsort 
+################################################################################
+/*
+ * C++ implementation of timsort
+ *
+ * ported from Python's and OpenJDK's:
+ * - http://svn.python.org/projects/python/trunk/Objects/listobject.c
+ * - http://cr.openjdk.java.net/~martin/webrevs/openjdk7/timsort/raw_files/new/src/share/classes/java/util/TimSort.java
+ *
+ * Copyright (c) 2011 Fuji, Goro (gfx) <gfuji@cpan.org>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */

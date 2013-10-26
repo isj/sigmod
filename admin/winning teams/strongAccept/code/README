@@ -1,0 +1,9 @@
+(a) Term Name: StrongAccept
+(b) Students
+     Yu Jiang, sunlight.thu@gmail.com, Tsinghua University, Computer Science, Master
+     Jian He, jianhe25@gmail.com, Tsinghua University, Computer Science, Master
+     Dong Deng, buaasoftdavid@gmail.com, Tsinghua University, Computer Science, Master
+     Jiannan Wang, jnwangir@gmail.com, Tsinghua University, Computer Science, PhD
+(c) Supervisor Name: Guoliang Li, liguoliang2006@gmail.com, Tsinghua University, Associate Professor
+(d) We use Pass-Join to compute similar words. To find the matching queries for a given document, we first merge the similar words of the document, and then use an inverted index to get the candidate queries that at least match one document word, and finally verify whether the other words of the candidate queries match the document. 
+(e) sparsehash, https://code.google.com/p/sparsehash/
