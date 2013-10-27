@@ -1,0 +1,64 @@
+--------------------------------------------------------------------------------
+TEAM NAME: RotaFortunae
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+TEAM MEMBERS:
+
+1) Pavel Fedotovsky <pavel.v.fedotovsky@gmail.com>
+Saint-Petersburg University, Russia, dept. of Software Engineering,
+undergraduate student
+
+2) Kirill Cherednik <kirill.cherednik@math.spbu.ru>
+Saint-Petersburg University, Russia, dept. of Software Engineering,
+undergraduate student
+
+3) George Erokhin <george.erokhin@gmail.com>
+Saint-Petersburg University, Russia, dept. of Software Engineering,
+undergraduate student
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SUPERVISORS:
+
+1) George Chernishev <chernishev@gmail.com>
+Saint-Petersburg University, Russia, assistant professor, dept. of Computer
+Science
+
+2) Kirill Smirnov <kirill.k.smirnov@math.spbu.ru>
+Saint-Petersburg University, Russia, IT Service and Support
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+SOLUTION:
+
+Our system caches all unique words in documents and queries (considering match
+type (metric) and maximum allowed distance, for example word ”edit” from query
+on exact match and word “edit” from query matched with Levenshtein metric are
+different unique query words) and relations between them. It allows us to
+represent new documents and queries as bags of words, which are already stored
+in the system. We map every unique document word into a set of dependencies,
+i.e. active query words it corresponds to. Union of dependencies over all words
+in a particular document is a set of all unique query words matching the
+document. A query matches the document if all words in the query are in the set.
+
+Requests from the client are aggregated into three groups: (1) match documents,
+(2) start and end queries, (3) get results. If possible, the operations from
+different groups may overlap in runtime for efficient multithreading.
+
+For better performance we store words with different length separately; words
+with the same length are kept in the same bucket, so we have 32 buckets total.
+Buckets allow us to ignore words that do not fit each other in terms of length.
+
+ADDITIONAL FEATURES:
+	1)	We use optimized functions for checking whether edit distance between
+		two words is less than threshold.
+	2)	For Hamming distance we use special processor instruction available at
+		SSE4.2.
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+THIRD PARTY CODE:
+
+Our system does not use any third party code.
+--------------------------------------------------------------------------------

@@ -1,0 +1,57 @@
+(a) Team name: phoenix
+
+(b) Member: 
+        Jinyu Yao 
+	yaojinyucn@gmail.com 
+	School of Electronics Engineering and Computer Science, Peking University
+	3rd year of master degree
+
+(c) Supervisor: none
+
+(d) Description:
+        In my implementation, I use Trie tree to index the query words. Each tree node representing "end of word" contains a pointer to a linked list which points to all the queries that contains this word. 
+
+        For query with distance X(X=0..3) and each of the word A in this query, I generate all the "deletion changes" of this word, which means:
+          A,
+          delete 1 letter from A,
+          delete 2 letters from A, 
+          ...
+          delete X letters from A.
+        For each above new word, I take its deletion record as a binary string in which the position of deletion is 1 and other position is 0. So the mask of "ao" from "yao" is 100.  
+        For example, the word "yao" and the distance of query is 2, the "deletion changes" are:
+          yao, mask="000"
+          ao,  mask="100"
+          yo,  mask="010"
+          ya,  mask="001"
+          y,   mask="011"
+          a,   mask="101"
+          o,   mask="110".
+        Insert all those "deletion changes" into Trie tree and record masks in the linked list.   
+          
+        For each document word, I also generate all the "deletion changes" of the word (assuming the distance is 3), and search each of them in Trie. If a match happends, for each query in the linked list I use two masks (one for the query word and one for the document word) to calculate the minimum edit distance using dynamic programming. Then we check as follows:
+        1. If the type of query is "exact match", the two masks should all be 0.
+        2. If the type of query is "hamming distance match", the two masks should be the same and the "1"s in mask should be less than or equal to the query's hamming distance threshold.
+        3. If the type of query is "edit distance match", the minimum edit distance should be less than or equal to the query's edit distance threshold.
+        
+        Because the max length of word is 32, and the max distance threshold is 3, the total number of masks is no more than: 
+           C(32, 0) + C(32, 1) + C(32, 2) + C(32, 3) = 5489
+        We can calculate the minimum edit distance of each two of them during the initialization and store the results into a table.     
+
+        If the above check is satisfied, I record that a query word is matched. After scanning all the document words, I scan the active query list to check each query that whether all the words in it are satisfied. 
+
+        For the implementation, I use single thread to handle the query manipulation including StartQuery and EndQuery. For documentation matching, I use multi-threading--each thread handles a single MatchDocument. There is a thread pool built by myself to handle the multi-threading process. 
+
+        - core.cpp -
+        Main algorithm and implementations for all the API. 
+        
+        - trie.h, trie.cpp -
+        Implementation of the Trie tree
+
+        - word.h, word.cpp -
+        Data structure for Query and Word. Initialization of min edit-distance between masks(deletion pattern of words).
+
+        - threadspool.h threadspool.cpp - 
+        Implementation of threads pool for document matching.
+
+(e) No third party code has been used.
+
