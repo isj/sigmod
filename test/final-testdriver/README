@@ -1,0 +1,73 @@
+ACM SIGMOD 2013 Programming Contest
+© 2013 KAUST - InfoCloud group
+Amin Allam  <amin.allam@kaust.edu.sa>
+Fuad Jamour <fuad.jamour@kaust.edu.sa>
+
+
+=============================================
+
+ACM SIGMOD 2013 Programming Contest
+
+=============================================
+
+This readme file contains information about using the contents of this archive
+to build and test your contest submission.
+
+The task details of the contest can be found at:
+http://sigmod.kaust.edu.sa/
+
+----------------------------------------------
+-                  Contents                  -
+----------------------------------------------
+Included in this release are the following files and directories:
+  - README                        This document
+  - Makefile                      Makefile to compile and link the provided source code
+  - include/core.h                The API that must be implemented by the contestants
+  - ref_impl/                     Contains an example implementation of the task interface
+  - test_data/                    Contains example data files, used by the test driver
+  - test_driver/                  Contains the test driver implementation. This
+                                  program will test correctness of the task
+                                  implementation and measures its runtime
+                                  This testdriver was used in the final test.
+                                  
+----------------------------------------------
+-               Getting started              -
+----------------------------------------------
+The interface that has to be implemented is described in include/core.h.
+The detailed description of each function is included in the 
+file itself. So core.h has all what you need to start writing a working
+implementation.
+
+The example implementation available in ref_impl/ is provided
+to further clarify the task requirements, as it produces correct results
+based on the provided task details. The example implementation is slow
+as it doesn't use any smart data structures/algorithms. A good implementation
+is expected to be much faster than the provided example implementation.
+
+----------------------------------------------
+-         Testing your implementation        -
+----------------------------------------------
+A Makefile is provided to compile all the provided code.
+Calling
+    > make
+will produce a shared library (libcore.so) that is 
+later linked to the test driver's code, in addition to 
+the test driver binary (testdriver). The shared library
+file (libcore.so) is what you are supposed to submit online
+when the leaderboard becomes available.
+
+The program testdriver can be run as follows:
+    > ./testdriver TEST_FILE MAX_RUNTIME
+where TEST_FILE is the path of the test file to be used, and
+MAX_RUNTIME specifies the max allowed runtime for the implementation.
+After MAX_RUNTIME, the program will be stopped and the achieved throuhput
+will be reported in the output file result.txt
+
+To run the example implementation and measure its performance, do:
+    > make
+    > ./testdriver test_data/small_test.txt 180
+The program (testdriver) will run the task implementation on 
+the workload specified by test_data/small_test.txt and produce
+a simple output that will show the throughput of the implementation
+in libcore.so if it has correctly passed all tests.
+
