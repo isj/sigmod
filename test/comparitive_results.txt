@@ -2,6 +2,8 @@ Results from small_test
 compiled on OSX 10.9
 campers would not compile
 rotaForunae needed to be hacked ( requires windows viz studio )
+the only version that ran successfully was strongAccept
+the only other version to run successfully - hacked rotaForunae
 
 mofumofu
 
