@@ -30,7 +30,7 @@ Our proposal is to invert the process. Rather than search across the document wi
 
 The style of this process might be characterized as _Declarative_ as against _Imperitive_. To a great extent, we will be building data structures (the search query trees), to which we subject the individual words of our documents. At certain prescribed moments we will harvest results from the trees.
 
-A realworld analogy of our proposal might be a game of Pachinko, in which the input balls represents individual words in the document currently being searched, and the arrangement of pins to collect these balls are the search queries. As we drop each ball into the game, it tumbles through the tree, either being trapped as it satisfies by one of the search terms, or otherwise  falling through to the floor, when we can lose it from memory (we don't care for the precise list of successes and failures, just that there _were_ successes and failures). Another example could be a coin-op vending machine which takes any coin denomination from a legal set, and ejects the rest. We just throw in our coins - in any order as they become available - and the sorter either registers them as received of a certain value, or rejects them to the out tray, accumulating a hit result as we continue to feed it with coins.
+A realworld analogy of our proposal might be a game of [Pachinko](https://en.wikipedia.org/wiki/Pachinko), in which the input balls represents individual words in the document currently being searched, and the arrangement of pins to collect these balls are the search queries. As we drop each ball into the game, it tumbles through the tree, either being trapped as it satisfies by one of the search terms, or otherwise  falling through to the floor, when we can lose it from memory (we don't care for the precise list of successes and failures, just that there _were_ successes and failures). Another example could be a coin-op vending machine which takes any coin denomination from a legal set, and ejects the rest. We just throw in our coins - in any order as they become available - and the sorter either registers them as received of a certain value, or rejects them to the out tray, accumulating a hit result as we continue to feed it with coins.
 
 That is probably a little optimistic. But if we can construct binary search tree (or some other kind of tree) our of our search terms, then throwing our docu words in their direction we might hope to achieve an O( n log n) result (n for the document consumption, log n for the search per word). 
 
@@ -87,12 +87,11 @@ The task includes exact match, hamming match and deletion match types. Do we nee
 [email 5/11/13] 
 
 
-Begin forwarded message:
 
-From: "jonathan" 
-Subject: small idea
-Date: 5 November 2013 13:50:23 GMT
-To: Selvan , Ioannis
+From: "jonathan"   
+Subject: small idea  
+Date: 5 November 2013 13:50:23 GMT  
+To: Selvan , Ioannis  
 
 Here is the kernel of an algorithm idea
 
@@ -115,6 +114,7 @@ once the document is consumed, we will have to check the state of the tree to wo
 
 
 
+----
 
 
 [notes 3/11/13]
