@@ -184,8 +184,8 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 {
     printf( " MatchDocument: %d ", doc_id );
 
-	char cur_doc_str[MAX_DOC_LENGTH];
-	strcpy(cur_doc_str, doc_str);
+	char current_doc_string[MAX_DOC_LENGTH];
+	strcpy(current_doc_string, doc_str);
 
 	unsigned int i, n=queries.size();
 	vector<unsigned int> query_ids;
@@ -194,56 +194,56 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 	for(i=0;i<n;i++)
 	{
 		bool matching_query=true;
-		Query* quer=&queries[i];
+		Query* query =&queries[i];
 
 		int iq=0;
-		while(quer->str[iq] && matching_query)
+		while(query->str[iq] && matching_query)
 		{
-			while(quer->str[iq]==' ') iq++;
-			if(!quer->str[iq]) break;
-			char* qword=&quer->str[iq];
+			while(query->str[iq]==' ') iq++;
+			if(!query->str[iq]) break;
+			char* qword=&query->str[iq];
 
 			int lq=iq;
-			while(quer->str[iq] && quer->str[iq]!=' ') iq++;
-			char qt=quer->str[iq];
-			quer->str[iq]=0;
+			while(query->str[iq] && query->str[iq]!=' ') iq++;
+			char qt=query->str[iq];
+			query->str[iq]=0;
 			lq=iq-lq;
 
 			bool matching_word=false;
 
 			int id=0;
-			while(cur_doc_str[id] && !matching_word)
+			while(current_doc_string[id] && !matching_word)
 			{
-				while(cur_doc_str[id]==' ') id++;
-				if(!cur_doc_str[id]) break;
-				char* dword=&cur_doc_str[id];
+				while(current_doc_string[id]==' ') id++;
+				if(!current_doc_string[id]) break;
+				char* dword=&current_doc_string[id];
 
 				int ld=id;
-				while(cur_doc_str[id] && cur_doc_str[id]!=' ') id++;
-				char dt=cur_doc_str[id];
-				cur_doc_str[id]=0;
+				while(current_doc_string[id] && current_doc_string[id]!=' ') id++;
+				char dt=current_doc_string[id];
+				current_doc_string[id]=0;
 
 				ld=id-ld;
 
-				if(quer->match_type==MT_EXACT_MATCH)
+				if(query->match_type==MT_EXACT_MATCH)
 				{
 					if(strcmp(qword, dword)==0) matching_word=true;
 				}
-				else if(quer->match_type==MT_HAMMING_DIST)
+				else if(query->match_type==MT_HAMMING_DIST)
 				{
 					unsigned int num_mismatches=HammingDistance(qword, lq, dword, ld);
-					if(num_mismatches<=quer->match_dist) matching_word=true;
+					if(num_mismatches<=query->match_dist) matching_word=true;
 				}
-				else if(quer->match_type==MT_EDIT_DIST)
+				else if(query->match_type==MT_EDIT_DIST)
 				{
 					unsigned int edit_dist=EditDistance(qword, lq, dword, ld);
-					if(edit_dist<=quer->match_dist) matching_word=true;
+					if(edit_dist<=query->match_dist) matching_word=true;
 				}
 
-				cur_doc_str[id]=dt;
+				current_doc_string[id]=dt;
 			}
 
-			quer->str[iq]=qt;
+			query->str[iq]=qt;
 
 			if(!matching_word)
 			{
@@ -255,7 +255,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 		if(matching_query)
 		{
 			// This query matches the document
-			query_ids.push_back(quer->query_id);
+			query_ids.push_back(query->query_id);
 		}
 	}
 
