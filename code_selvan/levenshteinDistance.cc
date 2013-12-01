@@ -40,8 +40,8 @@ size_t uiLevenshteinDistance(const string &s1, const string &s2)
  
   size_t result = costs[n];
   delete [] costs;
- 
-  return result;
+
+   return result;
 }
  
 int main()
