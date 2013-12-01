@@ -1,8 +1,8 @@
-#include <string>#i
-nclude <iostream>
+#include <string>
+#include <iostream>
 using namespace std;
  
-size_t uiLevenshteinDistance(const std::string &s1, const std::string &s2)
+size_t uiLevenshteinDistance(const string &s1, const string &s2)
 {
   const size_t m(s1.size());
   const size_t n(s2.size());
@@ -15,13 +15,13 @@ size_t uiLevenshteinDistance(const std::string &s1, const std::string &s2)
   for( size_t k=0; k<=n; k++ ) costs[k] = k;
  
   size_t i = 0;
-  for ( std::string::const_iterator it1 = s1.begin(); it1 != s1.end(); ++it1, ++i )
+  for ( auto it1 = s1.begin(); it1 != s1.end(); ++it1, ++i )
   {
     costs[0] = i+1;
     size_t corner = i;
  
     size_t j = 0;
-    for ( std::string::const_iterator it2 = s2.begin(); it2 != s2.end(); ++it2, ++j )
+    for ( auto it2 = s2.begin(); it2 != s2.end(); ++it2, ++j )
     {
       size_t upper = costs[j+1];
       if( *it1 == *it2 )
@@ -50,7 +50,7 @@ int main()
   string s1 = "cat";
 	
   cout << "distance between " << s0 << " and " << s1 << " : " 
-	     << uiLevenshteinDistance(s0,s1) << std::endl;
+	     << uiLevenshteinDistance(s0,s1) << endl;
  
         return 0;
 }
