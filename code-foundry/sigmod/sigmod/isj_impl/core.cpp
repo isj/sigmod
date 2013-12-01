@@ -44,8 +44,8 @@ using namespace std;
 
 bool exact_match(const char* query_word,int query_word_length,const char* doc_word,int doc_word_length) {
     if (query_word_length != doc_word_length) return false;
-    if (query_word != doc_word) return false;
-    if ( strcmp(query_word, doc_word) ) return false;
+   // if (query_word != doc_word) return false;
+    if ( strcmp(query_word, doc_word) !=0 ) return false;
     return true;
 }
 
@@ -115,6 +115,13 @@ const char *bitap_bitwise_search2(char* string_a, int length_a, char* string_b, 
 {
    // size_t length_a = strlen(string_a);
    // size_t length_b = strlen(string_b);
+
+    /*
+     this version recurses long strings down to machine-word-length strings
+     (should be faster for bit operations)
+     didn't see much difference in practice
+     
+     */
 
     unsigned long R;
     unsigned long pattern_mask[CHAR_MAX+1];
@@ -431,14 +438,14 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
                  //   printf("%d ",i);
                     if(query->match_type==MT_EXACT_MATCH)
                     {
-                  //   if (exact_match(query_word,query_word_length,doc_word,doc_word_length)) matching_word=true;
+                     if (exact_match(query_word,query_word_length,doc_word,doc_word_length)) matching_word=true;
                //  if(jm_strcmp(query_word,query_word_length,doc_word,doc_word_length)==false)  matching_word=true;
                      //   if (doc_word_length != query_word_length)
                      //       matching_word=false;
                      //   else
-                           if(strcmp(query_word, doc_word)==0)  matching_word=true;
+                        //   if(strcmp(query_word, doc_word)==0)  matching_word=true;
 
-               //        if (bitap_bitwise_search(query_word,query_word_length, doc_word,doc_word_length) !=0) matching_word=true;
+               //       if (bitap_bitwise_search(query_word,query_word_length, doc_word,doc_word_length) !=0) matching_word=true;
 
                      // if (bitap_bitwise_search2(query_word,query_word_length, doc_word,doc_word_length) !=0) matching_word=true;
 

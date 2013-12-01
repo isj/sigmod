@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407530921.390002"
+            timestampString = "407591101.211782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "128"
-            endingLineNumber = "128"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
             landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
             <Locations>
@@ -56,11 +56,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407530921.390002"
+            timestampString = "407591101.211782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "132"
-            endingLineNumber = "132"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
          </BreakpointContent>
@@ -72,11 +72,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407530921.390002"
+            timestampString = "407591101.211782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "129"
-            endingLineNumber = "129"
+            startingLineNumber = "136"
+            endingLineNumber = "136"
             landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
          </BreakpointContent>
@@ -88,11 +88,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407530921.390002"
+            timestampString = "407591101.211782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "135"
-            endingLineNumber = "135"
+            startingLineNumber = "142"
+            endingLineNumber = "142"
             landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
          </BreakpointContent>
@@ -104,11 +104,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407530921.390002"
+            timestampString = "407591101.211782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "134"
-            endingLineNumber = "134"
+            startingLineNumber = "141"
+            endingLineNumber = "141"
             landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
          </BreakpointContent>
@@ -120,12 +120,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407530921.390002"
+            timestampString = "407591101.211782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "131"
-            endingLineNumber = "131"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
             landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "sigmod/isj_impl/core.cpp"
+            timestampString = "407591614.237782"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
+            landmarkName = "exact_match(const char* query_word,int query_word_length,const char* doc_word,int doc_word_length)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
