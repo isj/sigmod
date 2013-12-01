@@ -59,6 +59,16 @@ void PrintTime(int milli_sec)
 
 char temp[MAX_DOC_LENGTH];
 
+typedef struct  {
+    int docs;
+    int exact_match;
+    int hamming;
+    int edit;
+    int queries;
+    int removals;
+} Totals;
+Totals total_test;
+
 void TestSigmod(const char* test_file_str)
 {
 	int i, j;
@@ -83,6 +93,13 @@ void TestSigmod(const char* test_file_str)
 	bool cur_results_ret[max_results];
 	unsigned int cur_results_size[max_results];
 	unsigned int* cur_results[max_results];
+
+    total_test.docs =0;
+    total_test.exact_match=0;
+    total_test.hamming=0;
+    total_test.edit=0;
+    total_test.queries=0;
+    total_test.removals=0;
 
 	while(1)
 	{
@@ -168,6 +185,7 @@ void TestSigmod(const char* test_file_str)
 
 		if(ch=='s')
 		{
+            total_test.queries++;
 			int match_type;
 			int match_dist;
 
@@ -177,7 +195,19 @@ void TestSigmod(const char* test_file_str)
 				fflush(NULL);
 				return;
 			}
-			
+            switch (match_type) {
+                case 0:
+                    total_test.exact_match++;
+                    break;
+                case 1:
+                    total_test.hamming++;
+                    break;
+                case 2:
+                    total_test.edit++;
+                    break;
+                default:
+                    break;
+            }
 			ErrorCode err=StartQuery(id, temp, (MatchType)match_type, match_dist);
 
 			if(err==EC_FAIL)
@@ -195,6 +225,7 @@ void TestSigmod(const char* test_file_str)
 		}
 		else if(ch=='e')
 		{
+            total_test.removals++;
 			ErrorCode err=EndQuery(id);
 
 			if(err==EC_FAIL)
@@ -212,6 +243,7 @@ void TestSigmod(const char* test_file_str)
 		}
 		else if(ch=='m')
 		{
+            total_test.docs++;
 			if(EOF==fscanf(test_file, "%*u %[^\n\r] ", temp))
 			{
 				printf("Corrupted Test File.\n");
@@ -278,6 +310,9 @@ void TestSigmod(const char* test_file_str)
 	fclose(test_file);
 
 	printf("Your program has successfully passed all tests.\n");
+    printf("docs: %d queries: %d end_queries: %d\n",total_test.docs,total_test.queries,total_test.removals);
+    printf("exact_match: %d hamming_distance: %d edit_distance: %d\n",total_test.exact_match,total_test.hamming,total_test.edit);
+
 	printf("Time="); PrintTime(v); printf("\n");
 }
 

@@ -34,6 +34,7 @@
 		AB660BA71848D6740063206B /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = core.h; path = include/core.h; sourceTree = "<group>"; };
 		AB660BA81848D6CD0063206B /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = core.cpp; path = isj_impl/core.cpp; sourceTree = "<group>"; };
 		AB660BAB1848D7A50063206B /* small_test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = small_test.txt; path = test_driver/small_test.txt; sourceTree = "<group>"; };
+		AB660BAD184A74700063206B /* notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -69,6 +70,7 @@
 				AB660BAB1848D7A50063206B /* small_test.txt */,
 				AB660BA51848D6430063206B /* test.cpp */,
 				AB660BA81848D6CD0063206B /* core.cpp */,
+				AB660BAD184A74700063206B /* notes.md */,
 				AB660BA71848D6740063206B /* core.h */,
 				AB660B9E1848D54F0063206B /* sigmod.1 */,
 			);
@@ -237,6 +239,7 @@
 				AB660BA41848D54F0063206B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

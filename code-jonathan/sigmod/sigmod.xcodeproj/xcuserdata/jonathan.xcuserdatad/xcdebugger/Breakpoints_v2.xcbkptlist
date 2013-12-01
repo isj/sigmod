@@ -6,45 +6,45 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407435513.263782"
+            timestampString = "407530921.390002"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "97"
-            endingLineNumber = "97"
-            landmarkName = "EditDistance(char* string_a, int length_a, char* string_b, int length_b)"
+            startingLineNumber = "128"
+            endingLineNumber = "128"
+            landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
             <Locations>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "EditDistance(char*, int, char*, int)"
+                  symbolName = "bitap_bitwise_search2(char*, int, char*, int)"
                   moduleName = "sigmod"
-                  urlString = "file:///Volumes/jHome/Documents/xcode_mbp/clones/isj/sigmod/code/xcode/sigmod/sigmod/isj_impl/core.cpp"
-                  timestampString = "407435585.878115"
+                  urlString = "file:///Volumes/jHome/Documents/xcode_mbp/clones/isj/sigmod/code-jonathan/sigmod/sigmod/isj_impl/core.cpp"
+                  timestampString = "407500289.515273"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "97"
-                  endingLineNumber = "97"
-                  offsetFromSymbolStart = "127">
+                  startingLineNumber = "59"
+                  endingLineNumber = "59"
+                  offsetFromSymbolStart = "160">
                </Location>
                <Location
-                  shouldBeEnabled = "Yes"
+                  shouldBeEnabled = "No"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "EditDistance(char*, int, char*, int)"
+                  symbolName = "bitap_bitwise_search2(char*, int, char*, int)"
                   moduleName = "sigmod"
-                  urlString = "file:///Volumes/jHome/Documents/xcode_mbp/clones/isj/sigmod/code/xcode/sigmod/sigmod/isj_impl/core.cpp"
-                  timestampString = "407435585.87838"
+                  urlString = "file:///Volumes/jHome/Documents/xcode_mbp/clones/isj/sigmod/code-jonathan/sigmod/sigmod/isj_impl/core.cpp"
+                  timestampString = "407500289.515528"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "97"
-                  endingLineNumber = "97"
-                  offsetFromSymbolStart = "591">
+                  startingLineNumber = "59"
+                  endingLineNumber = "59"
+                  offsetFromSymbolStart = "432">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -52,62 +52,80 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407435513.263782"
+            timestampString = "407530921.390002"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
-            landmarkName = "EditDistance(char* string_a, int length_a, char* string_b, int length_b)"
+            startingLineNumber = "132"
+            endingLineNumber = "132"
+            landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EditDistance(char*, int, char*, int)"
-                  moduleName = "sigmod"
-                  urlString = "file:///Volumes/jHome/Documents/xcode_mbp/clones/isj/sigmod/code/xcode/sigmod/sigmod/isj_impl/core.cpp"
-                  timestampString = "407435585.878654"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "116"
-                  endingLineNumber = "116"
-                  offsetFromSymbolStart = "282">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "EditDistance(char*, int, char*, int)"
-                  moduleName = "sigmod"
-                  urlString = "file:///Volumes/jHome/Documents/xcode_mbp/clones/isj/sigmod/code/xcode/sigmod/sigmod/isj_impl/core.cpp"
-                  timestampString = "407435585.87891"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "116"
-                  endingLineNumber = "116"
-                  offsetFromSymbolStart = "564">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "sigmod/isj_impl/core.cpp"
-            timestampString = "407435513.263782"
+            timestampString = "407530921.390002"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "106"
-            endingLineNumber = "106"
-            landmarkName = "EditDistance(char* string_a, int length_a, char* string_b, int length_b)"
+            startingLineNumber = "129"
+            endingLineNumber = "129"
+            landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "sigmod/isj_impl/core.cpp"
+            timestampString = "407530921.390002"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "135"
+            endingLineNumber = "135"
+            landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "sigmod/isj_impl/core.cpp"
+            timestampString = "407530921.390002"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "134"
+            endingLineNumber = "134"
+            landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "sigmod/isj_impl/core.cpp"
+            timestampString = "407530921.390002"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "131"
+            endingLineNumber = "131"
+            landmarkName = "bitap_bitwise_search2(char* string_a, int length_a, char* string_b, int length_b)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
