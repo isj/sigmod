@@ -1,0 +1,56 @@
+Results from small_test
+compiled on OSX 10.9
+campers would not compile
+rotaForunae needed to be hacked ( requires windows viz studio )
+the only version that ran successfully was strongAccept
+the only other version to run successfully - hacked rotaForunae
+
+mofumofu
+
+> ./testdriver test_data/small_test.txt
+Illegal instruction: 4
+> cat result.txt
+Start Test ...
+
+strongAccept
+
+Start Test ...
+Your program has successfully passed all tests.
+Processed Documents = 960 documents.  (all documents are processed)
+Time = 8396 milli-seconds [8s:396ms]
+Throughput = 114.340 documents/second.
+
+hacked rotaForunae
+
+Start Test ...
+The call to GetNextAvailRes() returned incorrect result for document ID 22.
+Your  answer   is: 21 62
+Correct answer is: 9 20 24 48 54 55 68 75 80 84 90 92
+
+phoenix
+
+ERROR 0
+ERROR 1
+ERROR 2
+ERROR 3
+ERROR 4
+ERROR 5
+ERROR 6
+ERROR 7
+ERROR 8
+ERROR 9
+ERROR 10
+ERROR 11
+ERROR 12
+ERROR 13
+ERROR 14
+ERROR 15
+ERROR 16
+ERROR 17
+ERROR 18
+ERROR 19
+ERROR
+
+> cat result.txt
+Start Test ...
+The call to GetNextAvailRes() returned EC_NO_AVAIL_RES, but there is still undelivered documents.
