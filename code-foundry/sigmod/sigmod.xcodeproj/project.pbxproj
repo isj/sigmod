@@ -28,6 +28,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AB0CD93E184CD9DF003BEC23 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 		AB660B991848D54F0063206B /* sigmod */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sigmod; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB660B9E1848D54F0063206B /* sigmod.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sigmod.1; sourceTree = "<group>"; };
 		AB660BA51848D6430063206B /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test.cpp; path = test_driver/test.cpp; sourceTree = "<group>"; };
@@ -71,6 +72,7 @@
 				AB660BA51848D6430063206B /* test.cpp */,
 				AB660BA81848D6CD0063206B /* core.cpp */,
 				AB660BAD184A74700063206B /* notes.md */,
+				AB0CD93E184CD9DF003BEC23 /* notes.txt */,
 				AB660BA71848D6740063206B /* core.h */,
 				AB660B9E1848D54F0063206B /* sigmod.1 */,
 			);
