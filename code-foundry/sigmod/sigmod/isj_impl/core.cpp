@@ -33,6 +33,9 @@
 #include <cstdio>
 #include <vector>
 
+#include "SearchTree.h"
+
+
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,7 +289,9 @@ const char *bitap_fuzzy_bitwise_search(const char *text, const char *pattern, in
     if (m > 31) return "The pattern is too long!";
 
     /* Initialize the bit array R */
-    R =  malloc((k+1) * sizeof (*R));
+    R =  (unsigned long*) malloc((k+1) * sizeof (*R));
+  //  unsigned long* R = (unsigned long*)malloc(sizeof(unsigned long)*(k+1));
+
     for (i=0; i <= k; ++i)
         R[i] = ~1;
 
@@ -317,6 +322,9 @@ const char *bitap_fuzzy_bitwise_search(const char *text, const char *pattern, in
     }
 
     free(R);
+    if (result) {
+        printf("bitap text %s pattern %s k %d result %s\n",text,pattern,k, result);
+    }
     return result;
 }
 
@@ -429,6 +437,7 @@ struct Document
 // Keeps all currently active queries
 vector<Query> queries;
 
+
 // Keeps all currently available results that has not been returned yet
 vector<Document> docs;
 
@@ -444,14 +453,9 @@ ErrorCode DestroyIndex(){return EC_SUCCESS;}
 
 ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist)
 {
-   if (LOG) printf( " StartQuery: id %d ", query_id );
-	Query query;
-	query.query_id=query_id;
-	strcpy(query.str, query_str);
-	query.match_type=match_type;
-	query.match_dist=match_dist;
-	// Add this query to the active query set
-	queries.push_back(query);
+    SearchTree::Instance()->addQuery(query_id, query_str, match_type, match_dist);
+    if (LOG) printf( " StartQuery: id %d ", query_id );
+
 	return EC_SUCCESS;
 }
 
@@ -459,6 +463,7 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
 
 ErrorCode EndQuery(QueryID query_id)
 {
+
     if (LOG)printf( " EndQuery: %d ", query_id );
 
 	// Remove this query from the active query set
@@ -544,9 +549,12 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
                     }
                     else if(query->match_type==MT_HAMMING_DIST)
                     {
-                        
-                        unsigned int num_mismatches=HammingDistance(query_word, query_word_length, doc_word, doc_word_length);
-                        if(num_mismatches<=query->match_dist) matching_word=true;
+
+
+                        if (bitap_fuzzy_bitwise_search(doc_word, query_word, query->match_dist) !=0) matching_word=true;
+
+                       // unsigned int num_mismatches=HammingDistance(query_word, query_word_length, doc_word, doc_word_length);
+                      //  if(num_mismatches<=query->match_dist) matching_word=true;
                     }
                     else if(query->match_type==MT_EDIT_DIST)
                     {
