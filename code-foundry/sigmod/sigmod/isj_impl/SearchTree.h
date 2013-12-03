@@ -25,8 +25,7 @@ private:
      */
 
     SearchNode* _root;  //class SearchNode
-
-    SearchTree (){};
+    SearchTree ();
     SearchTree(SearchTree const&){};             // copy constructor is private
     //SearchTree& operator=(SearchTree const&){};  // assignment operator is private
     static SearchTree* m_pInstance;

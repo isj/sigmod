@@ -10,6 +10,11 @@
 using namespace std;
 
 
+SearchNode::SearchNode (const char* word) {
+
+}
+
+
 void SearchNode::addQuery (int queryID, int matchType, int MatchDistance) {
     
 }

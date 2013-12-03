@@ -26,6 +26,13 @@ SearchTree* SearchTree::Instance()
 }
 
 
+SearchTree::SearchTree() {
+    //constructor
+    //create root node
+     _root = new SearchNode("");
+ }
+
+
 ErrorCode SearchTree::addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist) {
     return EC_SUCCESS;
 }

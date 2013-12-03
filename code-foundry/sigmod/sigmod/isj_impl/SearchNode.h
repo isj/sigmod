@@ -23,7 +23,7 @@ private:
 
     
 public:
-    SearchNode (char* word);
+    SearchNode (const char* word);
     ~SearchNode();
 
     /**
