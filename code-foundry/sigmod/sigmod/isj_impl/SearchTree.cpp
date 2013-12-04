@@ -20,6 +20,8 @@ SearchTree* SearchTree::m_pInstance = NULL;
 
 SearchTree* SearchTree::Instance()
 {
+    printf("%s\n",__func__);
+
     if (!m_pInstance)   // Only allow one instance of class to be generated.
         m_pInstance = new SearchTree;
     return m_pInstance;
@@ -29,15 +31,22 @@ SearchTree* SearchTree::Instance()
 SearchTree::SearchTree() {
     //constructor
     //create root node
-     _root = new SearchNode("");
+    printf("%s\n",__func__);
+     _root = new SearchNode();
  }
 
 
-ErrorCode SearchTree::addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist) {
+ErrorCode SearchTree::addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist, int query_str_idx) {
+    printf("%s\n",__func__);
+    
+    _root->addQuery(query_id, query_str, match_type, match_dist, query_str_idx);
+
     return EC_SUCCESS;
 }
 
 ErrorCode matchWord(DocID doc_id, const char* doc_word) {
+    printf("%s\n",__func__);
+
     return EC_SUCCESS;
 }
 

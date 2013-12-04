@@ -8,15 +8,41 @@
 
 #ifndef sigmod_sigmod_types_h
 #define sigmod_sigmod_types_h
+#include <vector>
 
 typedef struct  {
-    int* exact;
-    int* hamming_1;
-    int* hamming_2;
-    int* hamming_3;
-    int* edit_1;
-    int* edit_2;
-    int* edit_3;
+    std::vector<int> exact;
+    std::vector<int>* hamming[3]={};
+    std::vector<int>* edit[3] = {};
 } Match;
+
+
+
+
+
+/**
+ *  match type
+ 
+ 3 - element array of pointers (exact, hamming, edit)
+ 
+ exact -> vector of numbers which are search query indexes
+ hamming -> 3-element array of pointers
+    ->0 -> vector of numbers which are search query indexes for edit distance 1
+    ->1 -> vector of numbers which are search query indexes for edit distance 2
+    ->2 -> vector of numbers which are search query indexes for edit distance 3
+ 
+ edit -> 3-element array of pointers
+ ->0 -> vector of numbers which are search query indexes for edit distance 1
+ ->1 -> vector of numbers which are search query indexes for edit distance 2
+ ->2 -> vector of numbers which are search query indexes for edit distance 3
+
+
+ */
+
+
+
+
+
+
 
 #endif

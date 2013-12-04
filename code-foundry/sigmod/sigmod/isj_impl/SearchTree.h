@@ -42,7 +42,7 @@ public:
      *  rearrange tree if necessary
      *
      */
-    ErrorCode addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist);
+    ErrorCode addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist,int query_str_idx);
 
     /**
      *  matchWord

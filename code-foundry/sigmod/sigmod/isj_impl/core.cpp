@@ -172,8 +172,10 @@ ErrorCode DestroyIndex(){return EC_SUCCESS;}
 
 ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist)
 {
-    SearchTree::Instance()->addQuery(query_id, query_str, match_type, match_dist);
-    if (LOG) printf( " StartQuery: id %d ", query_id );
+    int query_str_idx = 0;
+    //we use query_str_idx to track word breaks as we consume the query_str
+    SearchTree::Instance()->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
+    if (LOG) printf( " StartQuery: id %d \n", query_id );
 
 	return EC_SUCCESS;
 }

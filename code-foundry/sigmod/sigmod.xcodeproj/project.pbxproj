@@ -85,13 +85,13 @@
 				AB0CD93E184CD9DF003BEC23 /* notes.txt */,
 				AB660BA71848D6740063206B /* core.h */,
 				AB660B9E1848D54F0063206B /* sigmod.1 */,
+				ABCC6285184DC2A0008AE20F /* sigmod_types.h */,
 				ABCC6280184DC0FA008AE20F /* SearchTree.h */,
 				ABCC627F184DC0FA008AE20F /* SearchTree.cpp */,
 				ABCC6283184DC147008AE20F /* SearchNode.h */,
 				ABCC6282184DC147008AE20F /* SearchNode.cpp */,
 				ABCC628A184DD279008AE20F /* WordTumbler.h */,
 				ABCC6289184DD279008AE20F /* WordTumbler.cpp */,
-				ABCC6285184DC2A0008AE20F /* sigmod_types.h */,
 			);
 			path = sigmod;
 			sourceTree = "<group>";

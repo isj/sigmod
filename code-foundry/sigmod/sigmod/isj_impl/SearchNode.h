@@ -12,29 +12,75 @@
 #include <iostream>
 #include "core.h"
 #include "sigmod_types.h"
+#include <vector>
 
+class SearchTree;
 
 class SearchNode {
 private:
-    char* _word;
-    Match _matchType;
-    SearchNode* parentNode;
-    int* _childNodes;
+    unsigned int _depth;
+    SearchNode* _parent_node;
+
+    /**
+     *  bool _terminator
+     *  Marker if this node terminates a word
+     */
+    bool _terminator = false;
+
+    /**
+     *  SearchNode* _child_letters
+     *  array to hold child node pointers. One array position per alphabet letter.
+     *  we declare and initialise an array large enough for any ASCII7 character.
+     *  is this excessive (memory use)? should be use a hash table? something else?
+     */
+    SearchNode* _child_letters[128]={};
+
+
+    /**
+     *      Match match;
+     3 - element array of pointers (exact, hamming, edit)
+
+     exact -> vector of numbers which are search query indexes
+     hamming -> 3-element array of pointers
+     ->0 -> vector of numbers which are search query indexes for edit distance 1
+     ->1 -> vector of numbers which are search query indexes for edit distance 2
+     ->2 -> vector of numbers which are search query indexes for edit distance 3
+     edit -> 3-element array of pointers
+     ->0 -> vector of numbers which are search query indexes for edit distance 1
+     ->1 -> vector of numbers which are search query indexes for edit distance 2
+     ->2 -> vector of numbers which are search query indexes for edit distance 3
+     */
+
+    Match match;
+
+
+
 
     
 public:
-    SearchNode (const char* word);
-    ~SearchNode();
+    SearchNode();  //constructor for root node
 
-    /**
-     *  add a query to the correct query array
-     *
-     *  @param queryID       id number of query
-     *  @param matchType     exact, hamming or edit (0,1,2)
-     *  @param MatchDistance 0 | 1 | 2
-     */
-    void addQuery (int queryID, int matchType, int MatchDistance);
-    
+    SearchNode ( //constructor for non-root node
+                        QueryID  query_id
+                ,   const char* query_str
+                ,    MatchType  match_type
+                , unsigned int  match_dist
+                , unsigned int  query_str_idx
+                , SearchNode*   parent_node
+                );
+
+    ~SearchNode();  //TODO: destructor 
+
+    void addQuery(       QueryID  query_id
+                  ,   const char* query_str
+                  ,    MatchType  match_type
+                  , unsigned int  match_dist
+                  , unsigned int  query_str_idx
+                  );
+
 };
+
+
+
 
 #endif /* defined(__sigmod__SearchNode__) */
