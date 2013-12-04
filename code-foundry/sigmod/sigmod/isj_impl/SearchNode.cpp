@@ -80,17 +80,17 @@ void SearchNode::addQuery(       QueryID  query_id
             default:
                 cout << "invalid match_type error\n";
                 break;
+        }
+        if (query_str[_depth+query_str_idx]==' ') {
+            //we have more words to add
+            query_str_idx = _depth+query_str_idx+1;
+            if (query_str[query_str_idx] == '\0') {
+                printf("warning: appear to have a nil search query word\n");
+            } else {
+                SearchTree* tree = SearchTree::Instance();
+                tree->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
+            }
 
-                if (query_str[_depth+query_str_idx]==' ') {
-                    //we have more words to add
-                    query_str_idx = _depth+query_str_idx+1;
-                    if (query_str[query_str_idx] == '\0') {
-                        printf("warning: appear to have a nil search query word\n");
-                    } else {
-                        SearchTree* tree = SearchTree::Instance();
-                        tree->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
-                    }
-                }
         }
     } else {
         //we have not reached the end of the word, keep building...

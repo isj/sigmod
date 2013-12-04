@@ -22,3 +22,7 @@ inter_test.txt
 #XCode
 xcdebugger
 ~
+
+#sigmod-specific
+testdriver
+*.dSYM

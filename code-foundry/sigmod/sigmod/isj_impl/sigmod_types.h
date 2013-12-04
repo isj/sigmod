@@ -15,7 +15,7 @@ typedef struct  {
     std::vector<int>* hamming[3]={};
     std::vector<int>* edit[3] = {};
 } Match;
-
+    
 
 
 
