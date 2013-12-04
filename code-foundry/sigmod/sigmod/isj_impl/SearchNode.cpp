@@ -8,19 +8,7 @@
 
 #include "SearchNode.h"
 #include "SearchTree.h"
-using namespace std;
-
-
-//SearchNode::SearchNode (SearchNode* parent,  char letter) {
-//    _letter = letter;
-//    printf("SearchNode::%s\n",__func__);
-//    if (!_parentNode) {
-//        _depth = 0;
-//        printf("no parent node: depth %d\n",_depth);
-//    } else {
-//        _depth = _parentNode->_depth+1;
-//    }
-//}
+using namespace std
 
 
 SearchNode::SearchNode() {
@@ -46,6 +34,14 @@ SearchNode::SearchNode (       QueryID  query_id
     printf("%p parent depth %d\n",this,_parent_node->_depth);
     _depth = (_parent_node->_depth)+1;
     printf("%p my depth %d\n",this,_depth);
+    match.hamming = new vector<int>*[3];
+    match.hamming[0]= new vector<int>();
+    match.hamming[1]= new vector<int>();
+    match.hamming[2]= new vector<int>();
+    match.edit = new vector<int>*[3];
+    match.edit[0]= new vector<int>();
+    match.edit[1]= new vector<int>();
+    match.edit[2]= new vector<int>();
 
     this->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
 }
@@ -59,7 +55,7 @@ void SearchNode::addQuery(       QueryID  query_id
                           ) {
 
     printf("SearchNode::%s\n",__func__);
-
+    printf("depth::%d\n",_depth);
 
 
 
@@ -75,8 +71,11 @@ void SearchNode::addQuery(       QueryID  query_id
                 break;
             case 1:
                 match.hamming[match_dist-1]->push_back(query_id);
+                break;
             case 2:
                 match.edit[match_dist-1]->push_back(query_id);
+                break;
+
             default:
                 cout << "invalid match_type error\n";
                 break;
@@ -98,14 +97,14 @@ void SearchNode::addQuery(       QueryID  query_id
             //need to create a new child
 
             printf("creating search node for next letter:%c\n", query_str[_depth+query_str_idx]);
-            SearchNode next_letter = SearchNode(  query_id
+            SearchNode* next_letter = new SearchNode(  query_id
                                                 , query_str
                                                 , match_type
                                                 , match_dist
                                                 , query_str_idx
                                                 , this
                                                 );
-            _child_letters[query_str[_depth+query_str_idx]] = &next_letter;
+            _child_letters[query_str[_depth+query_str_idx]] = next_letter;
         }   else {
             SearchNode* node =_child_letters[query_str[_depth+query_str_idx]];
             node->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);

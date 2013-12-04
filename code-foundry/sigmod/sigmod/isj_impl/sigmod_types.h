@@ -12,8 +12,8 @@
 
 typedef struct  {
     std::vector<int> exact;
-    std::vector<int>* hamming[3]={};
-    std::vector<int>* edit[3] = {};
+    std::vector<int>** hamming;
+    std::vector<int>** edit;
 } Match;
     
 
