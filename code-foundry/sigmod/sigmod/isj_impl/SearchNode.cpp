@@ -8,7 +8,7 @@
 
 #include "SearchNode.h"
 #include "SearchTree.h"
-using namespace std
+using namespace std;
 
 
 SearchNode::SearchNode() {
