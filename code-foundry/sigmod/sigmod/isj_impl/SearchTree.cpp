@@ -22,7 +22,6 @@ SearchTree* SearchTree::m_pInstance = NULL;
 
 SearchTree* SearchTree::Instance()
 {
-    if (LOG) printf("%s\n",__func__);
 
     if (!m_pInstance)   // Only allow one instance of class to be generated.
         m_pInstance = new SearchTree;
@@ -81,10 +80,15 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
 
 ErrorCode SearchTree::matchWord  (  DocID doc_id
                                   , const char* doc_str
-                                  , int doc_str_idx
+                                  , unsigned int word_start_idx
+                                  , unsigned int word_length
                                   ) {
-    if (LOG) printf("%s\n",__func__);
-
+    //if (LOG) printf("%s\n",__func__);
+    if (LOG) printf("\"");
+    for (int idx=0; idx<word_length; idx++) {
+        if (LOG)  printf("%c",doc_str[word_start_idx+idx]);
+    }
+    if (LOG) printf("\"\n");
     return EC_SUCCESS;
 }
 

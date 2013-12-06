@@ -58,9 +58,10 @@ public:
                           , int doc_str_idx
                           );
 
-    ErrorCode matchWord(    DocID doc_id
+    ErrorCode matchWord  (  DocID doc_id
                           , const char* doc_str
-                          , int doc_str_idx
+                          , unsigned int word_start_idx
+                          , unsigned int word_length
                           );
 
 

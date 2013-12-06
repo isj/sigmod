@@ -212,11 +212,12 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ') {
-           // SearchTree::Instance()->matchWord(doc_id, doc_str, word_start_idx, word_length);
-            word_start_idx+=word_length;
+            SearchTree::Instance()->matchWord(doc_id, doc_str, word_start_idx, word_length);
+            word_start_idx+=word_length+1;
             word_length = 0;
         } else {
             word_length++;
+
         }
     }
 	return EC_SUCCESS;

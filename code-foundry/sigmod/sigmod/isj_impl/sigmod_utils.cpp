@@ -7,6 +7,7 @@
 //
 
 #include "sigmod_utils.h"
+#include <cstdlib>
 
 
  int AddToArray (DynamicArray array,unsigned int queryID)
