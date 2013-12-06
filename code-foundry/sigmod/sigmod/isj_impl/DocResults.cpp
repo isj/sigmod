@@ -36,7 +36,20 @@ DocResults::DocResults() {
     //constructor
     //create _results storage
     if (LOG) printf("%s\n",__func__);
-    _results = *new vector<vector<int>*>();
+    _results = *new vector<vector<unsigned int>*>();
+}
+
+ErrorCode DocResults::GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_query_ids) {
+    vector<unsigned int> last_result = *_results.back();
+    p_doc_id = &last_result.back(); //(?, last element of last _results vector)
+    last_result.pop_back();
+    p_num_res = &last_result.back();
+    last_result.pop_back();
+
+    //&p_query_ids = last_result;
+
+	return EC_SUCCESS;
+
 }
 
 

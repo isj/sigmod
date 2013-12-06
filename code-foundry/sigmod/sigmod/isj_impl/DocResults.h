@@ -11,17 +11,19 @@
 
 #include <iostream>
 #include <vector>
+#include "core.h"
+
 
 class DocResults {
 private:
-    //singleton pattern, we only ever want ONE searchTree.
+    //singleton pattern, we only ever want ONE DocResults class.
 
     /**
      *  useage
-     *  SearchNode::Instance()->addQuery(...);
+     *  DocResults::Instance()->getResult(...);
      */
 
-    std::vector<std::vector<int>*> _results;
+    std::vector<std::vector<unsigned int>*> _results;
     DocResults ();
     DocResults(DocResults const&){};             // copy constructor is private
     //SearchTree& operator=(SearchTree const&){};  // assignment operator is private
@@ -29,10 +31,7 @@ private:
 public:
     static DocResults* Instance();
 
+    ErrorCode GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_query_ids);
     
-
 };
-
-    
-
 #endif /* defined(__sigmod__DocResults__) */
