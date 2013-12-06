@@ -206,19 +206,28 @@ ErrorCode EndQuery(QueryID query_id)
 ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 {
 
-    int doc_str_idx = 0;
+    unsigned int word_start_idx = 0;
+    unsigned int word_length = 0;
 
 
-    while (doc_str[doc_str_idx] != '\0') {
-        if (doc_str[doc_str_idx] == ' ') {
-            doc_str_idx++;
-            SearchTree::Instance()->matchWord(doc_id, doc_str, doc_str_idx);
+    while (doc_str[word_start_idx+word_length] != '\0') {
+        if (doc_str[word_start_idx+word_length]  == ' ') {
+           // SearchTree::Instance()->matchWord(doc_id, doc_str, word_start_idx, word_length);
+            word_start_idx+=word_length;
+            word_length = 0;
         } else {
-            doc_str_idx++;
+            word_length++;
         }
     }
 	return EC_SUCCESS;
 }
+/*
+ 
+ 
+ 
+ 
+ 
+ */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
