@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB59D2361851C3F900DF114D /* DocResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB59D2341851C3F900DF114D /* DocResults.cpp */; };
+		AB59D23B18521A9400DF114D /* sigmod_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB59D23918521A9400DF114D /* sigmod_utils.cpp */; };
 		AB660B9F1848D54F0063206B /* sigmod.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB660B9E1848D54F0063206B /* sigmod.1 */; };
 		AB660BA61848D6430063206B /* test.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB660BA51848D6430063206B /* test.cpp */; };
 		AB660BA91848D6CD0063206B /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB660BA81848D6CD0063206B /* core.cpp */; };
@@ -32,6 +34,10 @@
 
 /* Begin PBXFileReference section */
 		AB0CD93E184CD9DF003BEC23 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		AB59D2341851C3F900DF114D /* DocResults.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DocResults.cpp; path = isj_impl/DocResults.cpp; sourceTree = "<group>"; };
+		AB59D2351851C3F900DF114D /* DocResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DocResults.h; path = isj_impl/DocResults.h; sourceTree = "<group>"; };
+		AB59D23918521A9400DF114D /* sigmod_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sigmod_utils.cpp; path = isj_impl/sigmod_utils.cpp; sourceTree = "<group>"; };
+		AB59D23A18521A9400DF114D /* sigmod_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sigmod_utils.h; path = isj_impl/sigmod_utils.h; sourceTree = "<group>"; };
 		AB660B991848D54F0063206B /* sigmod */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = sigmod; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB660B9E1848D54F0063206B /* sigmod.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = sigmod.1; sourceTree = "<group>"; };
 		AB660BA51848D6430063206B /* test.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = test.cpp; path = test_driver/test.cpp; sourceTree = "<group>"; };
@@ -39,6 +45,7 @@
 		AB660BA81848D6CD0063206B /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = core.cpp; path = isj_impl/core.cpp; sourceTree = "<group>"; };
 		AB660BAB1848D7A50063206B /* small_test.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = small_test.txt; path = test_driver/small_test.txt; sourceTree = "<group>"; };
 		AB660BAD184A74700063206B /* notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.md; sourceTree = "<group>"; };
+		ABC1EED0184FECF60086D5E3 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		ABCC627F184DC0FA008AE20F /* SearchTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SearchTree.cpp; path = isj_impl/SearchTree.cpp; sourceTree = "<group>"; };
 		ABCC6280184DC0FA008AE20F /* SearchTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SearchTree.h; path = isj_impl/SearchTree.h; sourceTree = "<group>"; };
 		ABCC6282184DC147008AE20F /* SearchNode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SearchNode.cpp; path = isj_impl/SearchNode.cpp; sourceTree = "<group>"; };
@@ -86,12 +93,17 @@
 				AB660BA71848D6740063206B /* core.h */,
 				AB660B9E1848D54F0063206B /* sigmod.1 */,
 				ABCC6285184DC2A0008AE20F /* sigmod_types.h */,
+				AB59D23A18521A9400DF114D /* sigmod_utils.h */,
+				AB59D23918521A9400DF114D /* sigmod_utils.cpp */,
+				AB59D2351851C3F900DF114D /* DocResults.h */,
+				AB59D2341851C3F900DF114D /* DocResults.cpp */,
 				ABCC6280184DC0FA008AE20F /* SearchTree.h */,
 				ABCC627F184DC0FA008AE20F /* SearchTree.cpp */,
 				ABCC6283184DC147008AE20F /* SearchNode.h */,
 				ABCC6282184DC147008AE20F /* SearchNode.cpp */,
 				ABCC628A184DD279008AE20F /* WordTumbler.h */,
 				ABCC6289184DD279008AE20F /* WordTumbler.cpp */,
+				ABC1EED0184FECF60086D5E3 /* Makefile */,
 			);
 			path = sigmod;
 			sourceTree = "<group>";
@@ -147,9 +159,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB59D23B18521A9400DF114D /* sigmod_utils.cpp in Sources */,
 				ABCC6281184DC0FA008AE20F /* SearchTree.cpp in Sources */,
 				AB660BA91848D6CD0063206B /* core.cpp in Sources */,
 				ABCC628B184DD279008AE20F /* WordTumbler.cpp in Sources */,
+				AB59D2361851C3F900DF114D /* DocResults.cpp in Sources */,
 				AB660BA61848D6430063206B /* test.cpp in Sources */,
 				ABCC6284184DC147008AE20F /* SearchNode.cpp in Sources */,
 			);
@@ -230,6 +244,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
+				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -238,6 +253,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
+				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

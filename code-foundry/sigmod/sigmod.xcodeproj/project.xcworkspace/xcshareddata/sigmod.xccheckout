@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>25E1A49F-9BF5-4149-B11A-CD4024ABBB0F</string>
+	<string>90EA64BD-EE98-4E9E-9B78-5B52356502B2</string>
 	<key>IDESourceControlProjectName</key>
 	<string>sigmod</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,7 +14,7 @@
 		<string>https://github.com/isj/sigmod.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>code-jonathan/sigmod/sigmod.xcodeproj/project.xcworkspace</string>
+	<string>code-foundry/sigmod/sigmod.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>15C00A21-744E-48D1-BF59-5B69F94DE175</key>

@@ -9,15 +9,34 @@
 #ifndef sigmod_sigmod_types_h
 #define sigmod_sigmod_types_h
 #include <vector>
-
+#include <map>
 #define LOG 1
+
+using namespace std;
 
 typedef struct  {
     std::vector<int> exact;
     std::vector<int>** hamming;
     std::vector<int>** edit;
 } Match;
-    
+
+
+typedef struct {
+    unsigned int *_p_query_ids;
+    unsigned int num_elements = 0; // Keeps track of the number of elements used
+    unsigned int num_allocated = 0; // This is essentially how large the array is
+} DynamicArray;
+
+
+typedef struct {
+    unsigned int _p_doc_id = 0;
+    unsigned int _p_num_res = 0;
+    DynamicArray _p_query_ids;
+} DocResult;
+
+
+typedef  map <unsigned int, DocResult> DocResultsMap;
+
 
 
 

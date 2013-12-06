@@ -224,16 +224,10 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
 ErrorCode GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_query_ids)
 {
-	// Get the first undeliverd resuilt from "docs" and return it
-	*p_doc_id=0; *p_num_res=0; *p_query_ids=0;
-	if(docs.size()==0) {
-      if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES %d %d ", *p_doc_id, *p_num_res );
-        return EC_NO_AVAIL_RES;
-    }
-	*p_doc_id=docs[0].doc_id; *p_num_res=docs[0].num_res; *p_query_ids=docs[0].query_ids;
-	docs.erase(docs.begin());
-   if (LOG)  printf( " GetNextAvailRes: %d, %d ", *p_doc_id, *p_num_res );
-	return EC_SUCCESS;
+
+    ErrorCode result = DocResults::Instance()->GetNextAvailRes(p_doc_id, p_num_res, p_query_ids);
+
+	return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
