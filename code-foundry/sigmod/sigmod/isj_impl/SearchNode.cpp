@@ -127,5 +127,13 @@ void SearchNode::addDocument(        DocID  doc_id
 
 }
 
+void SearchNode::matchWord (  DocID doc_id
+                , const char* doc_str
+                , unsigned int word_start_idx
+                , unsigned int word_length
+                            ) {
+
+}
+
 
 

@@ -88,8 +88,14 @@ ErrorCode SearchTree::matchWord  (  DocID doc_id
     for (int idx=0; idx<word_length; idx++) {
         if (LOG)  printf("%c",doc_str[word_start_idx+idx]);
     }
-    if (LOG) printf("\"\n");
+    if (LOG) printf("\" ");
+    _root -> matchWord (  doc_id
+                        , doc_str
+                        , word_start_idx
+                        , word_length
+                        );
     return EC_SUCCESS;
+
 }
 
 
