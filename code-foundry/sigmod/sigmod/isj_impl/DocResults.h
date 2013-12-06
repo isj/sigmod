@@ -25,11 +25,8 @@ private:
      *  DocResults::Instance()->getResult(...);
      */
 
-    std::vector<std::vector<unsigned int>*> _results;
-    std::vector<std::vector<unsigned int> > *_m_results;
-    std::vector<DocResult>* _docResults;
     DocResultsMap _docResultsMap;
-
+    std::vector<unsigned int>* _docResultsKeys;
 
 
     DocResults ();
@@ -41,10 +38,20 @@ public:
 
     static DocResults* Instance();
 
-    ErrorCode AddResult (DocID p_doc_id, unsigned int p_num_res, std::vector<unsigned int> p_query_ids);
-
     ErrorCode GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_query_ids);
 
+
+    /**
+     *  AddResult
+     *  Use if we are adding all results for a document in one go
+     */
+    ErrorCode AddResult (DocID p_doc_id, unsigned int p_num_res, std::vector<unsigned int> p_query_ids);
+
+
+    /**
+     *  AddToResult
+     *  Use if we want to build results word by word
+     */
     ErrorCode AddToResult (DocID p_doc_id, unsigned int p_query_id);
 
     
