@@ -11,6 +11,20 @@
 
 #include <iostream>
 #include "sigmod_types.h"
+
+/**
+ *  sigmod_utils
+ *
+ *   utility functions
+ */
+
+
+/**
+ *  AddToArray
+ *
+ *  C dynamic array
+ *  http://fydo.net/gamedev/dynamic-arrays
+ */
  int AddToArray (DynamicArray array,unsigned int queryID);
 
 #endif /* defined(__sigmod__sigmod_utils__) */
