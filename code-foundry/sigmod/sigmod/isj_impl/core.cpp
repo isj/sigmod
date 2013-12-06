@@ -34,7 +34,9 @@
 #include <vector>
 
 #include "SearchTree.h"
-
+#include "WordTumbler.h"
+#include "sigmod_types.h"
+#include "DocResults.h"
 
 using namespace std;
 
@@ -43,7 +45,6 @@ using namespace std;
 #include <string.h>
 #include <limits.h>
 
-#define LOG 1
 
 #include <iostream>
 
@@ -188,7 +189,7 @@ ErrorCode EndQuery(QueryID query_id)
     if (LOG)printf( " EndQuery: %d ", query_id );
 
 	// Remove this query from the active query set
-	unsigned int i, n=queries.size();
+	unsigned long i, n=queries.size();
 	for(i=0;i<n;i++)
 	{
 		if(queries[i].query_id==query_id)
@@ -204,102 +205,18 @@ ErrorCode EndQuery(QueryID query_id)
 
 ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 {
-    for (int mi=0; mi<1; mi++) {
 
-   if (LOG) printf( " MatchDocument: %d ", doc_id );
-
-	char current_doc_string[MAX_DOC_LENGTH];
-	strcpy(current_doc_string, doc_str);
-
-	unsigned int i, n=queries.size();
-	vector<unsigned int> query_ids;
-
-	// Iterate on all active queries to compare them with this new document
-	for(i=0;i<n;i++)
-	{
-		bool matching_query=true;
-		Query* query =&queries[i];
-
-		int iq=0;
-		while(query->str[iq] && matching_query)
-		{
-			while(query->str[iq]==' ') iq++;
-			if(!query->str[iq]) break;
-			char* query_word=&query->str[iq];
-
-			int query_word_length =iq;
-			while(query->str[iq] && query->str[iq]!=' ') {
-             // if (query->str[iq]>120)  printf("%d ",query->str[iq]);
-                iq++;
-            }
-			char qt=query->str[iq];
-			query->str[iq]=0;
-			query_word_length=iq-query_word_length;
-
-			bool matching_word=false;
-
-			int doc_idx=0;
-			while(current_doc_string[doc_idx] && !matching_word)
-			{
-				while(current_doc_string[doc_idx]==' ') doc_idx++;
-				if(!current_doc_string[doc_idx]) break;
-				char* doc_word=&current_doc_string[doc_idx];
-
-				int doc_word_start=doc_idx;
-				while(current_doc_string[doc_idx] && current_doc_string[doc_idx]!=' ') doc_idx++;
-				char dt=current_doc_string[doc_idx];
-				current_doc_string[doc_idx]=0;
-
-				int doc_word_length=doc_idx-doc_word_start;
-                    if(query->match_type==MT_EXACT_MATCH)
-                    {
-                          if(strcmp(query_word, doc_word)==0)  matching_word=true;
-
-                    }
-                    else if(query->match_type==MT_HAMMING_DIST)
-                    {
+    int doc_str_idx = 0;
 
 
-
-                        unsigned int num_mismatches=HammingDistance(query_word, query_word_length, doc_word, doc_word_length);
-                        if(num_mismatches<=query->match_dist) matching_word=true;
-                    }
-                    else if(query->match_type==MT_EDIT_DIST)
-                    {
-                        //size_t edit_dist = uiLevenshteinDistance(query_word,doc_word);
-                        unsigned int edit_dist=EditDistance(query_word, query_word_length, doc_word, doc_word_length);
-                        if(edit_dist<=query->match_dist) matching_word=true;
-                    }
-
-				current_doc_string[doc_idx]=dt;
-			}
-
-			query->str[iq]=qt;
-
-			if(!matching_word)
-			{
-				// This query has a word that does not match any word in the document
-				matching_query=false;
-			}
-		}
-
-		if(matching_query)
-		{
-			// This query matches the document
-			query_ids.push_back(query->query_id);
-		}
-	}
-
-	Document doc;
-	doc.doc_id=doc_id;
-	doc.num_res=query_ids.size();
-	doc.query_ids=0;
-	if(doc.num_res) doc.query_ids=(unsigned int*)malloc(doc.num_res*sizeof(unsigned int));
-	for(i=0;i<doc.num_res;i++) doc.query_ids[i]=query_ids[i];
-	// Add this result to the set of undelivered results
-	docs.push_back(doc);
+    while (doc_str[doc_str_idx] != '\0') {
+        if (doc_str[doc_str_idx] == ' ') {
+            doc_str_idx++;
+            SearchTree::Instance()->matchWord(doc_id, doc_str, doc_str_idx);
+        } else {
+            doc_str_idx++;
+        }
     }
-    //printf("success");
 	return EC_SUCCESS;
 }
 
@@ -310,7 +227,7 @@ ErrorCode GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_
 	// Get the first undeliverd resuilt from "docs" and return it
 	*p_doc_id=0; *p_num_res=0; *p_query_ids=0;
 	if(docs.size()==0) {
-      if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES ", *p_doc_id, *p_num_res );
+      if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES %d %d ", *p_doc_id, *p_num_res );
         return EC_NO_AVAIL_RES;
     }
 	*p_doc_id=docs[0].doc_id; *p_num_res=docs[0].num_res; *p_query_ids=docs[0].query_ids;

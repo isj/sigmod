@@ -29,11 +29,13 @@
 
 # Build targets (your implementation targets should go in IMPL_O)
 TEST_O=test_driver/test.o 
-IMPL_O=isj_impl/core.o isj_impl/SearchNode.cpp isj_impl/SearchTree.cpp
+IMPL_O=isj_impl/core.o isj_impl/SearchNode.cpp isj_impl/SearchTree.cpp isj_impl/WordTumbler.cpp
 
 # Compiler flags
 CC  = gcc
 CXX = g++
+
+#if -03 throws up errors try -02 (less optimised, more compatible)
 CFLAGS=-O3 -fPIC -Wall -g -I. -I./include
 CXXFLAGS=$(CFLAGS)
 LDFLAGS=-lpthread

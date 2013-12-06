@@ -8,6 +8,7 @@
 
 #include "SearchNode.h"
 #include "SearchTree.h"
+#include "WordTumbler.h"
 using namespace std;
 
 
@@ -29,11 +30,11 @@ SearchNode::SearchNode (       QueryID  query_id
                         , unsigned int  query_str_idx
                         , SearchNode*   parent_node
                         ) {
-    printf("SearchNode::%s\n",__func__);
+    if (LOG) printf("SearchNode::%s\n",__func__);
     _parent_node = parent_node;
-    printf("%p parent depth %d\n",this,_parent_node->_depth);
+    if (LOG) printf("%p parent depth %d\n",this,_parent_node->_depth);
     _depth = (_parent_node->_depth)+1;
-    printf("%p my depth %d\n",this,_depth);
+    if (LOG) printf("%p my depth %d\n",this,_depth);
     match.hamming = new vector<int>*[3];
     match.hamming[0]= new vector<int>();
     match.hamming[1]= new vector<int>();
@@ -54,8 +55,8 @@ void SearchNode::addQuery(       QueryID  query_id
                           , unsigned int  query_str_idx
                           ) {
 
-    printf("SearchNode::%s\n",__func__);
-    printf("depth::%d\n",_depth);
+    if (LOG) printf("SearchNode::%s\n",__func__);
+    if (LOG) printf("depth::%d\n",_depth);
 
 
 
@@ -77,14 +78,14 @@ void SearchNode::addQuery(       QueryID  query_id
                 break;
 
             default:
-                cout << "invalid match_type error\n";
+                if (LOG) cout << "invalid match_type error\n";
                 break;
         }
         if (query_str[_depth+query_str_idx]==' ') {
             //we have more words to add
             query_str_idx = _depth+query_str_idx+1;
             if (query_str[query_str_idx] == '\0') {
-                printf("warning: appear to have a nil search query word\n");
+                if (LOG) printf("warning: appear to have a nil search query word\n");
             } else {
                 SearchTree* tree = SearchTree::Instance();
                 tree->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
@@ -96,7 +97,7 @@ void SearchNode::addQuery(       QueryID  query_id
         if (_child_letters[query_str[_depth+query_str_idx]]==0) {
             //need to create a new child
 
-            printf("creating search node for next letter:%c\n", query_str[_depth+query_str_idx]);
+            if (LOG) printf("creating search node for next letter:%c\n", query_str[_depth+query_str_idx]);
             SearchNode* next_letter = new SearchNode(  query_id
                                                 , query_str
                                                 , match_type
@@ -113,5 +114,18 @@ void SearchNode::addQuery(       QueryID  query_id
         
     }
 }
+
+void SearchNode::addDocument(        DocID  doc_id
+                 ,  const char* doc_str
+                 ,         int  doc_str_idx
+                 ) {
+    if (doc_str[_depth+doc_str_idx]=='\0' || doc_str[_depth+doc_str_idx]==' ') {
+        //we have reached the last letter - did we get a match?
+    }
+
+
+
+}
+
 
 

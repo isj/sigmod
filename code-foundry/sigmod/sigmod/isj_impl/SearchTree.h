@@ -12,8 +12,9 @@
 #include <iostream>
 #include "SearchNode.h"
 #include "core.h"
+#include "sigmod_types.h"
 
-
+class WordTumbler;
 
 class SearchTree {
 private:
@@ -42,20 +43,38 @@ public:
      *  rearrange tree if necessary
      *
      */
-    ErrorCode addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist,int query_str_idx);
+    ErrorCode tring();
 
-    /**
-     *  matchWord
-     *  should this be inside the class
-     *  or external? 
-     */
-    ErrorCode matchWord(DocID doc_id, const char* doc_word);
-
-
+    ErrorCode addQuery(  QueryID query_id
+                       , const char* query_str
+                       , MatchType match_type
+                       , unsigned int match_dist
+                       , int query_str_idx
+                       );
 
 
+    ErrorCode addDocument(  DocID doc_id
+                          , const char* doc_str
+                          , int doc_str_idx
+                          );
+
+    ErrorCode matchWord(    DocID doc_id
+                          , const char* doc_str
+                          , int doc_str_idx
+                          );
+
+
+
+
+
+    ErrorCode tumbleWord(WordTumbler* wordTumbler);
+
+    ErrorCode startMatching (  DocID doc_id
+                             , const char* doc_start
+                             , int doc_results[]
+                             );
     
-    
+
 };
 
 #endif /* defined(__sigmod__SearchTree__) */

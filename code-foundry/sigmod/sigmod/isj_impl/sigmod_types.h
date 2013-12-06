@@ -10,6 +10,8 @@
 #define sigmod_sigmod_types_h
 #include <vector>
 
+#define LOG 1
+
 typedef struct  {
     std::vector<int> exact;
     std::vector<int>** hamming;

@@ -15,6 +15,7 @@
 #include <vector>
 
 class SearchTree;
+class WordTumbler;
 
 class SearchNode {
 private:
@@ -76,7 +77,13 @@ public:
                   ,    MatchType  match_type
                   , unsigned int  match_dist
                   , unsigned int  query_str_idx
-                  );
+                 );
+    
+    void addDocument(        DocID  doc_id
+                     ,  const char* doc_str
+                     ,         int  doc_str_idx
+                    );
+
 
 };
 

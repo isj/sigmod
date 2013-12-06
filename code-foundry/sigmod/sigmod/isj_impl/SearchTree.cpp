@@ -7,6 +7,8 @@
 //
 
 #include "SearchTree.h"
+#include "sigmod_types.h"
+
 using namespace std;
 
 // Global static pointer used to ensure a single instance of the class.
@@ -20,7 +22,7 @@ SearchTree* SearchTree::m_pInstance = NULL;
 
 SearchTree* SearchTree::Instance()
 {
-    printf("%s\n",__func__);
+    if (LOG) printf("%s\n",__func__);
 
     if (!m_pInstance)   // Only allow one instance of class to be generated.
         m_pInstance = new SearchTree;
@@ -31,22 +33,70 @@ SearchTree* SearchTree::Instance()
 SearchTree::SearchTree() {
     //constructor
     //create root node
-    printf("%s\n",__func__);
+    if (LOG) printf("%s\n",__func__);
      _root = new SearchNode();
  }
 
 
-ErrorCode SearchTree::addQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist, int query_str_idx) {
-    printf("%s\n",__func__);
+ErrorCode SearchTree::tumbleWord  ( WordTumbler* wordTumbler
+                       ) {
+    if (LOG) printf("%s\n",__func__);
+    return EC_SUCCESS;
+}
+
+ErrorCode SearchTree::addQuery (  QueryID query_id
+                                , const char* query_str
+                                , MatchType match_type
+                                , unsigned int match_dist
+                                , int query_str_idx
+                                ) {
+    if (LOG) printf("%s\n",__func__);
     
-    _root->addQuery(query_id, query_str, match_type, match_dist, query_str_idx);
+    _root->addQuery ( query_id
+                    , query_str
+                    , match_type
+                    , match_dist
+                    , query_str_idx
+                    );
 
     return EC_SUCCESS;
 }
 
-ErrorCode matchWord(DocID doc_id, const char* doc_word) {
-    printf("%s\n",__func__);
+
+
+ErrorCode SearchTree::addDocument  (  DocID doc_id
+                                   , const char* doc_str
+                                   , int doc_str_idx
+                                   ) {
+
+    if (LOG) printf("%s\n",__func__);
+
+    _root->addDocument(  doc_id
+                       , doc_str
+                       , doc_str_idx
+                       );
+    return EC_SUCCESS;
+}
+
+
+ErrorCode SearchTree::matchWord  (  DocID doc_id
+                                  , const char* doc_str
+                                  , int doc_str_idx
+                                  ) {
+    if (LOG) printf("%s\n",__func__);
 
     return EC_SUCCESS;
 }
+
+
+
+ErrorCode SearchTree::startMatching (  DocID doc_id
+                        , const char* doc_start
+                        , int doc_results[]
+                        ) {
+
+
+    return EC_SUCCESS;
+}
+
 
