@@ -12,7 +12,9 @@
 #include <map>
 #define LOG 1
 
-using namespace std;
+
+static const  int kFirstASCIIChar = 48; //0
+static const  int kLastASCIIChar = 122; //z
 
 typedef struct  {
     std::vector<int> exact;
@@ -22,7 +24,7 @@ typedef struct  {
 
 
 typedef struct {
-    unsigned int *_p_query_ids;
+    unsigned int* elements;
     unsigned int num_elements = 0; // Keeps track of the number of elements used
     unsigned int num_allocated = 0; // This is essentially how large the array is
 } DynamicArray;
@@ -35,7 +37,7 @@ typedef struct {
 } DocResult;
 
 
-typedef  map <unsigned int, DocResult> DocResultsMap;
+typedef  std::map <unsigned int, DocResult> DocResultsMap;
 
 
 

@@ -40,7 +40,7 @@ DocResults::DocResults() {
     DocResult result;
     result._p_doc_id= 0;
     _docResultsMap[0]=result;
-    _docResultsKeys = new vector<unsigned int>();
+    //_docResultsKeys = new vector<unsigned int>();
 }
 
 ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
@@ -58,7 +58,7 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
     _docResultsMap.erase(key);
     p_doc_id = &result._p_doc_id;
     p_num_res = &result._p_num_res;
-    p_query_ids = &result._p_query_ids._p_query_ids;
+    p_query_ids = &result._p_query_ids.elements;
     if (LOG)  printf( " GetNextAvailRes: %d, %d ", *p_doc_id, *p_num_res );
 	return EC_SUCCESS;
 }
@@ -78,7 +78,7 @@ ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
     if (found == _docResultsMap.end()) // this result is empty
     {
         DynamicArray d_array;
-        d_array._p_query_ids[0] = p_query_id;
+        d_array.elements[0] = p_query_id;
         d_array.num_elements = 1;
         d_array.num_allocated = 1;
         DocResult d_result;
@@ -86,7 +86,7 @@ ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
         d_result._p_num_res = 1;
         d_result._p_query_ids = d_array;
         _docResultsMap[p_doc_id] = d_result;
-        _docResultsKeys->push_back(p_doc_id);
+        //_docResultsKeys->push_back(p_doc_id);
     } else {
         DocResult result = _docResultsMap[p_doc_id];
         result._p_num_res = AddToArray(result._p_query_ids,p_query_id);

@@ -186,18 +186,10 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
 ErrorCode EndQuery(QueryID query_id)
 {
 
+    SearchTree::Instance()->removeQuery(query_id);
+    SearchTree::Instance()->print();
     if (LOG)printf( " EndQuery: %d ", query_id );
 
-	// Remove this query from the active query set
-	unsigned long i, n=queries.size();
-	for(i=0;i<n;i++)
-	{
-		if(queries[i].query_id==query_id)
-		{
-			queries.erase(queries.begin()+i);
-			break;
-		}
-	}
 	return EC_SUCCESS;
 }
 

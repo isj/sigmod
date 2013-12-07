@@ -10,6 +10,7 @@
 #define __sigmod__SearchTree__
 
 #include <iostream>
+#include <unordered_set>
 #include "SearchNode.h"
 #include "core.h"
 #include "sigmod_types.h"
@@ -24,12 +25,29 @@ private:
      *  useage
      *  SearchNode::Instance()->addQuery(...);
      */
-
     SearchNode* _root;  //class SearchNode
     SearchTree ();
     SearchTree(SearchTree const&){};             // copy constructor is private
     //SearchTree& operator=(SearchTree const&){};  // assignment operator is private
     static SearchTree* m_pInstance;
+
+
+    /**
+     *  set of query_ids... (this is a hash table)
+     *
+     * Internally, the elements in the unordered_set are not 
+     * sorted in any particular order, but organized into buckets depending 
+     * on their hash values to allow for fast access to individual elements 
+     * directly by their values (with a constant average time complexity on average).
+
+     * unordered_set containers are faster than set containers to access individual 
+     * elements by their key, although they are generally less efficient for range 
+     * iteration through a subset of their elements.
+     * http://www.cplusplus.com/reference/unordered_set/unordered_set/
+     */
+
+    std::unordered_set <QueryID>* _query_ids;
+
 public:
     static SearchTree* Instance();
 
@@ -43,7 +61,8 @@ public:
      *  rearrange tree if necessary
      *
      */
-    ErrorCode tring();
+
+
 
     ErrorCode addQuery(  QueryID query_id
                        , const char* query_str
@@ -75,7 +94,16 @@ public:
                              , int doc_results[]
                              );
     
+    void print ();
 
+    /**
+     *  Query accounting
+     *
+     */
+
+    int  numberOfQueries();
+    bool isLiveQuery  (QueryID query_id);
+    void removeQuery   (QueryID query_id);
 };
 
 #endif /* defined(__sigmod__SearchTree__) */

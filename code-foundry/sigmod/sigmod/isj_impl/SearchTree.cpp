@@ -33,7 +33,8 @@ SearchTree::SearchTree() {
     //constructor
     //create root node
     if (LOG) printf("%s\n",__func__);
-     _root = new SearchNode();
+     _root = new SearchNode();  //heap
+    _query_ids = new unordered_set<QueryID>();
  }
 
 
@@ -50,7 +51,7 @@ ErrorCode SearchTree::addQuery (  QueryID query_id
                                 , int query_str_idx
                                 ) {
     if (LOG) printf("%s\n",__func__);
-    
+    _query_ids->insert(query_id);
     _root->addQuery ( query_id
                     , query_str
                     , match_type
@@ -108,5 +109,23 @@ ErrorCode SearchTree::startMatching (  DocID doc_id
 
     return EC_SUCCESS;
 }
+
+void SearchTree::print() {
+    _root -> print();
+}
+
+int  SearchTree::numberOfQueries() {
+    return (int)_query_ids->size();
+}
+bool SearchTree::isLiveQuery  (QueryID query_id) {
+    if (_query_ids->count(query_id)>0)
+    return true;
+    else return false;
+}
+void SearchTree::removeQuery   (QueryID query_id) {
+    _query_ids->erase(query_id);
+}
+
+
 
 

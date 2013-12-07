@@ -8,9 +8,11 @@
 
 #include "sigmod_utils.h"
 #include <cstdlib>
+#include <vector>
 
 
- int AddToArray (DynamicArray array,unsigned int queryID)
+
+ int AddToArray (DynamicArray array,unsigned int element)
 {
     if(array.num_elements == array.num_allocated) // Are more refs required?
     {
@@ -24,7 +26,7 @@
 
         // Make the reallocation transactional
         // by using a temporary variable first
-        void *_tmp = realloc(array._p_query_ids, (array.num_allocated * sizeof(array._p_query_ids)));
+        void *_tmp = realloc(array.elements, (array.num_allocated * sizeof(array.elements)));
 
         // If the reallocation didn't go so well,
         // inform the user and bail out
@@ -35,10 +37,10 @@
         }
 
         // Things are looking good so far
-        array._p_query_ids = (unsigned int*)_tmp;
+        array.elements = (unsigned int*)_tmp;
     }
 
-    array._p_query_ids[array.num_elements] = queryID;
+    array.elements[array.num_elements] = element;
     array.num_elements++;
 
     return array.num_elements;

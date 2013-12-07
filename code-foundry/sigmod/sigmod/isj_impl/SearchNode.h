@@ -21,6 +21,7 @@ class SearchNode {
 private:
     unsigned int _depth;
     SearchNode* _parent_node;
+    char _letter;
 
     /**
      *  bool _terminator
@@ -52,7 +53,7 @@ private:
      ->2 -> vector of numbers which are search query indexes for edit distance 3
      */
 
-    Match match;
+    Match _match;
 
 
 
@@ -89,6 +90,11 @@ public:
                     , unsigned int word_start_idx
                     , unsigned int word_length
                     );
+
+    void print (  char* letters );
+    void print (  );
+    void print_search_queries();
+
 
 
 };

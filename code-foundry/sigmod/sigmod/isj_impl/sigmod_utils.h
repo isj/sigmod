@@ -25,6 +25,9 @@
  *  C dynamic array
  *  http://fydo.net/gamedev/dynamic-arrays
  */
- int AddToArray (DynamicArray array,unsigned int queryID);
+
+
+
+int AddToArray (DynamicArray array,unsigned int element);
 
 #endif /* defined(__sigmod__sigmod_utils__) */

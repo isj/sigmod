@@ -26,7 +26,7 @@ private:
      */
 
     DocResultsMap _docResultsMap;
-    std::vector<unsigned int>* _docResultsKeys;
+    //std::vector<unsigned int>* _docResultsKeys;
 
 
     DocResults ();
