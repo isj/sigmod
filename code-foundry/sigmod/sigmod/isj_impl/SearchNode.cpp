@@ -145,11 +145,16 @@ void SearchNode::matchWord (  DocID doc_id
 
 }
 
+void validate (vector<int> match_vector) {
+
+}
 
 void print_match_vector (vector<int> match_vector){
     if (match_vector.size()>0) {
         for (int i =0; i<match_vector.size(); i++)
-            cout <<match_vector[i]<<" ";
+            if (SearchTree::Instance()->isValidQuery(match_vector[i])) {
+                cout <<match_vector[i]<<" ";
+            }
     } else {
         cout <<"- ";
     }

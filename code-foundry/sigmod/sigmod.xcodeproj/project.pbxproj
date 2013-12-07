@@ -243,6 +243,7 @@
 		AB660BA31848D54F0063206B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -252,6 +253,7 @@
 		AB660BA41848D54F0063206B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";

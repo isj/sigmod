@@ -62,8 +62,6 @@ ErrorCode SearchTree::addQuery (  QueryID query_id
     return EC_SUCCESS;
 }
 
-
-
 ErrorCode SearchTree::addDocument  (  DocID doc_id
                                    , const char* doc_str
                                    , int doc_str_idx
@@ -77,7 +75,6 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
                        );
     return EC_SUCCESS;
 }
-
 
 ErrorCode SearchTree::matchWord  (  DocID doc_id
                                   , const char* doc_str
@@ -99,16 +96,15 @@ ErrorCode SearchTree::matchWord  (  DocID doc_id
 
 }
 
-
-
 ErrorCode SearchTree::startMatching (  DocID doc_id
                         , const char* doc_start
                         , int doc_results[]
                         ) {
-
-
     return EC_SUCCESS;
 }
+
+
+#pragma mark - printing
 
 void SearchTree::print() {
     _root -> print();
@@ -117,15 +113,16 @@ void SearchTree::print() {
 int  SearchTree::numberOfQueries() {
     return (int)_query_ids->size();
 }
-bool SearchTree::isLiveQuery  (QueryID query_id) {
-    if (_query_ids->count(query_id)>0)
-    return true;
-    else return false;
-}
+
+#pragma mark - query validation
+
 void SearchTree::removeQuery   (QueryID query_id) {
     _query_ids->erase(query_id);
 }
 
-
+bool SearchTree::isValidQuery(QueryID query_id) {
+    if ( _query_ids->count(query_id)==1) return true;
+    else return false;
+}
 
 

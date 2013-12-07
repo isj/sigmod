@@ -186,9 +186,17 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
 ErrorCode EndQuery(QueryID query_id)
 {
 
-    SearchTree::Instance()->removeQuery(query_id);
+
+    printf("\nending query....\n");
     SearchTree::Instance()->print();
-    if (LOG)printf( " EndQuery: %d ", query_id );
+    printf("removeQuery ....%d\n",query_id);
+
+    SearchTree::Instance()->removeQuery(query_id);
+    printf("after removing query....\n");
+    SearchTree::Instance()->print();
+
+
+
 
 	return EC_SUCCESS;
 }

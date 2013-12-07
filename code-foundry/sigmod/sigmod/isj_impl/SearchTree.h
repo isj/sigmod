@@ -10,7 +10,7 @@
 #define __sigmod__SearchTree__
 
 #include <iostream>
-#include <unordered_set>
+#include <unordered_set>  //WARNING - unordered_set MAY BE PLATFORM-SPECIFIC
 #include "SearchNode.h"
 #include "core.h"
 #include "sigmod_types.h"
@@ -102,7 +102,7 @@ public:
      */
 
     int  numberOfQueries();
-    bool isLiveQuery  (QueryID query_id);
+    bool isValidQuery  (QueryID query_id);
     void removeQuery   (QueryID query_id);
 };
 

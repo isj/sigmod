@@ -25,7 +25,7 @@ private:
      *  DocResults::Instance()->getResult(...);
      */
 
-    DocResultsMap _docResultsMap;
+    AllDocsResultsMap _docResultsMap;
     //std::vector<unsigned int>* _docResultsKeys;
 
 

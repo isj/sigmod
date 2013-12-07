@@ -37,8 +37,7 @@ DocResults::DocResults() {
     if (LOG) printf("%s\n",__func__);
 
     //initialise _docResultsMap with key "0"
-    DocResult result;
-    result._p_doc_id= 0;
+    SingleDocResultMap result;
     _docResultsMap[0]=result;
     //_docResultsKeys = new vector<unsigned int>();
 }
@@ -47,20 +46,25 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
                                       , unsigned int* p_num_res
                                       , QueryID** p_query_ids
                                       ) {
-    DocResultsMap::iterator it=_docResultsMap.end();
-    unsigned int key = it->first;
-    DocResult result = it->second;
 
+
+    AllDocsResultsMap::iterator it=_docResultsMap.end();
+    unsigned int key = it->first;
     if (_docResultsMap.size()==0 || key == 0){
-            if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES %d %d ", *p_doc_id, *p_num_res );
-            return EC_NO_AVAIL_RES;
+        if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES %d %d ", *p_doc_id, *p_num_res );
+        return EC_NO_AVAIL_RES;
+    } else {
+
+        SingleDocResultMap result = it->second;
+        _docResultsMap.erase(key);
+        unsigned int* results_array = MapToArray(result);
+        p_doc_id = &key;
+        unsigned int size = (unsigned int)result.size();
+        p_num_res = &size;
+        p_query_ids = &results_array;
+        if (LOG)  printf( " GetNextAvailRes: %d, %d ", *p_doc_id, *p_num_res );
+        return EC_SUCCESS;
     }
-    _docResultsMap.erase(key);
-    p_doc_id = &result._p_doc_id;
-    p_num_res = &result._p_num_res;
-    p_query_ids = &result._p_query_ids.elements;
-    if (LOG)  printf( " GetNextAvailRes: %d, %d ", *p_doc_id, *p_num_res );
-	return EC_SUCCESS;
 }
 
 
@@ -71,6 +75,27 @@ ErrorCode DocResults::AddResult (DocID p_doc_id, unsigned int p_num_res, std::ve
 }
 
 ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
+
+    // retrieve the docResultsSet from our map of doc results
+    map<unsigned int, SingleDocResultMap>::iterator found = _docResultsMap.find(p_doc_id);
+
+    if (found == _docResultsMap.end())
+        // we don't yet have any results for this document
+        //so we need to create a new DocResultsSet
+    {
+        SingleDocResultMap d_result;
+        d_result[p_query_id] = p_query_id ;
+        _docResultsMap[p_doc_id] = d_result;
+    } else {
+        SingleDocResultMap result = _docResultsMap[p_doc_id];
+        result.insert(std::pair < unsigned int, unsigned int > (p_query_id,p_query_id));
+    }
+
+    return EC_SUCCESS;
+}
+
+/*
+ErrorCode DocResults::AddToResult1 (DocID p_doc_id, unsigned int p_query_id) {
 
     // add items
     map<unsigned int, DocResult>::iterator found = _docResultsMap.find(p_doc_id);
@@ -94,5 +119,6 @@ ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
 
     return EC_SUCCESS;
 }
+*/
 
 

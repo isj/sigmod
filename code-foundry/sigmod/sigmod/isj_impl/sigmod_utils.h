@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include "sigmod_types.h"
+#include <vector>
 
 /**
  *  sigmod_utils
@@ -29,5 +30,12 @@
 
 
 int AddToArray (DynamicArray array,unsigned int element);
+
+unsigned int* VectorToArray (std::vector<unsigned int> vec);
+
+unsigned int* SetToArray (DocResultSet);
+
+unsigned int* MapToArray (SingleDocResultMap);
+
 
 #endif /* defined(__sigmod__sigmod_utils__) */
