@@ -31,9 +31,9 @@
 
 int AddToArray (DynamicArray array,unsigned int element);
 
-unsigned int* VectorToArray (std::vector<unsigned int> vec);
+unsigned int* VectorToArray (SingleDocResultVector vec);
 
-unsigned int* SetToArray (DocResultSet);
+unsigned int* SetToArray (SingleDocResultSet);
 
 unsigned int* MapToArray (SingleDocResultMap);
 

@@ -212,7 +212,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ') {
-            //SearchTree::Instance()->matchWord(doc_id, doc_str, word_start_idx, word_length);
+            SearchTree::Instance()->matchWord(doc_id, doc_str, word_start_idx, word_length);
             word_start_idx+=word_length+1;
             word_length = 0;
         } else {
@@ -234,6 +234,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
 ErrorCode GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_query_ids)
 {
+    SearchTree::Instance()->print();
 
     ErrorCode result = DocResults::Instance()->GetNextAvailRes(p_doc_id, p_num_res, p_query_ids);
 

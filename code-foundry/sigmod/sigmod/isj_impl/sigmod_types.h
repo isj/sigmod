@@ -75,10 +75,11 @@ struct ltstr
  */
 
 
-typedef std::set<unsigned int> DocResultSet;
+typedef std::set<unsigned int> SingleDocResultSet;
 //this is the ideal container
 //associative - ordered - set - unique keys - allocator-aware
-//
+//we need to use default ordering.
+//XCode has problems with comparison function
 
 
 

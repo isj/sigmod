@@ -37,8 +37,16 @@ DocResults::DocResults() {
     if (LOG) printf("%s\n",__func__);
 
     //initialise _docResultsMap with key "0"
-    SingleDocResultMap result;
-    _docResultsMap[0]=result;
+
+    /* 
+     * set version
+     * SingleDocResultSet setResult;
+     * _docResultsMap[0].insert(setResult);
+     *
+     */
+
+    SingleDocResultMap mapResult;
+    _docResultsMap[0]=mapResult;
     //_docResultsKeys = new vector<unsigned int>();
 }
 

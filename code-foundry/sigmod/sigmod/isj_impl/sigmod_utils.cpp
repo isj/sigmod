@@ -96,16 +96,17 @@
 
 /**
  *  alternatives to AddToArray - using fixed-sized malloc'd array
- *
- *
+ *  for vectors, we would need to sort first (sorting is not implemented here)
+ *  set and map versions are sorted as we insert new items into the set / map
  */
-unsigned int* VectorToArray (std::vector<unsigned int> vec) {
+unsigned int* VectorToArray (SingleDocResultVector vec) {
+    //for vectors we would need to sort first (not implemented)
     unsigned int* array = (unsigned int*)malloc(vec.size()*sizeof(unsigned int));
     std::copy(vec.begin(), vec.end(), array);
     return array;
 }
 
-unsigned int* SetToArray (DocResultSet set) {
+unsigned int* SetToArray (SingleDocResultSet set) {
     unsigned int* array = (unsigned int*)malloc(set.size()*sizeof(unsigned int));
     std::copy(set.begin(), set.end(), array);
     return array;
