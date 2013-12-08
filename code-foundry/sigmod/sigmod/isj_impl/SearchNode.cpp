@@ -29,6 +29,7 @@ SearchNode::SearchNode (       QueryID  query_id
                         ,    MatchType  match_type
                         , unsigned int  match_dist
                         , unsigned int  query_str_idx
+                        , unsigned int  query_word_counter
                         , SearchNode*   parent_node
                         ) {
     if (LOG) printf("SearchNode::%s\n",__func__);
@@ -40,7 +41,7 @@ SearchNode::SearchNode (       QueryID  query_id
     // _match stores QueryIDs of search queries
 
     //QueryIDs of exact match queries
-    //_match.exact = *new vector<int>();
+    _match.exact = new vector<int>();
 
     //QueryIDs of hamming match queries
     _match.hamming = new vector<int>*[3];
@@ -55,7 +56,12 @@ SearchNode::SearchNode (       QueryID  query_id
     _match.edit[2]= new vector<int>(); //match_distance 3
 
     this->_letter = query_str[_depth+query_str_idx-1];
-    this->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
+    this->addQuery ( query_id
+                   , query_str
+                   , match_type
+                   , match_dist
+                   , query_str_idx
+                   , query_word_counter);
 }
 
 
@@ -64,6 +70,7 @@ void SearchNode::addQuery(       QueryID  query_id
                           ,    MatchType  match_type
                           , unsigned int  match_dist
                           , unsigned int  query_str_idx
+                          , unsigned int  query_word_counter
                           ) {
 
     if (LOG) printf("SearchNode::%s\n",__func__);
@@ -72,6 +79,7 @@ void SearchNode::addQuery(       QueryID  query_id
 
 
     if (query_str[_depth+query_str_idx]=='\0' || query_str[_depth+query_str_idx]==' ') {
+        query_word_counter++;
         //we have reached the last letter - mark this node as a "terminator"
         _terminator = true;
 
@@ -79,7 +87,7 @@ void SearchNode::addQuery(       QueryID  query_id
 
         switch (match_type) {
             case 0: //exact match
-                _match.exact.push_back(query_id);
+                _match.exact->push_back(query_id);
                 break;
             case 1:
                 _match.hamming[match_dist-1]->push_back(query_id);
@@ -99,9 +107,19 @@ void SearchNode::addQuery(       QueryID  query_id
                 if (LOG) printf("warning: appear to have a nil search query word\n");
             } else {
                 SearchTree* tree = SearchTree::Instance();
-                tree->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
+                tree->addQuery(  query_id
+                               , query_str
+                               , match_type
+                               , match_dist
+                               , query_str_idx
+                               , query_word_counter
+                               );
             }
 
+        } else {
+            //we have added the last word, need to register the query and it's wordcount
+            //with the tree's _query_ids_map
+            SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
         }
     } else {
         //we have not reached the end of the word, keep building...
@@ -114,12 +132,18 @@ void SearchNode::addQuery(       QueryID  query_id
                                                 , match_type
                                                 , match_dist
                                                 , query_str_idx
+                                                , query_word_counter
                                                 , this
                                                 );
             _child_letters[query_str[_depth+query_str_idx]] = next_letter;
         }   else {
             SearchNode* node =_child_letters[query_str[_depth+query_str_idx]];
-            node->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
+            node->addQuery ( query_id
+                           , query_str
+                           , match_type
+                           , match_dist
+                           , query_str_idx
+                           , query_word_counter);
         }
         
         
@@ -129,11 +153,10 @@ void SearchNode::addQuery(       QueryID  query_id
 void SearchNode::addDocument(        DocID  doc_id
                              ,  const char* string
                              ,         int  string_idx
-                             ,        char  letters[]
                              ) {
 
     if (string[string_idx+_depth]=='\0' || string[string_idx+_depth]==' ') {
-        //we have reached the last letter - are we on a terminator node?
+        //we have reached a word ending - are we on a terminator node?
         if (_terminator == true) {
             //we have a match - record it...
             if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
@@ -164,7 +187,7 @@ void SearchNode::addDocument(        DocID  doc_id
         }   else {
             //found a matching child node, keep searching
             SearchNode* node =_child_letters[string[string_idx+_depth]];
-            node->addDocument(doc_id, string, string_idx,nullptr);
+            node->addDocument(doc_id, string, string_idx);
         }
         
         
@@ -201,9 +224,9 @@ void print_match_vector (vector<int> match_vector){
 
 void SearchNode::print_search_queries() {
     cout << "  x ";
-    if(_match.exact.size()==0) cout <<"- ";
-    for (int i =0; i<_match.exact.size(); i++)
-        cout << _match.exact[i]<<" ";
+    if(_match.exact->size()==0) cout <<"- ";
+    for (int i =0; i<_match.exact->size(); i++)
+        cout << &_match.exact[i]<<" ";
 
     cout << "h ";
     for (int i=0; i<3;i++) {
@@ -245,8 +268,14 @@ char SearchNode::getLetterFromParentForDepth(int depth) {
 
 void SearchNode::reportResult (DocID doc_id) {
 
-    for (int i=0;i<_match.exact.size();i++) {
-        DocResults::Instance()->AddToResult(doc_id, _match.exact[i]);
+    /**
+     *  - add found word to "document's found set"
+     *  - find which query IDs we match against
+     *  - decrement our documents' queryIDsIndex for those IDs
+     */
+
+    for (int i=0;i<_match.exact->size();i++) {
+        //DocResults::Instance()->AddToResult(doc_id, _match.exact[i]);
     }
 
 

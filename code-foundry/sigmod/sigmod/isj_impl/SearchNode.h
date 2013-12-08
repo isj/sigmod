@@ -68,6 +68,7 @@ public:
                 ,    MatchType  match_type
                 , unsigned int  match_dist
                 , unsigned int  query_str_idx
+                , unsigned int  query_word_counter
                 , SearchNode*   parent_node
                 );
 
@@ -78,12 +79,12 @@ public:
                   ,    MatchType  match_type
                   , unsigned int  match_dist
                   , unsigned int  query_str_idx
+                  , unsigned int  query_word_counter
                  );
     
     void addDocument(        DocID  doc_id
                      ,  const char* doc_str
                      ,         int  doc_str_idx
-                     ,        char  letters[]
                     );
 
     void matchWord (  DocID doc_id

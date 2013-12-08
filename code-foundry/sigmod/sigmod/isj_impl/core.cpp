@@ -173,9 +173,23 @@ ErrorCode DestroyIndex(){return EC_SUCCESS;}
 
 ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist)
 {
-    int query_str_idx = 0;
-    //we use query_str_idx to track word breaks as we consume the query_str
-    SearchTree::Instance()->addQuery(query_id, query_str, match_type, match_dist,query_str_idx);
+
+    /**
+     *  we use query_str_idx to track word breaks as we consume the query_str
+     *  and query_word_counter to maintain a word count for the query string
+     *  (word count is in the original test data, but we don't get it from test.cpp)
+     */
+
+    unsigned int query_str_idx = 0;
+    unsigned int query_word_counter = 0;
+
+    SearchTree::Instance()->addQuery ( query_id
+                                     , query_str
+                                     , match_type
+                                     , match_dist
+                                     , query_str_idx
+                                     , query_word_counter
+                                     );
     if (LOG) printf( " StartQuery: id %d \n", query_id );
 
 	return EC_SUCCESS;
@@ -208,7 +222,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
-
+    //std::set < std::string > * matched_words = new std::set<std::string>();
 
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ') {

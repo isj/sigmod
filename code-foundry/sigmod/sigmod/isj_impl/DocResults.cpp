@@ -12,6 +12,9 @@
 using namespace std;
 
 
+#pragma mark - singleton initialisation
+
+
 // Global static pointer used to ensure a single instance of the class.
 
 DocResults* DocResults::m_pInstance = NULL;
@@ -43,36 +46,64 @@ DocResults::DocResults() {
      *
      */
 
-    SingleDocResultMap mapResult;
+    SingleDocResultSet* mapResult = new SingleDocResultSet();
     _docResultsMap[0]=mapResult;
     //_docResultsKeys = new vector<unsigned int>();
 }
+
+
+#pragma mark - debug/logging of AllDocsResultsMap
+
+void logSet (SingleDocResultSet* singleDocSet) {
+    for (SingleDocResultSet::iterator it=singleDocSet->begin(); it!=singleDocSet->end(); ++it)
+        std::cout << ' ' << *it;
+    std::cout << endl;
+
+}
+SingleDocResultSet* logMap (AllDocsResultsMap resultsMap) {
+    AllDocsResultsMap::iterator it;
+    SingleDocResultSet* result;
+    for (AllDocsResultsMap::iterator it=resultsMap.begin(); it!=resultsMap.end(); ++it) {
+        std::cout << "docID   " << it->first << '\n' <<  "queryIDs ";
+        result = it->second;
+        logSet (result);
+    }
+    return result;
+
+}
+
+#pragma mark - GetNextAvailRes
+
 
 ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
                                       , unsigned int* p_num_res
                                       , QueryID** p_query_ids
                                       ) {
 
+    *p_doc_id=0; *p_num_res=0; *p_query_ids=0;
 
+    SingleDocResultSet* set = logMap(_docResultsMap);
     AllDocsResultsMap::iterator it=_docResultsMap.end();
+    it--;
     unsigned int key = it->first;
     if (_docResultsMap.size()==0 || key == 0){
         if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES %d %d ", *p_doc_id, *p_num_res );
         return EC_NO_AVAIL_RES;
     } else {
 
-        SingleDocResultMap result = it->second;
+        SingleDocResultSet* result = it->second;
         _docResultsMap.erase(key);
-        unsigned int* results_array = MapToArray(result);
-        p_doc_id = &key;
-        unsigned int size = (unsigned int)result.size();
-        p_num_res = &size;
-        p_query_ids = &results_array;
+        unsigned int* results_array = SetToArray(result);
+        *p_doc_id = key;
+        unsigned int size = (unsigned int)result->size();
+        *p_num_res = size;
+        *p_query_ids = results_array;
         if (LOG)  printf( " GetNextAvailRes: %d, %d ", *p_doc_id, *p_num_res );
         return EC_SUCCESS;
     }
 }
 
+#pragma mark - adding new results
 
 
 ErrorCode DocResults::AddResult (DocID p_doc_id, unsigned int p_num_res, std::vector<unsigned int> p_query_ids) {
@@ -83,22 +114,26 @@ ErrorCode DocResults::AddResult (DocID p_doc_id, unsigned int p_num_res, std::ve
 ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
     if (LOG) printf("%d ", p_query_id);
     // retrieve the docResultsSet from our map of doc results
-    map<unsigned int, SingleDocResultMap>::iterator found = _docResultsMap.find(p_doc_id);
+    AllDocsResultsMap::iterator found;
+    found = _docResultsMap.find(p_doc_id);
 
     if (found == _docResultsMap.end())
         // we don't yet have any results for this document
         //so we need to create a new DocResultsSet
     {
-        SingleDocResultMap d_result;
-        d_result[p_query_id] = p_query_id ;
+        SingleDocResultSet* d_result = new SingleDocResultSet;
+        d_result->insert(p_query_id);
         _docResultsMap[p_doc_id] = d_result;
     } else {
-        SingleDocResultMap result = _docResultsMap[p_doc_id];
-        result.insert(std::pair < unsigned int, unsigned int > (p_query_id,p_query_id));
+        SingleDocResultSet* result = _docResultsMap[p_doc_id];
+        result->insert(p_query_id);
     }
 
     return EC_SUCCESS;
 }
+
+
+#pragma mark - old code (used C dynamic array)
 
 /*
 ErrorCode DocResults::AddToResult1 (DocID p_doc_id, unsigned int p_query_id) {

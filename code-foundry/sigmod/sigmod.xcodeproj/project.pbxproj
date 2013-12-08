@@ -244,7 +244,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -254,7 +254,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LIBRARY = "libstdc++";
 				GCC_VERSION = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

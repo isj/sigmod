@@ -10,6 +10,7 @@
 #define __sigmod__SearchTree__
 
 #include <iostream>
+
 #ifdef USING_LIBCPP
     #include <unordered_set>  //WARNING - unordered_set is OSX or BOOST
 #endif
@@ -55,7 +56,16 @@ private:
     //for Linux let's use an ordered set instead
     std::set < QueryID > * _query_ids;
 #endif
-    
+
+    //query ids map
+    //we need to store a list of query ids with their associated word count
+    //so that we can decrement for any particular document.
+    std::map < QueryID, unsigned int > * _query_ids_map;
+
+
+
+
+
 public:
     static SearchTree* Instance();
 
@@ -76,7 +86,8 @@ public:
                        , const char* query_str
                        , MatchType match_type
                        , unsigned int match_dist
-                       , int query_str_idx
+                       , unsigned int query_str_idx
+                       , unsigned int query_word_counter
                        );
 
 
@@ -109,9 +120,13 @@ public:
      *
      */
 
+
+    void addQueryToMap (  QueryID query_id
+                        , unsigned int word_count
+                        );
     int  numberOfQueries();
-    bool isValidQuery  (QueryID query_id);
-    void removeQuery   (QueryID query_id);
+    bool isValidQuery  ( QueryID query_id );
+    void removeQuery   ( QueryID query_id );
 };
 
 #endif /* defined(__sigmod__SearchTree__) */

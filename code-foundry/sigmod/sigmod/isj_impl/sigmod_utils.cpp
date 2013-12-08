@@ -106,9 +106,9 @@ unsigned int* VectorToArray (SingleDocResultVector vec) {
     return array;
 }
 
-unsigned int* SetToArray (SingleDocResultSet set) {
-    unsigned int* array = (unsigned int*)malloc(set.size()*sizeof(unsigned int));
-    std::copy(set.begin(), set.end(), array);
+unsigned int* SetToArray (SingleDocResultSet* set) {
+    unsigned int* array = (unsigned int*)malloc(set->size()*sizeof(unsigned int));
+    std::copy(set->begin(), set->end(), array);
     return array;
 }
 

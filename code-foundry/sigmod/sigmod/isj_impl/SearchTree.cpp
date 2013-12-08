@@ -41,6 +41,10 @@ SearchTree::SearchTree() {
     //* SingleDocResultSet setResult;
     //* _docResultsMap[0].insert(setResult);
 #endif
+
+    _query_ids_map = new map<QueryID, unsigned  int>();
+    // SingleDocResultSet setResult;
+    // _query_ids_map[0].insert(0);
  }
 
 
@@ -54,15 +58,20 @@ ErrorCode SearchTree::addQuery (  QueryID query_id
                                 , const char* query_str
                                 , MatchType match_type
                                 , unsigned int match_dist
-                                , int query_str_idx
+                                , unsigned int query_str_idx
+                                , unsigned int query_word_counter
                                 ) {
     if (LOG) printf("%s\n",__func__);
     _query_ids->insert(query_id);
+
+    //start the word count at 0, we will increment it as we add the query
+
     _root->addQuery ( query_id
                     , query_str
                     , match_type
                     , match_dist
                     , query_str_idx
+                    , query_word_counter
                     );
 
     return EC_SUCCESS;
@@ -77,7 +86,6 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
     _root->addDocument(  doc_id
                        , doc_str
                        , doc_str_idx
-                       , nullptr
                        );
     return EC_SUCCESS;
 }
@@ -117,6 +125,14 @@ void SearchTree::print() {
     _root -> print();
     printf("\n");
 
+}
+
+#pragma mark - query accounting
+
+void SearchTree::addQueryToMap (  QueryID query_id
+                    , unsigned int word_count
+                    ) {
+    _query_ids_map->insert ( std::pair<QueryID,unsigned int>(query_id,word_count) );
 }
 
 int  SearchTree::numberOfQueries() {

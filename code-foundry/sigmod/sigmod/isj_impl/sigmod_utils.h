@@ -33,7 +33,7 @@ int AddToArray (DynamicArray array,unsigned int element);
 
 unsigned int* VectorToArray (SingleDocResultVector vec);
 
-unsigned int* SetToArray (SingleDocResultSet);
+unsigned int* SetToArray (SingleDocResultSet* set);
 
 unsigned int* MapToArray (SingleDocResultMap);
 

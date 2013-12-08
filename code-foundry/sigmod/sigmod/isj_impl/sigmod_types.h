@@ -11,6 +11,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <string>
 #include <iostream>
 #define LOG 1  //turn this off if measuring running time!
 
@@ -21,7 +22,7 @@ static const  int kFirstASCIIChar = 48; //0
 static const  int kLastASCIIChar = 122; //z
 
 typedef struct  {
-    std::vector<int> exact;
+    std::vector<int>* exact;
     std::vector<int>** hamming;
     std::vector<int>** edit;
 } Match;
@@ -100,7 +101,7 @@ typedef std::map < unsigned int, unsigned int > SingleDocResultMap;
  *  on GetNextAvailRes we return one    and erase it from the map.
  *  keyed by Document ID.
  */
-typedef  std::map <unsigned int, SingleDocResultMap> AllDocsResultsMap;
+typedef  std::map <unsigned int, SingleDocResultSet*> AllDocsResultsMap;
 
 /*
  
