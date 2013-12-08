@@ -9,6 +9,7 @@
 #include "SearchTree.h"
 #include "sigmod_types.h"
 #include "DocResults.h"
+#include "sigmod_utils.h"
 
 using namespace std;
 
@@ -64,7 +65,7 @@ ErrorCode SearchTree::addQuery (  QueryID query_id
                                 , unsigned int query_str_idx
                                 , unsigned int query_word_counter
                                 ) {
-    if (LOG) printf("%s\n",__func__);
+    //if (LOG) printf("%s\n",__func__);
     _query_ids->insert(query_id);
 
     //start the word count at 0, we will increment it as we add the query
@@ -144,12 +145,14 @@ void SearchTree::print() {
 
 }
 
+
 #pragma mark - query accounting
 
 void SearchTree::addQueryToMap (  QueryID query_id
                     , unsigned int word_count
                     ) {
     _query_ids_map->insert ( std::pair<QueryID,unsigned int>(query_id,word_count) );
+    if (LOG) printMapOfIntInt(_query_ids_map);
 }
 
 void SearchTree::removeQueryFromMap (  QueryID query_id )
@@ -181,20 +184,32 @@ void SearchTree::addStringToMatchMap ( DocID doc_id
         _matched_words_map->at(doc_id).insert(word);
     }
 
+    this->printMatchMap();
+
+}
+
+void SearchTree::printMatchMap() {
+    printMapOfIntSetOfStrings(_matched_words_map);
 }
 
 bool SearchTree::stringIsInMatchMap (  DocID doc_id
                          , std::string word
-                         ) {
+                                     ) {
 
     map < DocID, set < std::string >  >::iterator found;
     found = _matched_words_map->find(doc_id);
 
     if (found == _matched_words_map->end()) {
         return false;
-    } else {
-        return true;
     }
+
+    set <std::string> stringset = found->second;
+    //std::set<std::string>::iterator it;
+    if ( stringset.find(word) == stringset.end() ) {
+        return false;
+    }
+    return true;
+
 }
 
 int  SearchTree::numberOfQueries() {

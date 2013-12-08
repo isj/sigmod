@@ -41,7 +41,7 @@ SearchNode::SearchNode (       QueryID  query_id
     // _match stores QueryIDs of search queries
 
     //QueryIDs of exact match queries
-    _match.exact = new vector<int>();
+    //_match.exact = new vector<int>();
 
     //QueryIDs of hamming match queries
     _match.hamming = new vector<int>*[3];
@@ -55,7 +55,7 @@ SearchNode::SearchNode (       QueryID  query_id
     _match.edit[1]= new vector<int>(); //match_distance 2
     _match.edit[2]= new vector<int>(); //match_distance 3
 
-    _match.all = new vector<int>();
+    //_match.all = new vector<int>();
 
 
     this->_letter = query_str[_depth+query_str_idx-1];
@@ -76,10 +76,18 @@ void SearchNode::addQuery(       QueryID  query_id
                           , unsigned int  query_word_counter
                           ) {
 
-    if (LOG) printf("SearchNode::%s\n",__func__);
-    if (LOG) printf("depth::%d\n",_depth);
+  //  if (LOG) printf("SearchNode::%s\n",__func__);
+ //   if (LOG) printf("depth::%d\n",_depth);
+
+    if (_depth==0) {
+        SearchTree::Instance()->print();
+        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+            //printf("_child_letter %p",_child_letters[i]);
+
+        }
 
 
+    }
 
     if (query_str[_depth+query_str_idx]=='\0' || query_str[_depth+query_str_idx]==' ') {
         query_word_counter++;
@@ -90,7 +98,7 @@ void SearchNode::addQuery(       QueryID  query_id
 
         switch (match_type) {
             case 0: //exact match
-                _match.exact->push_back(query_id);
+                _match.exact.push_back(query_id);
                 break;
             case 1:
                 _match.hamming[match_dist-1]->push_back(query_id);
@@ -103,7 +111,7 @@ void SearchNode::addQuery(       QueryID  query_id
                 if (LOG) cout << "invalid match_type error\n";
                 break;
         }
-        _match.all->push_back(query_id);
+        _match.all.push_back(query_id);
 
         if (query_str[_depth+query_str_idx]==' ') {
             //we have more words to add
@@ -164,11 +172,11 @@ void SearchNode::addDocument(        DocID  doc_id
         //we have reached a word ending - are we on a terminator node?
         if (_terminator == true) {
             //we have a match - record it...
-            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
-            for (int i = 1; i<=_depth; i++) {
-               if (LOG)  printf("%c",getLetterFromParentForDepth(i));
-            }
-            cout << endl;
+//            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
+//            for (int i = 1; i<=_depth; i++) {
+//               if (LOG)  printf("%c",getLetterFromParentForDepth(i));
+//            }
+      //      cout << endl;
             this->reportResult(doc_id);
 
             
@@ -229,9 +237,9 @@ void print_match_vector (vector<int> match_vector){
 
 void SearchNode::print_search_queries() {
     cout << "  x ";
-    if(_match.exact->size()==0) cout <<"- ";
-    for (int i =0; i<_match.exact->size(); i++)
-        cout << &_match.exact[i]<<" ";
+    if(_match.exact.size()==0) cout <<"- ";
+    for (int i =0; i<_match.exact.size(); i++)
+        cout << _match.exact[i]<<" ";
 
     cout << "h ";
     for (int i=0; i<3;i++) {
@@ -251,7 +259,9 @@ void SearchNode::print_search_queries() {
 void SearchNode::print () {
     //performs a depth-first search through the tree looking for terminator nodes
     if (_terminator == true ) {
-        cout << this->string() << endl;
+        cout << this->string() <<" ";
+        this-> print_search_queries();
+        cout << endl;
     }
     for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
         if (_child_letters[i]) {
@@ -288,11 +298,15 @@ void SearchNode::reportResult (DocID doc_id) {
      *  - decrement our documents' queryIDsIndex for those IDs
      */
     std::string string = this->string();
-    if (SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) return;
-
+    if (SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
+        cout << string << " is already in match map for doc id "<<doc_id<<", returning" << endl;
+      return;
+    }
+    cout << "found match doc "<< doc_id  << " " << string << endl;
     SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
-    for (int i=0;i<_match.all->size();i++) {
-        QueryID query = _match.all->at(i);
+    
+    for (int i=0;i<_match.all.size();i++) {
+        QueryID query = _match.all.at(i);
         SearchTree::Instance()->decrementQueryInDocumentMap(doc_id, query);
     }
 

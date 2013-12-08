@@ -37,5 +37,14 @@ unsigned int* SetToArray (SingleDocResultSet* set);
 
 unsigned int* MapToArray (SingleDocResultMap);
 
+//void printMap (std::map);
 
+#pragma mark - printing data sets
+
+void printMapOfIntInt          (MapOfIntInt* mapToPrint);
+void printMapOfIntMapOfIntInt  (MapOfIntMapOfIntInt* mapToPrint);
+void printSetOfStrings         (std::set < std::string>* setToPrint);
+void printMapOfIntSetOfStrings (MapOfIntSetOfStrings* mapToPrint);
+void printMapOfIntSetOfInts    (MapofIntSetOfInts* mapToPrint);
+void printVectorOfInts         (std::vector<unsigned int>* vectorToPrint);
 #endif /* defined(__sigmod__sigmod_utils__) */

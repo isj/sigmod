@@ -153,6 +153,9 @@ public:
                              , std::string word
                              );
 
+    void printMatchMap();
+
+
     int  numberOfQueries();
     bool isValidQuery  ( QueryID query_id );
     void removeQuery   ( QueryID query_id );

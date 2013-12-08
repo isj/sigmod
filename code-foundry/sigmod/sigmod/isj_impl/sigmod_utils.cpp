@@ -123,3 +123,101 @@ unsigned int* MapToArray (SingleDocResultMap map) {
     return array;
 }
 
+#pragma mark - utility functions to print map data strucures
+
+
+//std::map < unsigned int, unsigned int > MapOfIntInt;
+
+void printMapOfIntInt (MapOfIntInt* mapToPrint) {
+    if (LOG) printf("%s\n",__func__);
+
+    std::map < unsigned int, unsigned int >::iterator it;
+    for (it = mapToPrint->begin();
+         it != mapToPrint-> end();
+         it++ ){
+
+        std::cout << it->first <<" "<< it->second << std::endl;
+
+    }
+
+
+
+}
+
+
+void printMapOfIntMapOfIntInt (MapOfIntMapOfIntInt* mapToPrint) {
+    if (LOG) printf("%s\n",__func__);
+
+    std::map <unsigned int, std::map < unsigned int, unsigned int > >::iterator it;
+    for (it = mapToPrint->begin();
+         it != mapToPrint-> end();
+         it++ ){
+        std::cout << it->first <<" "<< std::endl;
+        std::cout << "     ";
+        printMapOfIntInt(&it->second);
+    }
+    std::cout << std::endl;
+
+}
+
+//std::map < unsigned int, std::set < std::string > > MapOfIntSetOfStrings;
+
+void printSetOfStrings (std::set < std::string>* setToPrint) {
+    if (LOG) printf("%s\n",__func__);
+
+    std::set < std::string>::iterator it;
+    for (it = setToPrint->begin(); it != setToPrint->end(); it++) {
+        std::cout <<*it << " ";
+    }
+    std::cout << std::endl;
+
+
+}
+
+
+
+void printMapOfIntSetOfStrings (MapOfIntSetOfStrings* mapToPrint)  {
+    if (LOG) printf("%s\n",__func__);
+    std::map < unsigned int, std::set < std::string > >::iterator it;
+    for (it = mapToPrint->begin(); it != mapToPrint->end(); it++) {
+        std::cout << it->first << std::endl;
+        std::cout <<"      ";
+        printSetOfStrings(&it->second);
+        ;
+    }
+    std::cout << std::endl;
+
+}
+
+void printSetOfInts (std::set < unsigned int>* setToPrint) {
+    if (LOG) printf("%s\n",__func__);
+
+    std::set <  unsigned int >::iterator it;
+    for (it = setToPrint->begin(); it != setToPrint->end(); it++) {
+        std::cout <<*it << " ";
+    }
+    std::cout << std::endl;
+    
+    
+}
+
+void printMapOfIntSetOfInts    (MapofIntSetOfInts* mapToPrint) {
+    if (LOG) printf("%s\n",__func__);
+    std::map < unsigned int, std::set < unsigned int > >::iterator it;
+    for (it = mapToPrint->begin(); it != mapToPrint->end(); it++) {
+        std::cout << it->first << std::endl;
+        std::cout <<"      ";
+    }
+
+}
+
+
+void printVectorOfInts (std::vector<unsigned int>* vectorToPrint) {
+    if (LOG) printf("%s\n",__func__);
+
+    for (int i = 0; i < vectorToPrint->size(); i++) {
+        std::cout << &vectorToPrint[i] << " ";
+    }
+    std::cout << std::endl;
+}
+

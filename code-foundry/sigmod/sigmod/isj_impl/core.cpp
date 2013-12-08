@@ -182,7 +182,7 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
 
     unsigned int query_str_idx = 0;
     unsigned int query_word_counter = 0;
-
+    if (LOG) printf( " StartQuery: id %d \n", query_id );
     SearchTree::Instance()->addQuery ( query_id
                                      , query_str
                                      , match_type
@@ -190,7 +190,8 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
                                      , query_str_idx
                                      , query_word_counter
                                      );
-    if (LOG) printf( " StartQuery: id %d \n", query_id );
+    SearchTree::Instance()->print();
+
 
 	return EC_SUCCESS;
 }
@@ -219,6 +220,8 @@ ErrorCode EndQuery(QueryID query_id)
 
 ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 {
+
+    SearchTree::Instance()->print();
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;

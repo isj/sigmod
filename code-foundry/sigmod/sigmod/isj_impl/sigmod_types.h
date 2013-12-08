@@ -22,10 +22,10 @@ static const  int kFirstASCIIChar = 48; //0
 static const  int kLastASCIIChar = 122; //z
 
 typedef struct  {
-    std::vector<int>* exact;
+    std::vector<int> exact;
     std::vector<int>** hamming;
     std::vector<int>** edit;
-    std::vector<int>* all;
+    std::vector<int> all;
 } Match;
 
 
@@ -45,6 +45,20 @@ typedef struct {
 
 
 
+//_query_ids_map
+typedef     std::map < unsigned int, unsigned int > MapOfIntInt;
+
+//_matched_words_map
+typedef     std::map <unsigned int, MapOfIntInt  > MapOfIntMapOfIntInt;
+
+//_query_ids_map_per_document
+typedef     std::map < unsigned int, std::set < std::string > > MapOfIntSetOfStrings;
+
+// allDocumentResultsMap
+typedef     std::map < unsigned int, std::set <unsigned int >  > MapofIntSetOfInts;
+
+
+
 /**
  *  DocResult
  *  Data strucuture to store a single document's results
@@ -61,13 +75,13 @@ typedef struct {
  */
 
 
-struct ltstr
-{
-    bool operator()(const char* s1, const char* s2) const
-    {
-        return strcmp(s1, s2) < 0;
-    }
-};
+//struct ltstr
+//{
+//    bool operator()(const char* s1, const char* s2) const
+//    {
+//        return strcmp(s1, s2) < 0;
+//    }
+//};
 
 
 
@@ -103,45 +117,6 @@ typedef std::map < unsigned int, unsigned int > SingleDocResultMap;
  *  keyed by Document ID.
  */
 typedef  std::map <unsigned int, SingleDocResultSet*> AllDocsResultsMap;
-
-/*
- 
- Doc18 -> QiD 2, Qid 6, Qid9...  (sorted)
- (unsorted)
- 
- 
- so either we insert QiDs in a sorted manner using MAP or SET
- 
- OR we sort QiDs in VectorToArray...
- 
- 
- 
- 
- 
- */
-
-
-
-
-
-/**
- *  match type
- 
- 3 - element array of pointers (exact, hamming, edit)
- 
- exact -> vector of numbers which are search query indexes
- hamming -> 3-element array of pointers
-    ->0 -> vector of numbers which are search query indexes for edit distance 1
-    ->1 -> vector of numbers which are search query indexes for edit distance 2
-    ->2 -> vector of numbers which are search query indexes for edit distance 3
- 
- edit -> 3-element array of pointers
- ->0 -> vector of numbers which are search query indexes for edit distance 1
- ->1 -> vector of numbers which are search query indexes for edit distance 2
- ->2 -> vector of numbers which are search query indexes for edit distance 3
-
-
- */
 
 
 

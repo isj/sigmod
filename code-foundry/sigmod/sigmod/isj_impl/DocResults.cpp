@@ -9,6 +9,7 @@
 #include "DocResults.h"
 #include "sigmod_utils.h"
 
+
 using namespace std;
 
 
@@ -60,7 +61,7 @@ void logSet (SingleDocResultSet* singleDocSet) {
     std::cout << endl;
 
 }
-SingleDocResultSet* logMap (AllDocsResultsMap resultsMap) {
+void logMap (AllDocsResultsMap resultsMap) {
     AllDocsResultsMap::iterator it;
     SingleDocResultSet* result;
     for (AllDocsResultsMap::iterator it=resultsMap.begin(); it!=resultsMap.end(); ++it) {
@@ -68,7 +69,6 @@ SingleDocResultSet* logMap (AllDocsResultsMap resultsMap) {
         result = it->second;
         logSet (result);
     }
-    return result;
 
 }
 
@@ -82,7 +82,8 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
 
     *p_doc_id=0; *p_num_res=0; *p_query_ids=0;
 
-    SingleDocResultSet* set = logMap(_docResultsMap);
+    //if (LOG) printMapOfIntSetOfInts(_docResultsMap);
+    if (LOG) logMap(_docResultsMap);
     AllDocsResultsMap::iterator it=_docResultsMap.end();
     it--;
     unsigned int key = it->first;
