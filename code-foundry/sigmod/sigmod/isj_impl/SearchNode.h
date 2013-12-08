@@ -83,6 +83,7 @@ public:
     void addDocument(        DocID  doc_id
                      ,  const char* doc_str
                      ,         int  doc_str_idx
+                     ,        char  letters[]
                     );
 
     void matchWord (  DocID doc_id
@@ -94,6 +95,10 @@ public:
     void print (  char* letters );
     void print (  );
     void print_search_queries();
+
+    char getLetterFromParentForDepth(int depth);
+
+    void reportResult (DocID doc_id);
 
 
 

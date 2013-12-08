@@ -12,7 +12,9 @@
 #include <map>
 #include <set>
 #include <iostream>
-#define LOG 1
+#define LOG 1  //turn this off if measuring running time!
+
+//#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++
 
 
 static const  int kFirstASCIIChar = 48; //0
@@ -52,8 +54,8 @@ typedef struct {
  * http://stackoverflow.com/questions/3255971/method-declared-in-struct-in-c-stl
  * http://stackoverflow.com/questions/16966558/unordered-set-with-custom-predicate-make-linker-error-duplicate-symbol
  * problems with OSX http://stackoverflow.com/questions/19746903/cant-push-a-map-inside-a-vector
- * libc++ (default) has this problem
- * libstdc++ does not understand unordered_set, need to use BOOST instead (or just not use)
+ * libc++ (OSX default) has this problem
+ * libstdc++ (LINUX) does not understand unordered_set (which we use to store query_ids), need to use BOOST instead (or just not use)
  */
 
 
@@ -65,6 +67,9 @@ struct ltstr
     }
 };
 
+
+
+
 /**
  *  SingleDocResults - Vector / Set / Map
  *  Data structure to store a SINGLE document result collection of QueryIDs
@@ -74,19 +79,14 @@ struct ltstr
  *  keyed by Document ID.
  */
 
-
 typedef std::set<unsigned int> SingleDocResultSet;
 //this is the ideal container
 //associative - ordered - set - unique keys - allocator-aware
 //we need to use default ordering.
 //XCode has problems with comparison function
 
-
-
 typedef std::vector < unsigned int > SingleDocResultVector;
 //sequence - dynamic array - allocator-aware
-
-
 
 typedef std::map < unsigned int, unsigned int > SingleDocResultMap;
 ////associative - ordered - map - unique keys - allocator-aware

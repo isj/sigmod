@@ -34,7 +34,13 @@ SearchTree::SearchTree() {
     //create root node
     if (LOG) printf("%s\n",__func__);
      _root = new SearchNode();  //heap
+#ifdef UNORDERED_SET
     _query_ids = new unordered_set<QueryID>();
+#else
+    _query_ids =  new set<QueryID>();
+    //* SingleDocResultSet setResult;
+    //* _docResultsMap[0].insert(setResult);
+#endif
  }
 
 
@@ -67,11 +73,11 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
                                    , int doc_str_idx
                                    ) {
 
-    if (LOG) printf("%s\n",__func__);
 
     _root->addDocument(  doc_id
                        , doc_str
                        , doc_str_idx
+                       , nullptr
                        );
     return EC_SUCCESS;
 }
@@ -83,9 +89,9 @@ ErrorCode SearchTree::matchWord  (  DocID doc_id
                                   ) {
     //if (LOG) printf("%s\n",__func__);
     if (LOG) printf("\"");
-    for (int idx=0; idx<word_length; idx++) {
-        if (LOG)  printf("%c",doc_str[word_start_idx+idx]);
-    }
+    //for (int idx=0; idx<word_length; idx++) {
+        //if (LOG)  printf("%c",doc_str[word_start_idx+idx]);
+    //}
     if (LOG) printf("\" ");
     _root -> matchWord (  doc_id
                         , doc_str
@@ -107,7 +113,10 @@ ErrorCode SearchTree::startMatching (  DocID doc_id
 #pragma mark - printing
 
 void SearchTree::print() {
+    printf("\nprinting searchTree...\n");
     _root -> print();
+    printf("\n");
+
 }
 
 int  SearchTree::numberOfQueries() {

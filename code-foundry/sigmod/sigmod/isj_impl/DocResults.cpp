@@ -23,7 +23,6 @@ DocResults* DocResults::m_pInstance = NULL;
 
 DocResults* DocResults::Instance()
 {
-    if (LOG) printf("%s\n",__func__);
 
     if (!m_pInstance)   // Only allow one instance of class to be generated.
         m_pInstance = new DocResults;
@@ -34,7 +33,6 @@ DocResults* DocResults::Instance()
 DocResults::DocResults() {
     //constructor
     //create _results storage
-    if (LOG) printf("%s\n",__func__);
 
     //initialise _docResultsMap with key "0"
 
@@ -83,7 +81,7 @@ ErrorCode DocResults::AddResult (DocID p_doc_id, unsigned int p_num_res, std::ve
 }
 
 ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
-
+    if (LOG) printf("%d ", p_query_id);
     // retrieve the docResultsSet from our map of doc results
     map<unsigned int, SingleDocResultMap>::iterator found = _docResultsMap.find(p_doc_id);
 

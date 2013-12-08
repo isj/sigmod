@@ -10,7 +10,9 @@
 #define __sigmod__SearchTree__
 
 #include <iostream>
-#include <unordered_set>  //WARNING - unordered_set MAY BE PLATFORM-SPECIFIC
+#ifdef USING_LIBCPP
+    #include <unordered_set>  //WARNING - unordered_set is OSX or BOOST
+#endif
 #include "SearchNode.h"
 #include "core.h"
 #include "sigmod_types.h"
@@ -46,8 +48,14 @@ private:
      * http://www.cplusplus.com/reference/unordered_set/unordered_set/
      */
 
-    std::unordered_set <QueryID>* _query_ids;
-
+#ifdef USING_LIBCPP
+    //OSX-C++ std libary feature only. For Linux we would need to use BOOST
+    std::unordered_set < QueryID > * _query_ids;   //OSX-only
+#else
+    //for Linux let's use an ordered set instead
+    std::set < QueryID > * _query_ids;
+#endif
+    
 public:
     static SearchTree* Instance();
 

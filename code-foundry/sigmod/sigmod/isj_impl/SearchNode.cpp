@@ -8,6 +8,7 @@
 
 #include "SearchNode.h"
 #include "SearchTree.h"
+#include "DocResults.h"
 #include "WordTumbler.h"
 using namespace std;
 
@@ -39,10 +40,10 @@ SearchNode::SearchNode (       QueryID  query_id
     // _match stores QueryIDs of search queries
 
     //QueryIDs of exact match queries
-    _match.hamming = new vector<int>*[3];
-
+    //_match.exact = *new vector<int>();
 
     //QueryIDs of hamming match queries
+    _match.hamming = new vector<int>*[3];
     _match.hamming[0]= new vector<int>(); //match_distance 1
     _match.hamming[1]= new vector<int>(); //match_distance 2
     _match.hamming[2]= new vector<int>(); //match_distance 3
@@ -126,11 +127,47 @@ void SearchNode::addQuery(       QueryID  query_id
 }
 
 void SearchNode::addDocument(        DocID  doc_id
-                 ,  const char* doc_str
-                 ,         int  doc_str_idx
-                 ) {
-    if (doc_str[_depth+doc_str_idx]=='\0' || doc_str[_depth+doc_str_idx]==' ') {
-        //we have reached the last letter - did we get a match?
+                             ,  const char* string
+                             ,         int  string_idx
+                             ,        char  letters[]
+                             ) {
+
+    if (string[string_idx+_depth]=='\0' || string[string_idx+_depth]==' ') {
+        //we have reached the last letter - are we on a terminator node?
+        if (_terminator == true) {
+            //we have a match - record it...
+            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
+            for (int i = 1; i<=_depth; i++) {
+               if (LOG)  printf("%c",getLetterFromParentForDepth(i));
+            }
+            cout << endl;
+            this->reportResult(doc_id);
+
+            
+            
+
+        }
+        if (string[string_idx+_depth]==' ') {
+            //we have more words to add
+            string_idx = string_idx+_depth+1;
+            if (string[string_idx] == '\0') {
+                if (LOG) printf("warning: appear to have a nil search query word\n");
+            } else {
+                SearchTree* tree = SearchTree::Instance();
+                tree->addDocument(doc_id, string, string_idx);
+            }
+        }
+    } else {
+        //we have not reached the end of the word...
+        if (_child_letters[string[string_idx+_depth]]==0) {
+            //no more nodes, stop the search
+        }   else {
+            //found a matching child node, keep searching
+            SearchNode* node =_child_letters[string[string_idx+_depth]];
+            node->addDocument(doc_id, string, string_idx,nullptr);
+        }
+        
+        
     }
 
 
@@ -142,6 +179,8 @@ void SearchNode::matchWord (  DocID doc_id
                 , unsigned int word_start_idx
                 , unsigned int word_length
                             ) {
+
+    
 
 }
 
@@ -181,43 +220,36 @@ void SearchNode::print_search_queries() {
 }
 
 
-
-void SearchNode::print() {
-    //this print function is only run by the root node, as it has no letters to start with
-    int alphabet_length = 128;
-    for (int i=0; i< alphabet_length; i++ ) {
-        if (_child_letters[i]) {
-            _child_letters[i]-> print (nullptr);
-        }
-    }
-}
-
-void SearchNode::print (  char letters[] ) {
-    //this print function is called recursively on each found child letter
-    char new_letters[_depth+1];  //lenth is length-of-word + 1 (for terminating '\0')
-    if (letters!=nullptr) {
-        for (int i = 0; i<_depth; i++) {
-            new_letters[i]= letters[i];
-        }
-    }
-    new_letters[_depth-1] = _letter;
-    new_letters[_depth] = '\0';
+void SearchNode::print () {
+    //performs a depth-first search through the tree looking for terminator nodes
     if (_terminator == true ) {
-        printf("%s",new_letters);
-        print_search_queries();
-        cout << "\n";
-
+        for (int i = 1; i<=_depth; i++) {
+            printf("%c",getLetterFromParentForDepth(i));
+        }
+        printf("\n");
     }
-
     for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
         if (_child_letters[i]) {
-            _child_letters[i]-> print (new_letters);
+            _child_letters[i]-> print ();
         }
     }
-    
-
 }
 
+char SearchNode::getLetterFromParentForDepth(int depth) {
+    //reach upwards from a node to get parent letters
+    if (_depth==depth)
+        return _letter;
+    else
+        return ( _parent_node->getLetterFromParentForDepth(depth));
+}
 
+void SearchNode::reportResult (DocID doc_id) {
+
+    for (int i=0;i<_match.exact.size();i++) {
+        DocResults::Instance()->AddToResult(doc_id, _match.exact[i]);
+    }
+
+
+}
 
 
