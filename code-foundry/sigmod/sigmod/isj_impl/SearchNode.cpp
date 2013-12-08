@@ -80,7 +80,7 @@ void SearchNode::addQuery(       QueryID  query_id
  //   if (LOG) printf("depth::%d\n",_depth);
 
     if (_depth==0) {
-        SearchTree::Instance()->print();
+        if (LOG)  SearchTree::Instance()->print();
         for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
             //printf("_child_letter %p",_child_letters[i]);
 
@@ -132,7 +132,9 @@ void SearchNode::addQuery(       QueryID  query_id
         } else {
             //we have added the last word, need to register the query and it's wordcount
             //with the tree's _query_ids_map
-            SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
+
+            //ADDBACK AFTER WE FIX RECURSION BUG
+            //SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
         }
     } else {
         //we have not reached the end of the word, keep building...

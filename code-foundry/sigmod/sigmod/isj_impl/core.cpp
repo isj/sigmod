@@ -180,21 +180,74 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
      *  (word count is in the original test data, but we don't get it from test.cpp)
      */
 
+    /**
+     *  THIS IS A HACKY TEMPORARY VERSION TO OVERCOME A RECURSION BUG IN SEARCHTREE
+     *  we should not have to break our query_str into individual words here!
+     */
+
     unsigned int query_str_idx = 0;
     unsigned int query_word_counter = 0;
+    size_t query_length = strlen(query_str);
+    printf("starting string \n");
+    for (int i = 0; i <= query_length; i++) {
+        printf("%c ",query_str[i]);
+        if (query_str[i]==' ' || query_str[i]=='\0') {
+            printf("\n");
+            query_word_counter++;
+            int length = i-query_str_idx;
+            char* word = (char*)malloc(length*sizeof(char));
+            for (int j=0; j<length;j++) {
+                word[j] = query_str[query_str_idx + j];
+            }
+            word[length] = '\0';
+            SearchTree::Instance()->addQuery ( query_id
+                                              , word
+                                              , match_type
+                                              , match_dist
+                                              , 0
+                                              , query_word_counter
+                                              );
+            query_str_idx += length+1;
+        }
+    }
+    SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
+
+    printf("\nended string \n");
+
     if (LOG) printf( " StartQuery: id %d \n", query_id );
-    SearchTree::Instance()->addQuery ( query_id
-                                     , query_str
-                                     , match_type
-                                     , match_dist
-                                     , query_str_idx
-                                     , query_word_counter
-                                     );
-    SearchTree::Instance()->print();
-
-
+    if (LOG) SearchTree::Instance()->print();
 	return EC_SUCCESS;
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+
+ErrorCode StartQuery1(QueryID query_id, const char* query_str, MatchType match_type, unsigned int match_dist)
+{
+
+    /**  THIS IS THE UNHACKY VERSION
+     *  we use query_str_idx to track word breaks as we consume the query_str
+     *  and query_word_counter to maintain a word count for the query string
+     *  (word count is in the original test data, but we don't get it from test.cpp)
+     */
+
+    unsigned int query_str_idx = 0;
+    unsigned int query_word_counter = 0;
+
+    if (LOG) printf( " StartQuery: id %d \n", query_id );
+    SearchTree::Instance()->addQuery ( query_id
+                                      , query_str
+                                      , match_type
+                                      , match_dist
+                                      , query_str_idx
+                                      , query_word_counter
+                                      );
+    if (LOG) SearchTree::Instance()->print();
+    
+    
+	return EC_SUCCESS;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -202,13 +255,13 @@ ErrorCode EndQuery(QueryID query_id)
 {
 
 
-    printf("\nending query....\n");
-    SearchTree::Instance()->print();
+    if (LOG) printf("\nending query....\n");
+    if (LOG)  SearchTree::Instance()->print();
     printf("removeQuery ....%d\n",query_id);
 
     SearchTree::Instance()->removeQuery(query_id);
-    printf("after removing query....\n");
-    SearchTree::Instance()->print();
+    if (LOG) printf("after removing query....\n");
+    if (LOG) SearchTree::Instance()->print();
 
 
 
@@ -221,7 +274,7 @@ ErrorCode EndQuery(QueryID query_id)
 ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 {
 
-    SearchTree::Instance()->print();
+    if (LOG) SearchTree::Instance()->print();
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
@@ -254,7 +307,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
 ErrorCode GetNextAvailRes(DocID* p_doc_id, unsigned int* p_num_res, QueryID** p_query_ids)
 {
-    SearchTree::Instance()->print();
+    if (LOG) SearchTree::Instance()->print();
 
     ErrorCode result = DocResults::Instance()->GetNextAvailRes(p_doc_id, p_num_res, p_query_ids);
 
