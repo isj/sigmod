@@ -97,6 +97,10 @@ public:
     void print (  );
     void print_search_queries();
 
+    std::string string();
+
+    std::vector < unsigned int > queryIDs();
+
     char getLetterFromParentForDepth(int depth);
 
     void reportResult (DocID doc_id);

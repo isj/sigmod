@@ -63,6 +63,20 @@ private:
     std::map < QueryID, unsigned int > * _query_ids_map;
 
 
+    //matched words map
+    // we keep a list of match_words per document so that we do not match twice
+    std::map < DocID, std::set < std::string > > * _matched_words_map;
+
+    //document query count map
+    //list of query IDs with word counts
+    //we initialise one for each new document search
+    //on each found word we decrement the relevant query counts
+    //successful query matches are those that decrement to zero.
+
+    std::map <DocID, std::map < QueryID, unsigned int >  > * _query_ids_map_per_document;
+
+
+
 
 
 
@@ -124,6 +138,21 @@ public:
     void addQueryToMap (  QueryID query_id
                         , unsigned int word_count
                         );
+
+    void removeQueryFromMap  (  QueryID query_id );
+
+    void decrementQueryInDocumentMap (  DocID doc_id
+                                      , QueryID query_id
+                                      ) ;
+
+
+    void addStringToMatchMap ( DocID doc_id
+                             , std::string word
+                             );
+    bool stringIsInMatchMap  ( DocID doc_id
+                             , std::string word
+                             );
+
     int  numberOfQueries();
     bool isValidQuery  ( QueryID query_id );
     void removeQuery   ( QueryID query_id );

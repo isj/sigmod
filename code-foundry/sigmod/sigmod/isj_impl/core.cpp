@@ -222,11 +222,14 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
-    //std::set < std::string > * matched_words = new std::set<std::string>();
 
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ') {
-            SearchTree::Instance()->addDocument(doc_id, doc_str, word_start_idx);
+
+            SearchTree::Instance()->addDocument ( doc_id
+                                                , doc_str
+                                                , word_start_idx
+                                                );
             word_start_idx+=word_length+1;
             word_length = 0;
         } else {
