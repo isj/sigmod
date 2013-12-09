@@ -250,8 +250,12 @@ void SearchNode::addDocumentL(        DocID  doc_id
             if (_child_letters[i]) {
                 SearchNode* node =_child_letters[i];
                // char doc_prefix[_depth+1];
-                char* doc_prefix   = (char*)calloc(_depth+1,sizeof(char));
-                char* query_prefix = (char*)calloc(_depth+1,sizeof(char));
+                char doc_prefix[31];
+                char query_prefix[31];
+                //char* doc_prefix   = (char*)malloc(_depth+1*sizeof(char));
+                //char* query_prefix = (char*)malloc(_depth+1*sizeof(char));
+
+
                 for (int i=0; i<_depth+1; i++) {
                     doc_prefix[i]=string[i];
                 }

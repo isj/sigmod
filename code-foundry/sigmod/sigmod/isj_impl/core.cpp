@@ -195,7 +195,8 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
             printf("\n");
             query_word_counter++;
             int length = i-query_str_idx;
-            char* word = (char*)malloc(length*sizeof(char));
+            //char* word = (char*)malloc(length*sizeof(char));
+            char word[31] = {};
             for (int j=0; j<length;j++) {
                 word[j] = query_str[query_str_idx + j];
             }
@@ -208,7 +209,7 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
                                               , query_word_counter
                                               );
 
-            free(word);
+            //free(word);
             query_str_idx += length+1;
         }
     }

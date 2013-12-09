@@ -82,7 +82,6 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
     if (LOG) printf("%s\n",__func__);
     *p_doc_id=0; *p_num_res=0; *p_query_ids=0;
 
-    //if (LOG) printMapOfIntSetOfInts(_docResultsMap);
     if (LOG) logMap(_docResultsMap);
     AllDocsResultsMap::iterator it=_docResultsMap.end();
     it--;

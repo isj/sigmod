@@ -186,7 +186,7 @@ void SearchTree::addStringToMatchMap ( DocID doc_id
     if (_matched_words_map->find(doc_id) == _matched_words_map->end()) {
         set<string> string_set;
         string_set.insert(word);
-        _matched_words_map->insert(std::pair<DocID,set<string>>(doc_id,string_set) );
+        _matched_words_map->insert(std::pair<DocID,set<string> >(doc_id,string_set) );
         
     } else {
         _matched_words_map->at(doc_id).insert(word);
@@ -204,7 +204,7 @@ bool SearchTree::stringIsInMatchMap (  DocID doc_id
                          , std::string word
                                      ) {
 
-    map < DocID, set < std::string >  >::iterator found;
+    map < DocID, set < std::string > >::iterator found;
     found = _matched_words_map->find(doc_id);
 
     if (found == _matched_words_map->end()) {

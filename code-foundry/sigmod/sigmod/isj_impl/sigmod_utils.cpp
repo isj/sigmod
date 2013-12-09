@@ -9,6 +9,7 @@
 #include "sigmod_utils.h"
 #include <cstdlib>
 #include <vector>
+#include <cstring>
 
 using namespace std;
 
@@ -99,12 +100,12 @@ using namespace std;
  *  for vectors, we would need to sort first (sorting is not implemented here)
  *  set and map versions are sorted as we insert new items into the set / map
  */
-unsigned int* VectorToArray (SingleDocResultVector vec) {
-    //for vectors we would need to sort first (not implemented)
-    unsigned int* array = (unsigned int*)malloc(vec.size()*sizeof(unsigned int));
-    std::copy(vec.begin(), vec.end(), array);
-    return array;
-}
+//unsigned int* VectorToArray (SingleDocResultVector vec) {
+//    //for vectors we would need to sort first (not implemented)
+//    unsigned int* array = (unsigned int*)malloc(vec.size()*sizeof(unsigned int));
+//    std::copy(vec.begin(), vec.end(), array);
+//    return array;
+//}
 
 unsigned int* SetToArray (SingleDocResultSet* set) {
     unsigned int* array = (unsigned int*)malloc(set->size()*sizeof(unsigned int));
@@ -112,16 +113,16 @@ unsigned int* SetToArray (SingleDocResultSet* set) {
     return array;
 }
 
-unsigned int* MapToArray (SingleDocResultMap map) {
-    unsigned int* array = (unsigned int*)malloc(map.size()*sizeof(unsigned int));
-    std::map<unsigned int,unsigned int>::iterator it;
-    int i = 0;
-    for (it=map.begin(); it!=map.end(); ++it) {
-        array[i] = it -> first;
-        i++;
-    }
-    return array;
-}
+//unsigned int* MapToArray (SingleDocResultMap map) {
+//    unsigned int* array = (unsigned int*)malloc(map.size()*sizeof(unsigned int));
+//    std::map<unsigned int,unsigned int>::iterator it;
+//    int i = 0;
+//    for (it=map.begin(); it!=map.end(); ++it) {
+//        array[i] = it -> first;
+//        i++;
+//    }
+//    return array;
+//}
 
 #pragma mark - utility functions to print map data strucures
 
@@ -233,9 +234,10 @@ int LevenshteinDistance(char* s, char* t)
     if (s == t) return 0;
     if (strlen(s)==0) return length_t;
     if (strlen(t)==0) return length_s;
-
-    int* v0 = (int*)calloc((1+length_t),sizeof(char));
-    int* v1 = (int*)calloc((1+length_t),sizeof(char));
+    int v0[31] = {};
+    int v1[31] = {};
+   // int* v0 = (int*)malloc((1+length_t)*sizeof(char));
+   // int* v1 = (int*)malloc((1+length_t)*sizeof(char));
     if (NULL == v0 || NULL == v1) {
         printf("%s error allocating memory",__func__);
         return 100;
