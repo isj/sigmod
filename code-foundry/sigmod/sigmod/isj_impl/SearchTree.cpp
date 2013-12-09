@@ -93,8 +93,8 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
     if (found == _query_ids_map_per_document->end()) {
         //set up the document's __query_ids_map_per_document map
         map < QueryID, unsigned int > query_map;
-
-        for (auto it = _query_ids_map->begin(); it != _query_ids_map->end(); it++) {
+        map < QueryID, unsigned int >::iterator it;
+        for ( it = _query_ids_map->begin(); it != _query_ids_map->end(); it++) {
             query_map.insert(std::pair
                              < QueryID, unsigned int >
                              ( it->first, it->second)
@@ -105,11 +105,19 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
                                             (doc_id,query_map)
                                             );
     }
+    if (EDIT_DISTANCE >0 ) {
+        _root->addDocumentL( doc_id
+                            , doc_str
+                            , doc_str_idx
+                            );
 
-    _root->addDocument(  doc_id
-                       , doc_str
-                       , doc_str_idx
-                       );
+
+    } else {
+        _root->addDocument(  doc_id
+                           , doc_str
+                           , doc_str_idx
+                           );
+    }
     return EC_SUCCESS;
 }
 

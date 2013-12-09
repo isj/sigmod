@@ -29,13 +29,13 @@
 
 
 
-int AddToArray (DynamicArray array,unsigned int element);
+//int AddToArray (DynamicArray array,unsigned int element);
 
-unsigned int* VectorToArray (SingleDocResultVector vec);
+//unsigned int* VectorToArray (SingleDocResultVector vec);
 
 unsigned int* SetToArray (SingleDocResultSet* set);
 
-unsigned int* MapToArray (SingleDocResultMap);
+//unsigned int* MapToArray (SingleDocResultMap);
 
 //void printMap (std::map);
 
@@ -47,4 +47,7 @@ void printSetOfStrings         (std::set < std::string>* setToPrint);
 void printMapOfIntSetOfStrings (MapOfIntSetOfStrings* mapToPrint);
 void printMapOfIntSetOfInts    (MapofIntSetOfInts* mapToPrint);
 void printVectorOfInts         (std::vector<unsigned int>* vectorToPrint);
+
+int LevenshteinDistance(char* s, char* t);
+
 #endif /* defined(__sigmod__sigmod_utils__) */

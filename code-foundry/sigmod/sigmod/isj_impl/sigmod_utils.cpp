@@ -10,7 +10,7 @@
 #include <cstdlib>
 #include <vector>
 
-
+using namespace std;
 
 
 /*
@@ -219,5 +219,53 @@ void printVectorOfInts (std::vector<unsigned int>* vectorToPrint) {
         std::cout << &vectorToPrint[i] << " ";
     }
     std::cout << std::endl;
+}
+
+
+//https://en.wikipedia.org/wiki/Levenshtein_distance#cite_note-8
+//http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm
+
+int LevenshteinDistance(char* s, char* t)
+{
+    // degenerate cases
+    int length_t = (int)strlen(t);
+    int length_s = (int)strlen(s);
+    if (s == t) return 0;
+    if (strlen(s)==0) return length_t;
+    if (strlen(t)==0) return length_s;
+
+    int* v0 = (int*)calloc((1+length_t),sizeof(char));
+    int* v1 = (int*)calloc((1+length_t),sizeof(char));
+    if (NULL == v0 || NULL == v1) {
+        printf("%s error allocating memory",__func__);
+        return 100;
+    }
+
+    for (int i = 0; i < 1+length_t; i++)
+        v0[i] = i;
+
+    for (int i = 0; i < length_s; i++)
+    {
+        // calculate v1 (current row distances) from the previous row v0
+
+        // first element of v1 is A[i+1][0]
+        //   edit distance is delete (i+1) chars from s to match empty t
+        v1[0] = i + 1;
+
+        // use formula to fill in the rest of the row
+        for (int j = 0; j < length_t; j++)
+        {
+            int cost = (s[i] == t[j]) ? 0 : 1;
+            v1[j + 1] = min(v1[j] + 1, min(v0[j + 1] + 1,v0[j] + cost));
+        }
+
+        // copy v1 (current row) to v0 (previous row) for next iteration
+        for (int j = 0; j < 1+length_t; j++)
+            v0[j] = v1[j];
+    }
+    int result = v1[length_t];
+   // free(v0);
+   // free(v1);
+    return result;
 }
 

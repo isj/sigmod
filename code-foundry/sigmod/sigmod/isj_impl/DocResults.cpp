@@ -79,7 +79,7 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
                                       , unsigned int* p_num_res
                                       , QueryID** p_query_ids
                                       ) {
-
+    if (LOG) printf("%s\n",__func__);
     *p_doc_id=0; *p_num_res=0; *p_query_ids=0;
 
     //if (LOG) printMapOfIntSetOfInts(_docResultsMap);

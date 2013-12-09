@@ -86,6 +86,10 @@ public:
                      ,  const char* doc_str
                      ,         int  doc_str_idx
                     );
+    void addDocumentL(        DocID  doc_id
+                     ,  const char* doc_str
+                     , unsigned int doc_str_idx
+                     );
 
     void matchWord (  DocID doc_id
                     , const char* doc_str

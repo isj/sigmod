@@ -10,6 +10,7 @@
 #include "SearchTree.h"
 #include "DocResults.h"
 #include "WordTumbler.h"
+#import "sigmod_utils.h"
 using namespace std;
 
 
@@ -209,6 +210,66 @@ void SearchNode::addDocument(        DocID  doc_id
     }
 
 
+
+}
+
+void SearchNode::addDocumentL(        DocID  doc_id
+                             ,  const char*  string
+                             ,  unsigned int string_idx
+                             ) {
+
+    if (string[string_idx+_depth]=='\0' || string[string_idx+_depth]==' ') {
+        //we have reached a word ending - are we on a terminator node?
+        if (_terminator == true) {
+            //we have a match - record it...
+            //            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
+            //            for (int i = 1; i<=_depth; i++) {
+            //               if (LOG)  printf("%c",getLetterFromParentForDepth(i));
+            //            }
+            //      cout << endl;
+            this->reportResult(doc_id);
+
+
+
+
+        }
+        if (string[string_idx+_depth]==' ') {
+            //we have more words to add
+            string_idx = string_idx+_depth+1;
+            if (string[string_idx] == '\0') {
+                if (LOG) printf("warning: appear to have a nil search query word\n");
+            } else {
+                SearchTree* tree = SearchTree::Instance();
+                tree->addDocument(doc_id, string, string_idx);
+            }
+        }
+    } else {
+        //we have not reached the end of the word...
+
+        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+            if (_child_letters[i]) {
+                SearchNode* node =_child_letters[i];
+               // char doc_prefix[_depth+1];
+                char* doc_prefix   = (char*)calloc(_depth+1,sizeof(char));
+                char* query_prefix = (char*)calloc(_depth+1,sizeof(char));
+                for (int i=0; i<_depth+1; i++) {
+                    doc_prefix[i]=string[i];
+                }
+                for (int i=0; i<_depth+1; i++) {
+                    query_prefix[i] = node->getLetterFromParentForDepth(i+1);
+                }
+                if (LevenshteinDistance(doc_prefix, query_prefix) < 3 ) {
+                    node->addDocumentL(doc_id
+                                 , string
+                                 , string_idx
+                                       );
+                }
+               // free(doc_prefix);
+               // free(query_prefix);
+            }
+        }
+
+    }
 
 }
 

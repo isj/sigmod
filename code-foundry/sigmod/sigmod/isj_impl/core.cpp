@@ -207,6 +207,8 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
                                               , 0
                                               , query_word_counter
                                               );
+
+            free(word);
             query_str_idx += length+1;
         }
     }
