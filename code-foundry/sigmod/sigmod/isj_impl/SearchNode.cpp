@@ -296,17 +296,21 @@ void validate (vector<int> match_vector) {
 }
 
 void print_match_vector (vector<int> match_vector){
+    if (LOG) {
+
     if (match_vector.size()>0) {
         for (int i =0; i<match_vector.size(); i++)
             if (SearchTree::Instance()->isValidQuery(match_vector[i])) {
-                cout <<match_vector[i]<<" ";
+              cout <<match_vector[i]<<" ";
             }
     } else {
         cout <<"- ";
     }
+    }
 }
 
 void SearchNode::print_search_queries() {
+    if (LOG) {
     cout << "  x ";
     if(_match.exact.size()==0) cout <<"- ";
     for (int i =0; i<_match.exact.size(); i++)
@@ -315,7 +319,7 @@ void SearchNode::print_search_queries() {
     cout << "h ";
     for (int i=0; i<3;i++) {
         vector<int> ham = *_match.hamming[i];
-        print_match_vector(*_match.hamming[i]);
+       print_match_vector(*_match.hamming[i]);
     }
 
     cout << "e ";
@@ -323,22 +327,25 @@ void SearchNode::print_search_queries() {
         vector<int> ham = *_match.edit[i];
         print_match_vector(*_match.edit[i]);
     }
+    }
 
 }
 
 
 void SearchNode::print () {
-    //performs a depth-first search through the tree looking for terminator nodes
-    if (_terminator == true ) {
-        cout << this->string() <<" ";
-        this-> print_search_queries();
-        cout << endl;
-    }
+    if (LOG)
+        //performs a depth-first search through the tree looking for terminator nodes
+        if (_terminator == true ) {
+            cout << this->string() <<" ";
+            this-> print_search_queries();
+            cout << endl;
+        }
     for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
         if (_child_letters[i]) {
             _child_letters[i]-> print ();
         }
     }
+
 }
 
 char SearchNode::getLetterFromParentForDepth(int depth) {
@@ -370,10 +377,10 @@ void SearchNode::reportResult (DocID doc_id) {
      */
     std::string string = this->string();
     if (SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
-        cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
+      if (LOG)  cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
       return;
     }
-    cout << endl <<  "found match doc "<< doc_id  << " " << string << endl;
+   if (LOG)  cout << endl <<  "found match doc "<< doc_id  << " " << string << endl;
     SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
     bool hit = false;
     for (int i=0;i<_match.all.size();i++) {
@@ -416,7 +423,7 @@ void SearchNode::remove() {
 }
 
 void SearchNode::removeChild(SearchNode* child) {
-    printf("removing letter %c\n", child->_letter);
+    if (LOG) printf("removing letter %c\n", child->_letter);
     _child_letters[child->_letter] = nullptr;
     _child_count--;
     child->~SearchNode();

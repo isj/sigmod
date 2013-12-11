@@ -13,7 +13,7 @@
 #include <set>
 #include <string>
 #include <iostream>
-#define LOG 1  //turn this off if measuring running time!
+#define LOG 0  //turn this off if measuring running time!
 #define LOGALL 0  //turn this off if measuring running time!
 #define EDIT_DISTANCE 0
 

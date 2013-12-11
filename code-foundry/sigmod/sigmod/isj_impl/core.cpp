@@ -263,7 +263,7 @@ ErrorCode EndQuery(QueryID query_id)
 
     if (LOG) printf("\nending query....\n");
     if (LOG)  SearchTree::Instance()->print();
-    printf("removeQuery ....%d\n",query_id);
+    if (LOG) printf("removeQuery ....%d\n",query_id);
 
     SearchTree::Instance()->removeQuery(query_id);
     if (LOG) printf("after removing query....\n");
