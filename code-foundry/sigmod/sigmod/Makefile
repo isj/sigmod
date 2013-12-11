@@ -36,7 +36,7 @@ CC  = gcc
 CXX = g++
 
 #if -03 throws up errors try -02 (less optimised, more compatible)
-CFLAGS=-O2 -fPIC -Wall -g -I. -I./include
+CFLAGS=-std=c++11 -O2 -fPIC -Wall -g -I. -I./include
 CXXFLAGS=$(CFLAGS)
 LDFLAGS=-lpthread
 

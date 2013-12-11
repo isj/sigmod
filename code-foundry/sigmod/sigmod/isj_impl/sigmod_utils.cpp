@@ -164,7 +164,7 @@ void printMapOfIntMapOfIntInt (MapOfIntMapOfIntInt* mapToPrint) {
 //std::map < unsigned int, std::set < std::string > > MapOfIntSetOfStrings;
 
 void printSetOfStrings (std::set < std::string>* setToPrint) {
-    if (LOG) printf("%s\n",__func__);
+    if (LOGALL) printf("%s\n",__func__);
 
     std::set < std::string>::iterator it;
     for (it = setToPrint->begin(); it != setToPrint->end(); it++) {
@@ -178,10 +178,10 @@ void printSetOfStrings (std::set < std::string>* setToPrint) {
 
 
 void printMapOfIntSetOfStrings (MapOfIntSetOfStrings* mapToPrint)  {
-    if (LOG) printf("%s\n",__func__);
+    if (LOGALL) printf("%s\n",__func__);
     std::map < unsigned int, std::set < std::string > >::iterator it;
     for (it = mapToPrint->begin(); it != mapToPrint->end(); it++) {
-        std::cout << it->first << std::endl;
+        std::cout << it->first;
         std::cout <<"      ";
         printSetOfStrings(&it->second);
         ;
@@ -226,24 +226,21 @@ void printVectorOfInts (std::vector<unsigned int>* vectorToPrint) {
 //https://en.wikipedia.org/wiki/Levenshtein_distance#cite_note-8
 //http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm
 
-int LevenshteinDistance(char* s, char* t)
+bool LevenshteinDistance(char* s, char* t, int limit)
 {
+    if (LOG)printf("%s %s %s %d",__func__, s, t, limit);
+    //filter for s=t before passing in here
     // degenerate cases
     int length_t = (int)strlen(t);
     int length_s = (int)strlen(s);
-    if (s == t) return 0;
-    if (strlen(s)==0) return length_t;
-    if (strlen(t)==0) return length_s;
+    //if (s == t) return 0;
+    if (length_s ==0) return length_t;
+    if (length_t ==0) return length_s;
     int v0[31] = {};
     int v1[31] = {};
-   // int* v0 = (int*)malloc((1+length_t)*sizeof(char));
-   // int* v1 = (int*)malloc((1+length_t)*sizeof(char));
-    if (NULL == v0 || NULL == v1) {
-        printf("%s error allocating memory",__func__);
-        return 100;
-    }
 
-    for (int i = 0; i < 1+length_t; i++)
+
+    for (int i = 0; i < length_t+1; i++)
         v0[i] = i;
 
     for (int i = 0; i < length_s; i++)
@@ -259,6 +256,12 @@ int LevenshteinDistance(char* s, char* t)
         {
             int cost = (s[i] == t[j]) ? 0 : 1;
             v1[j + 1] = min(v1[j] + 1, min(v0[j + 1] + 1,v0[j] + cost));
+            if (v1[j+1] > limit) {
+                if (LOG)printf("cost: %d \n",v1[j + 1]);
+                if (LOG)printf("no match\n");
+                return false;
+            }
+            if (LOG)printf("cost: %d \n",v1[j + 1]);
         }
 
         // copy v1 (current row) to v0 (previous row) for next iteration
@@ -266,8 +269,65 @@ int LevenshteinDistance(char* s, char* t)
             v0[j] = v1[j];
     }
     int result = v1[length_t];
+    printf("result: %d \n",result);
+    printf("match\n");
+    return true;
    // free(v0);
    // free(v1);
-    return result;
 }
+
+bool uiLevenshteinDistance(char* s, char* t, int limit)
+{
+    if (LOG)printf("%s %s %s %d",__func__, s, t, limit);
+    string s1 = string (s);
+    string s2 = string (t);
+    const size_t m(s1.size());
+    const size_t n(s2.size());
+
+    if( m==0 ) return n;
+    if( n==0 ) return m;
+
+    size_t *costs = new size_t[n + 1];
+
+    for( size_t k=0; k<=n; k++ ) costs[k] = k;
+
+    size_t i = 0;
+    for ( auto it1 = s1.begin(); it1 != s1.end(); ++it1, ++i )
+    {
+        costs[0] = i+1;
+        size_t corner = i;
+
+        size_t j = 0;
+        for ( auto it2 = s2.begin(); it2 != s2.end(); ++it2, ++j )
+        {
+            size_t upper = costs[j+1];
+            if( *it1 == *it2 )
+            {
+                costs[j+1] = corner;
+            }
+            else
+            {
+                size_t t(upper<corner?upper:corner);
+                costs[j+1] = (costs[j]<t?costs[j]:t)+1;
+                if (costs[j+1]> limit) {
+                    if (LOG)printf("cost: %zu \n",costs[j+1]);
+                    if (LOG)printf("no match\n");
+                    return false;
+                }
+                if (LOG)printf("cost: %zu \n",costs[j+1]);
+
+            }
+            
+            corner = upper;
+        }
+    }
+    
+    size_t result = costs[n];
+    delete [] costs;
+    printf("result: %zu \n",result);
+    printf("match\n");
+    return true;
+}
+
+
 

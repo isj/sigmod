@@ -36,7 +36,7 @@ private:
 
 
     /**
-     *  set of query_ids... (this is a hash table)
+     *  unordered_set of query_ids... (this is a hash table)
      *
      * Internally, the elements in the unordered_set are not 
      * sorted in any particular order, but organized into buckets depending 
@@ -49,6 +49,13 @@ private:
      * http://www.cplusplus.com/reference/unordered_set/unordered_set/
      */
 
+
+    /** 
+     *  _query_ids
+     *  we use _query_ids to track LIVE querys. end_query removes the id from this list.
+     *  we could/should also remove the query from every node where it is indexed.
+     *  to do that we would have to keep a cross-reference from query ids to nodes.
+     */
 #ifdef USING_LIBCPP
     //OSX-C++ std libary feature only. For Linux we would need to use BOOST
     std::unordered_set < QueryID > * _query_ids;   //OSX-only
@@ -104,6 +111,8 @@ public:
                        , unsigned int query_word_counter
                        );
 
+    ErrorCode removeNode (SearchNode* node);
+
 
     ErrorCode addDocument(  DocID doc_id
                           , const char* doc_str
@@ -139,7 +148,9 @@ public:
                         , unsigned int word_count
                         );
 
-    void removeQueryFromMap  (  QueryID query_id );
+
+    void removeDocFromMatchedWordsMap  (   DocID doc_id );
+
 
     void decrementQueryInDocumentMap (  DocID doc_id
                                       , QueryID query_id

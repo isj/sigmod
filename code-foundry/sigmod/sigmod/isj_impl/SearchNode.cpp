@@ -17,13 +17,10 @@ using namespace std;
 SearchNode::SearchNode() {
     //root node constructor
     _depth = 0;
+    _child_count = 0;
 }
 
-SearchNode::~SearchNode() {
-    //destructor
-    //destroy class variables
-    _depth = 0;
-}
+
 
 SearchNode::SearchNode (       QueryID  query_id
                         ,   const char* query_str
@@ -58,14 +55,19 @@ SearchNode::SearchNode (       QueryID  query_id
 
     //_match.all = new vector<int>();
 
-
     this->_letter = query_str[_depth+query_str_idx-1];
-    this->addQuery ( query_id
-                   , query_str
-                   , match_type
-                   , match_dist
-                   , query_str_idx
-                   , query_word_counter);
+
+}
+
+SearchNode::~SearchNode() {
+    delete _match.hamming[0];
+    delete _match.hamming[1];
+    delete _match.hamming[2];
+    delete _match.hamming;
+    delete _match.edit[0];
+    delete _match.edit[1];
+    delete _match.edit[2];
+    delete _match.edit;
 }
 
 
@@ -135,16 +137,17 @@ void SearchNode::addQuery(       QueryID  query_id
             //with the tree's _query_ids_map
 
             //ADDBACK AFTER WE FIX RECURSION BUG
-            //SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
+            SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
+
         }
     } else {
         //we have not reached the end of the word, keep building...
         if (_child_letters[query_str[_depth+query_str_idx]]==0) {
             //need to create a new child
 
-            if (LOG) printf("creating search node for next letter:%c\n", query_str[_depth+query_str_idx]);
+            if (LOG) printf("%d creating search node for next letter:%c\n", query_id, query_str[_depth+query_str_idx]);
             SearchNode* next_letter = new SearchNode(  query_id
-                                                , query_str
+                                                 , query_str
                                                 , match_type
                                                 , match_dist
                                                 , query_str_idx
@@ -152,17 +155,17 @@ void SearchNode::addQuery(       QueryID  query_id
                                                 , this
                                                 );
             _child_letters[query_str[_depth+query_str_idx]] = next_letter;
-        }   else {
-            SearchNode* node =_child_letters[query_str[_depth+query_str_idx]];
-            node->addQuery ( query_id
-                           , query_str
-                           , match_type
-                           , match_dist
-                           , query_str_idx
-                           , query_word_counter);
+            _child_count++;
         }
-        
-        
+
+        SearchNode* node =_child_letters[query_str[_depth+query_str_idx]];
+        node->addQuery ( query_id
+                        , query_str
+                        , match_type
+                        , match_dist
+                        , query_str_idx
+                        , query_word_counter);
+
     }
 }
 
@@ -174,6 +177,7 @@ void SearchNode::addDocument(        DocID  doc_id
     if (string[string_idx+_depth]=='\0' || string[string_idx+_depth]==' ') {
         //we have reached a word ending - are we on a terminator node?
         if (_terminator == true) {
+            //do we have the RIGHT match_type?
             //we have a match - record it...
 //            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
 //            for (int i = 1; i<=_depth; i++) {
@@ -262,7 +266,7 @@ void SearchNode::addDocumentL(        DocID  doc_id
                 for (int i=0; i<_depth+1; i++) {
                     query_prefix[i] = node->getLetterFromParentForDepth(i+1);
                 }
-                if (LevenshteinDistance(doc_prefix, query_prefix) < 3 ) {
+                if (LevenshteinDistance(doc_prefix, query_prefix,3) ) {
                     node->addDocumentL(doc_id
                                  , string
                                  , string_idx
@@ -366,18 +370,60 @@ void SearchNode::reportResult (DocID doc_id) {
      */
     std::string string = this->string();
     if (SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
-        cout << string << " is already in match map for doc id "<<doc_id<<", returning" << endl;
+        cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
       return;
     }
-    cout << "found match doc "<< doc_id  << " " << string << endl;
+    cout << endl <<  "found match doc "<< doc_id  << " " << string << endl;
     SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
-    
+    bool hit = false;
     for (int i=0;i<_match.all.size();i++) {
         QueryID query = _match.all.at(i);
-        SearchTree::Instance()->decrementQueryInDocumentMap(doc_id, query);
+        if (SearchTree::Instance()->isValidQuery(query)) {
+            hit = true;
+            SearchTree::Instance()->decrementQueryInDocumentMap(doc_id, query);
+        } else {
+
+            //we could clean up here...
+            //if relevant queries have been removed we should destroy this node?
+
+        }
+    }
+    if (hit==false){
+        //all our queries are invalid, self-destruct
+        this->remove();
+    } else {
+        int x = 1;
+        x++;
     }
 
 
+}
+
+bool SearchNode::hasChildren() {
+    bool result = false;
+    if (_child_count>0) {
+        result = true;
+    }
+    return result;
+}
+
+void SearchNode::removeTerminator() {
+    _terminator = false;
+}
+
+void SearchNode::remove() {
+    _parent_node->removeChild(this);
+}
+
+void SearchNode::removeChild(SearchNode* child) {
+    printf("removing letter %c\n", child->_letter);
+    _child_letters[child->_letter] = nullptr;
+    _child_count--;
+    child->~SearchNode();
+    child = nullptr;
+    if ((_child_count ==0) && !_terminator) {
+        this->remove();
+    }
 }
 
 

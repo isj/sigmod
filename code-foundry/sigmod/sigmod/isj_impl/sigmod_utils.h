@@ -43,11 +43,13 @@ unsigned int* SetToArray (SingleDocResultSet* set);
 
 void printMapOfIntInt          (MapOfIntInt* mapToPrint);
 void printMapOfIntMapOfIntInt  (MapOfIntMapOfIntInt* mapToPrint);
+void printSetOfInts            (std::set < unsigned int>* setToPrint);
+
 void printSetOfStrings         (std::set < std::string>* setToPrint);
 void printMapOfIntSetOfStrings (MapOfIntSetOfStrings* mapToPrint);
 void printMapOfIntSetOfInts    (MapofIntSetOfInts* mapToPrint);
 void printVectorOfInts         (std::vector<unsigned int>* vectorToPrint);
 
-int LevenshteinDistance(char* s, char* t);
+bool LevenshteinDistance(char* s, char* t, int limit);
 
 #endif /* defined(__sigmod__sigmod_utils__) */

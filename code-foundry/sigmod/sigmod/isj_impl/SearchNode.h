@@ -37,7 +37,8 @@ private:
      */
     SearchNode* _child_letters[128]={};
 
-
+    unsigned int _child_count;
+    
     /**
      *      Match match;
      3 - element array of pointers (exact, hamming, edit)
@@ -97,6 +98,10 @@ public:
                     , unsigned int word_length
                     );
 
+    bool hasChildren();
+    void removeTerminator();
+    void remove();
+    void removeChild(SearchNode* child);
     void print (  char* letters );
     void print (  );
     void print_search_queries();

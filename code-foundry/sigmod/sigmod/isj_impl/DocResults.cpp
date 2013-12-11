@@ -8,6 +8,7 @@
 
 #include "DocResults.h"
 #include "sigmod_utils.h"
+#include "SearchTree.h"
 
 
 using namespace std;
@@ -27,7 +28,7 @@ DocResults* DocResults::m_pInstance = NULL;
 
 DocResults* DocResults::Instance()
 {
-
+    if (LOGALL) printf("%s\n",__func__);
     if (!m_pInstance)   // Only allow one instance of class to be generated.
         m_pInstance = new DocResults;
     return m_pInstance;
@@ -56,12 +57,14 @@ DocResults::DocResults() {
 #pragma mark - debug/logging of AllDocsResultsMap
 
 void logSet (SingleDocResultSet* singleDocSet) {
+    if (LOGALL) printf("%s\n",__func__);
     for (SingleDocResultSet::iterator it=singleDocSet->begin(); it!=singleDocSet->end(); ++it)
         std::cout << ' ' << *it;
     std::cout << endl;
 
 }
 void logMap (AllDocsResultsMap resultsMap) {
+    if (LOGALL) printf("%s\n",__func__);
     AllDocsResultsMap::iterator it;
     SingleDocResultSet* result;
     for (AllDocsResultsMap::iterator it=resultsMap.begin(); it!=resultsMap.end(); ++it) {
@@ -79,9 +82,9 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
                                       , unsigned int* p_num_res
                                       , QueryID** p_query_ids
                                       ) {
-    if (LOG) printf("%s\n",__func__);
+    if (LOGALL) printf("%s\n",__func__);
     *p_doc_id=0; *p_num_res=0; *p_query_ids=0;
-
+    if (LOG) printf("_docResultsMap for all results\n");
     if (LOG) logMap(_docResultsMap);
     AllDocsResultsMap::iterator it=_docResultsMap.end();
     it--;
@@ -92,9 +95,21 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
     } else {
 
         SingleDocResultSet* result = it->second;
+
         _docResultsMap.erase(key);
-        unsigned int* results_array = SetToArray(result);
+        SearchTree::Instance()->removeDocFromMatchedWordsMap(key);
+
         *p_doc_id = key;
+        //remove the 0 entry
+        if (LOG) printf("SingleDocResultSet before 0-removal\n");
+        if (LOG) printSetOfInts(result);
+        if (LOG) printf("-----\n");
+
+        result->erase(0);
+        if (LOG) printf("SingleDocResultSet after 0-removal\n");
+        if (LOG) printSetOfInts(result);
+        if (LOG) printf("-----\n");
+        unsigned int* results_array = SetToArray(result);
         unsigned int size = (unsigned int)result->size();
         *p_num_res = size;
         *p_query_ids = results_array;
@@ -112,7 +127,7 @@ ErrorCode DocResults::AddResult (DocID p_doc_id, unsigned int p_num_res, std::ve
 }
 
 ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
-    if (LOG) printf("%d ", p_query_id);
+    if (LOGALL) printf("%s %d %d\n",__func__,p_doc_id, p_query_id);
     // retrieve the docResultsSet from our map of doc results
     AllDocsResultsMap::iterator found;
     found = _docResultsMap.find(p_doc_id);
@@ -122,8 +137,12 @@ ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
         //so we need to create a new DocResultsSet
     {
         SingleDocResultSet* d_result = new SingleDocResultSet;
-        d_result->insert(p_query_id);
+        if (p_query_id>0) {
+            //if p_query_id = 0, this should initialise a new entry with 0 wordcount.
+            d_result->insert(p_query_id);
+        }
         _docResultsMap[p_doc_id] = d_result;
+
     } else {
         SingleDocResultSet* result = _docResultsMap[p_doc_id];
         result->insert(p_query_id);

@@ -14,8 +14,8 @@
 #include <string>
 #include <iostream>
 #define LOG 1  //turn this off if measuring running time!
-
-#define EDIT_DISTANCE 3
+#define LOGALL 0  //turn this off if measuring running time!
+#define EDIT_DISTANCE 0
 
 //#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++
 
