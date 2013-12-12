@@ -396,7 +396,7 @@ vector<string>  recursiveSearch(
     //if the last entry in the row indicates the optimal cost is less than the max costs,
     //and there is a word in this trie node, then add it
 
-    if ( currentRow[30]<= max_cost && node->isTerminator() != false ) {
+    if ( currentRow[30]<= max_cost && node->isTerminator() == true ) {
         cout << "found word " << node->string();
         results.push_back( node->string());
     }
