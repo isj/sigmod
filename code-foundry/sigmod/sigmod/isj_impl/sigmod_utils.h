@@ -55,5 +55,6 @@ bool LevenshteinDistance(char* s, char* t, int limit);
 
 std::vector<std::string>  recursiveSearch( SearchNode* node, char letter, char* word, int* previousRow,  int max_cost);
 
+std::vector<std::string> search (char* word, int limit);
 
 #endif /* defined(__sigmod__sigmod_utils__) */

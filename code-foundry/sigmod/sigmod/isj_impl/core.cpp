@@ -36,6 +36,7 @@
 #include "SearchTree.h"
 #include "WordTumbler.h"
 #include "sigmod_types.h"
+#include "sigmod_utils.h"
 #include "DocResults.h"
 
 using namespace std;
@@ -287,6 +288,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ') {
+            std::vector<std::string> search (char* word, int limit);
 
             SearchTree::Instance()->addDocument ( doc_id
                                                 , doc_str

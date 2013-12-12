@@ -352,7 +352,19 @@ int minCurrentRow(int* row) {
 
 }
 
-//returns a _list of words_ from the searchtree that are less than the given max distance from the target word
+
+
+/**
+ * recursiveSearch
+ * search (char* word, int limit)
+ *  http://stevehanov.ca/blog/index.php?id=114
+ *   
+ * returns a _list of words_ from the searchtree 
+ * that are less than the given max distance from the target word
+ * we can extend this by checking the node indexes for queries
+ */
+
+//
 
 vector<string>  recursiveSearch(
                                 SearchNode* node
@@ -385,6 +397,7 @@ vector<string>  recursiveSearch(
     //and there is a word in this trie node, then add it
 
     if ( currentRow[30]<= max_cost && node->isTerminator() != false ) {
+        cout << "found word " << node->string();
         results.push_back( node->string());
     }
 
