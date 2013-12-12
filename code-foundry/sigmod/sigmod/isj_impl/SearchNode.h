@@ -99,6 +99,8 @@ public:
                     );
 
     bool hasChildren();
+    bool isTerminator();
+    SearchNode** getChildren();
     void removeTerminator();
     void remove();
     void removeChild(SearchNode* child);
@@ -114,11 +116,9 @@ public:
 
     void reportResult (DocID doc_id);
 
-
+    SearchNode* child(unsigned int child_index);
 
 };
-
-
 
 
 #endif /* defined(__sigmod__SearchNode__) */

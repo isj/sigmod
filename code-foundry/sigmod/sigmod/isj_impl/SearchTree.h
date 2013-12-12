@@ -170,6 +170,7 @@ public:
     int  numberOfQueries();
     bool isValidQuery  ( QueryID query_id );
     void removeQuery   ( QueryID query_id );
+    SearchNode* root();
 };
 
 #endif /* defined(__sigmod__SearchTree__) */

@@ -414,6 +414,10 @@ bool SearchNode::hasChildren() {
     return result;
 }
 
+bool SearchNode::isTerminator() {
+    return _terminator;
+}
+
 void SearchNode::removeTerminator() {
     _terminator = false;
 }
@@ -433,6 +437,14 @@ void SearchNode::removeChild(SearchNode* child) {
     }
 }
 
+SearchNode** SearchNode::getChildren() {
+    return _child_letters;
+}
+
+SearchNode* SearchNode::child(unsigned int child_index) {
+    SearchNode* node =  _child_letters[child_index];
+    return node;
+}
 
 
 

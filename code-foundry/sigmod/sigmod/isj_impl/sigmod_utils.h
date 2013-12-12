@@ -13,6 +13,7 @@
 #include "sigmod_types.h"
 #include <vector>
 
+#include "SearchNode.h"
 /**
  *  sigmod_utils
  *
@@ -51,5 +52,8 @@ void printMapOfIntSetOfInts    (MapofIntSetOfInts* mapToPrint);
 void printVectorOfInts         (std::vector<unsigned int>* vectorToPrint);
 
 bool LevenshteinDistance(char* s, char* t, int limit);
+
+std::vector<std::string>  recursiveSearch( SearchNode* node, char letter, char* word, int* previousRow,  int max_cost);
+
 
 #endif /* defined(__sigmod__sigmod_utils__) */
