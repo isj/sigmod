@@ -285,8 +285,6 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
-    SearchTree::Instance()->print();
-    printf("\n");
     std::vector<std::string>& results = *new std::vector<std::string>();
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ' ) {
