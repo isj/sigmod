@@ -285,11 +285,22 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
-
+    SearchTree::Instance()->print();
+    printf("\n");
+    std::vector<std::string>& results = *new std::vector<std::string>();
     while (doc_str[word_start_idx+word_length] != '\0') {
-        if (doc_str[word_start_idx+word_length]  == ' ') {
-            std::vector<std::string> search (char* word, int limit);
+        if (doc_str[word_start_idx+word_length]  == ' ' ) {
+            //std::vector<std::string> results =  ;
+            if (EDIT_DISTANCE_TEST) {
+                const char* word = "edit";
+                results.clear();
+                printf("start search\n");
+                rSearch (results, word, 3);
+                printf("end search, printing results\n");
 
+                rPrintVectorOfStrings(results);
+                
+            }
             SearchTree::Instance()->addDocument ( doc_id
                                                 , doc_str
                                                 , word_start_idx
@@ -301,14 +312,54 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
         }
     }
+    //last word
+    SearchTree::Instance()->addDocument ( doc_id
+                                         , doc_str
+                                         , word_start_idx
+                                         );
+
 	return EC_SUCCESS;
 }
 /*
  
- 
- 
- 
- 
+ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
+ {
+ if (LOG) printf( " MatchDocument %d \n", doc_id );
+ if (LOG) SearchTree::Instance()->print();
+
+ unsigned int word_start_idx = 0;
+ unsigned int word_length = 0;
+
+ while (doc_str[word_start_idx+word_length] != '\0') {
+ if (doc_str[word_start_idx+word_length]  == ' ') {
+
+
+ const char* word = "edit";
+
+ printf("start search\n");
+ std::vector<std::string>* search_result = search (word, 3);
+ printVectorOfStrings(search_result);
+ printf("end search\n");
+ SearchTree::Instance()->addDocument ( doc_id
+ , doc_str
+ , word_start_idx
+ );
+ word_start_idx+=word_length+1;
+ word_length = 0;
+ } else {
+ word_length++;
+
+ }
+ }
+ return EC_SUCCESS;
+ }
+ /*
+
+
+
+
+
+
  */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////

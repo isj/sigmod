@@ -16,6 +16,7 @@
 #define LOG 0  //turn this off if measuring running time!
 #define LOGALL 0  //turn this off if measuring running time!
 #define EDIT_DISTANCE 0
+#define EDIT_DISTANCE_TEST 0
 
 //#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++
 

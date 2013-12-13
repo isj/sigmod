@@ -333,7 +333,6 @@ void SearchNode::print_search_queries() {
 
 
 void SearchNode::print () {
-    if (LOG)
         //performs a depth-first search through the tree looking for terminator nodes
         if (_terminator == true ) {
             cout << this->string() <<" ";
@@ -447,6 +446,9 @@ SearchNode* SearchNode::child(unsigned int child_index) {
 }
 
 
+char SearchNode::nodeLetter() {
+    return _letter;
+}
 
 
 

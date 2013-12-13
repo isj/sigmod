@@ -114,6 +114,8 @@ public:
 
     char getLetterFromParentForDepth(int depth);
 
+    char nodeLetter();
+
     void reportResult (DocID doc_id);
 
     SearchNode* child(unsigned int child_index);

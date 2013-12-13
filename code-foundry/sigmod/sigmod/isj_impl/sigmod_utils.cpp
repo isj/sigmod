@@ -234,6 +234,28 @@ void printVectorOfInts (std::vector<unsigned int>* vectorToPrint) {
     }
 }
 
+void printVectorOfStrings         (std::vector<std::string>* vectorToPrint) {
+    if (LOG) {
+
+        printf("%s\n",__func__);
+
+        for (int i = 0; i < vectorToPrint->size(); i++) {
+            std::cout << &vectorToPrint[i] << " ";
+        }
+        std::cout << std::endl;
+    }
+}
+
+void rPrintVectorOfStrings         (std::vector<std::string>& vectorToPrint) {
+        printf("%s\n",__func__);
+
+        for (int i = 0; i < vectorToPrint.size(); i++) {
+            std::cout << vectorToPrint[i] << " ";
+        }
+        std::cout << std::endl;
+}
+
+
 
 //https://en.wikipedia.org/wiki/Levenshtein_distance#cite_note-8
 //http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm
@@ -341,9 +363,9 @@ bool uiLevenshteinDistance(char* s, char* t, int limit)
     return true;
 }
 
-int minCurrentRow(int* row) {
+int minCurrentRow(int* row, int length) {
     int result = row[0];
-    for (int i=0; i<sizeof(row)/sizeof(int);i++) {
+    for (int i=0; i<length;i++) {
         if (row[i] < result) {
             result = row[i];
         }
@@ -370,23 +392,28 @@ vector<string>*  recursiveSearch(
                                 SearchNode* node
                                 ,vector<string>* results
                                 , char letter
-                                , char* word
+                                , const char* word
                                  , size_t length_word
                                 , int* previousRow
                                 ,  int max_cost) {
 
-    //int columns[31]; //should be length-of-word+1
-
+ //   printf("letter %c ", letter);
+ //   printf("word %s ", word);
 
     int columns = (int)length_word+1;
-    int currentRow[length_word+1];
+    //printf("previous row\n");
+
+//    for (int i=0; i<columns; i++) {
+//        printf("%d",previousRow[i]);
+//    }
+  //  printf("\n");
+    int* currentRow = (int*)malloc(sizeof(int)*columns);
 
     currentRow[0] = previousRow[0]+1;
 
     //int currentRow_index = 0;
     int replaceCost = 0;
 
-    //currentRow[currentRow_index]= previousRow[currentRow_index] + 1;
 
 
 
@@ -402,21 +429,33 @@ vector<string>*  recursiveSearch(
         int costToAdd = min(insertCost,min(deleteCost, replaceCost));
         currentRow[column] = costToAdd;
     }
+    printf("current row  %c            ",letter);
+    for (int i=0; i<columns; i++) {
+        printf("%d",currentRow[i]);
+    }
+    printf("\n");
+
+
 
     //if the last entry in the row indicates the optimal cost is less than the max costs,
     //and there is a word in this trie node, then add it
 
     if ( currentRow[columns]<= max_cost && node->isTerminator() == true ) {
-        cout << "found word " << node->string();
+        cout << "found word: " << node->string()<< endl;
         results->push_back( node->string());
+    }else {
+        if (node->isTerminator())
+            cout << "no match: " << node->string()<< endl;
     }
 
 //if any entries in the row are less than max cost, then recursively search each branch of the trie
 
-    if (minCurrentRow(currentRow) <= max_cost) {
+    if (minCurrentRow(currentRow,columns) <= max_cost) {
         for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
             if (node->child(i) != nullptr) {
-                results = recursiveSearch(node->child(i)
+                SearchNode* sNode = node->child(i);
+                char letter = sNode->nodeLetter();
+                  recursiveSearch(node->child(i)
                                           ,results
                                           ,letter
                                           ,word
@@ -431,10 +470,10 @@ vector<string>*  recursiveSearch(
     return results;
 }
 
-std::vector<std::string>* search (char* word, int limit) {
+std::vector<std::string>* search (const char* word, int limit) {
     string sWord = string (word);
 
-   // size_t length_word = sWord.length();
+    // size_t length_word = sWord.length();
 
     size_t length_word = strlen(word);
     //build first row
@@ -444,23 +483,156 @@ std::vector<std::string>* search (char* word, int limit) {
         row[i] = i;
     }
 
-    vector<string>* results = nullptr;
+    vector<string>* results = new vector<string> ();
 
 
 
     //recursive search of each branch of our searchTree for letter in kids
-
-    results = recursiveSearch (SearchTree::Instance()->root()
-                               ,results
-                               ,0
-                               ,word
-                               ,length_word
-                               ,row
-                               ,0
-                              );
-
+    SearchNode* node =SearchTree::Instance()->root();
+    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+        if (node->child(i) != nullptr) {
+            SearchNode* sNode = node->child(i);
+            char letter = sNode->nodeLetter();
+            results =  recursiveSearch( node
+                                       , results
+                                       , letter
+                                       , word
+                                       , length_word
+                                       , row
+                                       , limit
+                                       );
+        }
+    }
     return results;
-
+    
 }
 
 
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////rSearch////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+void rRecursiveSearch(
+                                 SearchNode* node
+                                 ,vector<string>& results
+                                 , char letter
+                                 , const char* word
+                                 , size_t length_word
+                                 , int* previousRow
+                                 ,  int max_cost) {
+
+    //   printf("letter %c ", letter);
+    //   printf("word %s ", word);
+    int columns = (int)length_word+1;
+    //printf("previous row\n");
+
+    //    for (int i=0; i<columns; i++) {
+    //        printf("%d",previousRow[i]);
+    //    }
+    //  printf("\n");
+    int* currentRow = (int*)malloc(sizeof(int)*columns);
+
+    currentRow[0] = previousRow[0]+1;
+
+    //int currentRow_index = 0;
+    int replaceCost = 0;
+
+
+
+
+    for (int column=1; column <= columns; column++) {
+        int insertCost = currentRow[column-1] + 1;
+        int deleteCost = previousRow[column] + 1;
+        if (word[column -1] != letter) {
+            replaceCost = previousRow[column-1]+1;
+        } else {
+            replaceCost = previousRow[column-1];
+        }
+
+        int costToAdd = min(insertCost,min(deleteCost, replaceCost));
+        currentRow[column] = costToAdd;
+    }
+    printf("current row  %c            ",letter);
+    for (int i=0; i<columns; i++) {
+        printf("%d",currentRow[i]);
+    }
+    printf("\n");
+
+
+
+    //if the last entry in the row indicates the optimal cost is less than the max costs,
+    //and there is a word in this trie node, then add it
+
+    if ( currentRow[columns-1]<= max_cost && node->isTerminator() == true ) {
+        cout << "found word: " << node->string()<< endl;
+        cout << "match dist: " << currentRow[columns-1]<< endl;
+
+        results.push_back( node->string());
+    }else {
+        if (node->isTerminator()== true)
+            cout << "no match: " << node->string()<< endl;
+    }
+
+    //if any entries in the row are less than max cost, then recursively search each branch of the trie
+    printf("minCurrentRow: %d",minCurrentRow(currentRow,columns));
+    printf(" maxCost: %d\n",max_cost);
+
+    if (minCurrentRow(currentRow,columns) <= max_cost) {
+        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+            if (node->child(i) != nullptr) {
+                SearchNode* sNode = node->child(i);
+                char letter = sNode->nodeLetter();
+                rRecursiveSearch(node->child(i)
+                                ,results
+                                ,letter
+                                ,word
+                                ,length_word
+                                ,currentRow
+                                , max_cost);
+            }
+        }
+        
+    }else {
+        printf("exceeded costs, stop searching this branch\n");
+    }
+    
+}
+
+void rSearch (std::vector<std::string>& results, const char* word, int limit) {
+
+    // size_t length_word = sWord.length();
+
+    size_t length_word = strlen(word);
+    //build first row
+    int row[length_word+1];
+
+    for (int i = 0; i< (length_word+1); i++) {
+        row[i] = i;
+    }
+    printf("matching word: %s\n",word);
+    printf("first   row               ");
+    for (int i=0; i<length_word+1; i++) {
+        printf("%d",row[i]);
+    }
+    printf("\n");
+
+
+    //recursive search of each branch of our searchTree for letter in kids
+    SearchNode* node =SearchTree::Instance()->root();
+    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+        if (node->child(i) != nullptr) {
+            SearchNode* sNode = node->child(i);
+            char letter = sNode->nodeLetter();
+            rRecursiveSearch( sNode
+                                       , results
+                                       , letter
+                                       , word
+                                       , length_word
+                                       , row
+                                       , limit
+                                       );
+        }
+    }
+
+}
