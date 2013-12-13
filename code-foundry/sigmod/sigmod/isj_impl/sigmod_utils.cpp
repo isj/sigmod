@@ -416,8 +416,7 @@ void rRecursiveSearch(
     //        printf("%d",previousRow[i]);
     //    }
     //  printf("\n");
-    int* currentRow = (int*)malloc(sizeof(int)*columns);
-
+    int currentRow[columns];
     currentRow[0] = previousRow[0]+1;
 
     //int currentRow_index = 0;
@@ -443,7 +442,6 @@ void rRecursiveSearch(
         printf("%d",currentRow[i]);
     }
     printf("\n");
-
 
 
     //if the last entry in the row indicates the optimal cost is less than the max costs,
