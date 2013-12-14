@@ -244,5 +244,11 @@ for result in results: print result
 print "Search took %g s" % (end - start)
 
 
+unordered set - duplicate filters 1233 1206 1297 1239 1040 1193
+unordered_set + duplicates filter 1396 1393 1486 1387 1493 1317
+
+
+ordered set + duplicate filters 2684 2669 2492 2816 2349 2568
+
 
 

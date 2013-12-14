@@ -33,6 +33,9 @@
 #include <cstdio>
 #include <vector>
 
+
+//#include <unordered_set>
+
 #include "SearchTree.h"
 #include "WordTumbler.h"
 #include "sigmod_types.h"
@@ -371,10 +374,6 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
  }
  return EC_SUCCESS;
  }
- /*
-
-
-
 
 
 

@@ -19,7 +19,7 @@
 #define EDIT_DISTANCE_TEST 0
 #define DUPLICATE_WORD_FILTER 0
 
-//#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++
+//#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++. It provides us with <unordered_set>.
 
 
 static const  int kFirstASCIIChar = 48; //0

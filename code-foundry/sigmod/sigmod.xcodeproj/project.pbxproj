@@ -85,6 +85,7 @@
 		AB660B9B1848D54F0063206B /* sigmod */ = {
 			isa = PBXGroup;
 			children = (
+				ABCC6285184DC2A0008AE20F /* sigmod_types.h */,
 				AB660BAB1848D7A50063206B /* small_test.txt */,
 				AB660BA51848D6430063206B /* test.cpp */,
 				AB660BA81848D6CD0063206B /* core.cpp */,
@@ -92,7 +93,6 @@
 				AB0CD93E184CD9DF003BEC23 /* notes.txt */,
 				AB660BA71848D6740063206B /* core.h */,
 				AB660B9E1848D54F0063206B /* sigmod.1 */,
-				ABCC6285184DC2A0008AE20F /* sigmod_types.h */,
 				AB59D23A18521A9400DF114D /* sigmod_utils.h */,
 				AB59D23918521A9400DF114D /* sigmod_utils.cpp */,
 				AB59D2351851C3F900DF114D /* DocResults.h */,

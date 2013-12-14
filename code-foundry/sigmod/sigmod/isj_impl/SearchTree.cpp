@@ -37,7 +37,7 @@ SearchTree::SearchTree() {
 
      _root = new SearchNode();
 
-#ifdef UNORDERED_SET
+#ifdef USING_LIBCPP
     _query_ids = new unordered_set<QueryID>();
 #else
     _query_ids =  new set<QueryID>();
@@ -229,11 +229,11 @@ void SearchTree::removeQuery   (QueryID query_id) {
      */
     if (LOGALL) printf("%s\n",__func__);
     if (LOG) printf("removing query for query_ids ");
-    printSetOfInts(_query_ids);
+    //printSetOfInts(_query_ids);
     _query_ids->erase(query_id);
     _query_ids_map->erase ( query_id) ;
     if (LOG) printf("query removed: ");
-    printSetOfInts(_query_ids);
+    //printSetOfInts(_query_ids);
 
 }
 

@@ -12,8 +12,9 @@
 #include <iostream>
 
 #ifdef USING_LIBCPP
-    #include <unordered_set>  //WARNING - unordered_set is OSX or BOOST
 #endif
+//#include <unordered_set>  //WARNING - unordered_set is OSX or BOOST
+
 #include "SearchNode.h"
 #include "core.h"
 #include "sigmod_types.h"
