@@ -60,7 +60,7 @@
 	<array>
 		<dict>
 			<key>Bounds</key>
-			<string>{{23.5, 2373}, {418, 510}}</string>
+			<string>{{23.5, 2373}, {515, 150}}</string>
 			<key>Class</key>
 			<string>ShapedGraphic</string>
 			<key>FitText</key>
@@ -109,55 +109,19 @@
 \deftab674
 \pard\tx674\pardeftab674\pardirnatural
 
-\f0\fs18 \cf2 \CocoaLigature0 \
-      Explore all nodes to a depth of K (K = max edit distance)\
+\f0\fs18 \cf2 \CocoaLigature0 Edit distance matching\
 \
-if we find a terminator node\
+idea of back-matching... i.e. waiting until we hit a word-ending, then match-backwards (to save\
+us matching forwards to non-words\
 \
-check the _match indexes\
-if (exact) -&gt; do we have a exact match?\
-if (edit)  -&gt; do we have a edit match?\
-	set max edit distance = _match?\
-		do we have edit match of (max_edit)&gt;\
+problem: we would have to explore _every_ node to find _every_ word-ending, need to stop\
+exploring sooner?\
 \
+forward-matching\
 \
-From node N, doc_word D\
-\
-Doc D has property (current-cost) which is edit cost of reaching that node\
-\
-For example if N is E-D and D is E-A-T-E-N\
-then current-cost is 1 (insertion/edit/delete)\
-\
-for each child letter\
-	check child letter's max_edit and terminator lengths\
-if max_edit is 1 (==current_cost), then the letter must be an exact match\
-if max_edit is 2 (&gt;current_cost), then the letter can be any letter\
-if max_edit is 0 (&lt;current_cost), then we can't pursue that letter\
-if (child_max_edit &gt; current_cost) -&gt; explore\
-if (child_max_edit == current_cost &amp;&amp; _child_letter = next_letter) -&gt; explore\
-else don't explore\
-     \
-EXPLORE_CHILD\
-to check a match\
-(terminator == true?)\
-	1 if max_edit is 0, check exact match only / report result\
-      2 if max_edit = 2 &amp;&amp; (difference_in_lengths &lt; max_edit)\
-		-&gt; check for lowenstein fit / report result\
- we DONT"STOP THE SEACH\
-as could have a match on the next node also\
-\
-eg EAT matches EAT (exact) \
-            \
-\
-EATER\
-EATERLY\
-EATEN\
-EAX\
-\
-\
-      \
-\
- \
+at each node:\
+check forward-match index\
+eg exact-&gt;5, 8,9 (exact match words of 5,8 and 9)\
 \
 }</string>
 				<key>VerticalPad</key>
@@ -8506,7 +8470,7 @@ word-lengths:3,4,5,8\
 	<key>MasterSheets</key>
 	<array/>
 	<key>ModificationDate</key>
-	<string>2013-12-11 13:25:10 +0000</string>
+	<string>2013-12-14 11:33:04 +0000</string>
 	<key>Modifier</key>
 	<string>jonathan</string>
 	<key>NotesVisible</key>
@@ -8587,7 +8551,7 @@ word-lengths:3,4,5,8\
 			</dict>
 		</array>
 		<key>Frame</key>
-		<string>{{60, -0}, {1856, 1178}}</string>
+		<string>{{90, 300}, {1856, 878}}</string>
 		<key>ListView</key>
 		<true/>
 		<key>OutlineWidth</key>
@@ -8601,7 +8565,7 @@ word-lengths:3,4,5,8\
 		<key>SidebarWidth</key>
 		<integer>120</integer>
 		<key>VisibleRegion</key>
-		<string>{{-150, 2368}, {860.5, 519.5}}</string>
+		<string>{{-150, 2183}, {860.5, 369.5}}</string>
 		<key>Zoom</key>
 		<real>2</real>
 		<key>ZoomValues</key>

@@ -285,27 +285,47 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
 
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
+    string s = "";
+    std::set<std::string> words;
     std::vector<std::string>& results = *new std::vector<std::string>();
     while (doc_str[word_start_idx+word_length] != '\0') {
         if (doc_str[word_start_idx+word_length]  == ' ' ) {
-            //std::vector<std::string> results =  ;
-            if (EDIT_DISTANCE_TEST) {
-                const char* word = "edit";
-                results.clear();
-                printf("start search\n");
-                rSearch (results, word, 3);
-                printf("end search, printing results\n");
-
-                rPrintVectorOfStrings(results);
-                
+            bool not_duplicate = true;
+            if (DUPLICATE_WORD_FILTER){
+                not_duplicate  = words.insert(s).second;
+                if (LOG) {
+                if (not_duplicate) {
+                    cout << "unique word: " << s << endl;
+                } else {
+                    cout << "duplicate word: " << s << endl;
+                }
+                }
+                s = "";
             }
-            SearchTree::Instance()->addDocument ( doc_id
-                                                , doc_str
-                                                , word_start_idx
-                                                );
+            if (not_duplicate == true) {
+                if (EDIT_DISTANCE_TEST) {
+                    const char* word = "edit";
+                    results.clear();
+                    printf("start search\n");
+                    rSearch (results, word, 3);
+                    printf("end search, printing results\n");
+
+                    rPrintVectorOfStrings(results);
+
+                }
+                SearchTree::Instance()->addDocument ( doc_id
+                                                     , doc_str
+                                                     , word_start_idx
+                                                     );
+
+            }
+
             word_start_idx+=word_length+1;
             word_length = 0;
         } else {
+            if (DUPLICATE_WORD_FILTER)  {
+                s.push_back(doc_str[word_start_idx+word_length]);
+            }
             word_length++;
 
         }

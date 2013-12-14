@@ -170,14 +170,11 @@ void printMapOfIntMapOfIntInt (MapOfIntMapOfIntInt* mapToPrint) {
 
 void printSetOfStrings (std::set < std::string>* setToPrint) {
     if (LOGALL) printf("%s\n",__func__);
-    if (LOG) {
     std::set < std::string>::iterator it;
     for (it = setToPrint->begin(); it != setToPrint->end(); it++) {
         std::cout <<*it << " ";
     }
     std::cout << std::endl;
-    }
-
 }
 
 
@@ -517,3 +514,7 @@ void rSearch (std::vector<std::string>& results, const char* word, int limit) {
     }
 
 }
+
+
+//do the thing in reverse
+
