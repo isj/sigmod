@@ -53,6 +53,8 @@ void printVectorOfInts         (std::vector<unsigned int>* vectorToPrint);
 void printVectorOfStrings         (std::vector<std::string>* vectorToPrint);
 void rPrintVectorOfStrings         (std::vector<std::string>& vectorToPrint);
 
+void printMatchIndex (Match match, std::string string);
+
 bool LevenshteinDistance(char* s, char* t, int limit);
 
 

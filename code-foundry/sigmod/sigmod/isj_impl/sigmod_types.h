@@ -13,11 +13,12 @@
 #include <set>
 #include <string>
 #include <iostream>
-#define LOG 1  //turn this off if measuring running time!
+#define LOG 0  //turn this off if measuring running time!
 #define LOGALL 0  //turn this off if measuring running time!
 #define EDIT_DISTANCE 0
 #define EDIT_DISTANCE_TEST 0
-#define DELETE_NODES 0
+#define MATCHED_MAP 1 //do we cache a list of matched words so we don't have to match them again?
+#define DELETE_NODES 0 // don't use, has errors
 #define DUPLICATE_WORD_FILTER 0
 
 //#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++. It provides us with <unordered_set>.

@@ -375,12 +375,12 @@ void SearchNode::reportResult (DocID doc_id) {
      *  - decrement our documents' queryIDsIndex for those IDs
      */
     std::string string = this->string();
-    if (SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
+    if (MATCHED_MAP && SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
       if (LOG)  cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
       return;
     }
    if (LOG)  cout << endl <<  "found match doc "<< doc_id  << " " << string << endl;
-    SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
+    if (MATCHED_MAP) SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
     bool hit = false;
     for (int i=0;i<_match.all.size();i++) {
         QueryID query = _match.all.at(i);
@@ -421,7 +421,11 @@ void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_leng
      * then check off any associated query_ids
      */
     std::string string = this->string();
-    if (SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
+    if (string == "amiri" && edit_distance>0) {
+        int i = 23;
+        i++;
+    }
+    if (MATCHED_MAP && SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
         if (LOG)  cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
         return;
     }
@@ -437,46 +441,58 @@ void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_leng
     vector<int> results;
     vector<int>& resultsRef = results;
 
+    //an exact match also satisfies all edit and hamming matches
+    //an edit distance of E also satisfies edit distance E+1
+    //a hamming distance of H also satisfies hamming distance H+1
+    //an edit distance of E also satisfies a hamming distance of H if doc_word and query_word are same length (length_match==true)
+    printMatchIndex(_match,  string);
+    if (string=="suasa") {
+        int i = 23;
+        i++;
+    }
     if (edit_distance <=3) {
         addToResults(resultsRef, *_match.edit[2]);
-        if (length_match) {
+        if (length_match == true) {
             addToResults(resultsRef, *_match.hamming[2]);
         }
-    }
-    if (edit_distance <= 2) {
-        addToResults(resultsRef, *_match.edit[1]);
-        if (length_match) {
-            addToResults(resultsRef, *_match.hamming[1]);
+        if (edit_distance <= 2) {
+            addToResults(resultsRef, *_match.edit[1]);
+            if (length_match == true) {
+                addToResults(resultsRef, *_match.hamming[1]);
+            }
+            if (edit_distance <= 1) {
+                addToResults(resultsRef, *_match.edit[0]);
+                if (length_match == true) {
+                    addToResults(resultsRef, *_match.hamming[0]);
+                }
+                if (edit_distance == 0) {
+                    addToResults(resultsRef, _match.exact);
+                }
+            }
         }
-    }
-    if (edit_distance <= 1) {
-        addToResults(resultsRef, *_match.edit[0]);
-        if (length_match) {
-            addToResults(resultsRef, *_match.hamming[0]);
-        }
-    }
-    if (edit_distance == 0) {
-        addToResults(resultsRef, _match.exact);
     }
 
-    SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
-    bool hit = false;
-    for (int i=0;i<results.size();i++) {
-        QueryID query = results.at(i);
-        if (SearchTree::Instance()->isValidQuery(query)) {
-            hit = true;
-            SearchTree::Instance()->decrementQueryInDocumentMap(doc_id, query);
+
+
+    if (results.size()>0) {
+        if (MATCHED_MAP) SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
+        bool hit = false;
+        for (int i=0;i<results.size();i++) {
+            QueryID query = results.at(i);
+            if (SearchTree::Instance()->isValidQuery(query)) {
+                hit = true;
+                SearchTree::Instance()->decrementQueryInDocumentMap(doc_id, query);
+            }
+        }
+        if (hit==false){
+            //all our queries are invalid, self-destruct
+            if (DELETE_NODES) this->remove();
+        } else {
+            //just for breakpoints
+            int x = 1;
+            x++;
         }
     }
-    if (hit==false){
-        //all our queries are invalid, self-destruct
-        if (DELETE_NODES) this->remove();
-    } else {
-        //just for breakpoints
-        int x = 1;
-        x++;
-    }
-    
     
 }
 

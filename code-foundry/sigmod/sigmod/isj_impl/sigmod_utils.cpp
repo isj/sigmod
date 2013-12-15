@@ -251,6 +251,58 @@ void rPrintVectorOfStrings         (std::vector<std::string>& vectorToPrint) {
         }
         std::cout << std::endl;
 }
+void printMatchIndex (Match match, std::string word) {
+
+    printf("%s\n",__func__);
+    std::cout<<"printing match index for query word: " << word << endl;
+    std::cout<<"exact ";
+    for (int i = 0; i<match.exact.size(); i++) {
+        std::cout << match.exact[i] << " ";
+    }
+    std::cout<<endl;
+    std::cout<<"hamming-1 ";
+    for (int i = 0; i<match.hamming[0]->size(); i++) {
+        std::cout << match.hamming[0]->at(i) << " ";
+    }
+    std::cout<<endl;
+    std::cout<<"hamming-2 ";
+    for (int i = 0; i<match.hamming[1]->size(); i++) {
+        std::cout << match.hamming[1]->at(i) << " ";
+    }
+    std::cout<<endl;
+    std::cout<<"hamming-3 ";
+    for (int i = 0; i<match.hamming[2]->size(); i++) {
+        std::cout << match.hamming[2]->at(i) << " ";
+    }
+    std::cout<<endl;
+    std::cout<<"edit-1 ";
+    for (int i = 0; i<match.edit[0]->size(); i++) {
+        std::cout << match.edit[0]->at(i) << " ";
+    }
+    std::cout<<endl;
+
+    std::cout<<"edit-2 ";
+    for (int i = 0; i<match.edit[1]->size(); i++) {
+        std::cout << match.edit[1]->at(i) << " ";
+    }
+    std::cout<<endl;
+
+    std::cout<<"edit-3 ";
+    for (int i = 0; i<match.edit[2]->size(); i++) {
+        std::cout << match.edit[2]->at(i) << " ";
+    }
+    std::cout<<endl;
+
+    std::cout<<"all ";
+    for (int i = 0; i<match.all.size(); i++) {
+        std::cout << match.all.at(i) << " ";
+    }
+    std::cout<<endl;
+
+}
+
+
+
 
 
 
@@ -452,11 +504,11 @@ void rRecursiveSearch(
         int costToAdd = min(insertCost,min(deleteCost, replaceCost));
         currentRow[column] = costToAdd;
     }
-    printf("current row  %c            ",letter);
+    if (LOG) printf("current row  %c            ",letter);
     for (int i=0; i<columns; i++) {
-        printf("%d",currentRow[i]);
+        if (LOG) printf("%d",currentRow[i]);
     }
-    printf("\n");
+    if (LOG) printf("\n");
 
 
     //if the last entry in the row indicates the optimal cost is less than the max costs,
@@ -492,7 +544,7 @@ void rRecursiveSearch(
         }
         
     }else {
-        printf("exceeded costs, stop searching this branch\n");
+        if (LOG) printf("exceeded costs, stop searching this branch\n");
     }
     
 }
@@ -589,7 +641,10 @@ void r2RecursiveSearch(
 
 
 
-
+    if (strncmp(word, "edit", 4)) {
+        int i = 1;
+        i++;
+    }
     for (int column=1; column <= columns; column++) {
         int insertCost = currentRow[column-1] + 1;
         int deleteCost = previousRow[column] + 1;
@@ -601,25 +656,27 @@ void r2RecursiveSearch(
         int costToAdd = min(insertCost,min(deleteCost, replaceCost));
         currentRow[column] = costToAdd;
     }
-    printf("current row  %c            ",letter);
-    for (int i=0; i<columns; i++) {
-        printf("%d",currentRow[i]);
+    if (LOG)
+    {printf("current row  %c            ",letter);
+        for (int i=0; i<columns; i++) {
+            printf("%d",currentRow[i]);
+        }
+        printf("\n");
     }
-    printf("\n");
 
 
     //if the last entry in the row indicates the optimal cost is less than the max costs,
     //and there is a word in this trie node, then add it
 
     if ( currentRow[columns-1]<= max_cost && node->isTerminator() == true ) {
-        cout << "found word: " << node->string()<< endl;
+        cout << "found query word: " << node->string()<<" for doc word: "<< word << endl;
         cout << "match dist: " << currentRow[columns-1]<< endl;
         node->checkEditResult (doc_id, currentRow[columns-1], length_word);
 
 
     }else {
         if (node->isTerminator()== true)
-            cout << "no match: " << node->string()<< endl;
+            if (LOG) cout << "no match: " << node->string()<< endl;
     }
 
     //if any entries in the row are less than max cost, then recursively search each branch of the trie
@@ -643,7 +700,7 @@ void r2RecursiveSearch(
         }
 
     }else {
-        printf("exceeded costs, stop searching this branch\n");
+       if (LOG) printf("exceeded costs, stop searching this branch\n");
     }
 
 }
@@ -658,7 +715,7 @@ void r2Search (DocID doc_id,  char* word,int word_length, int limit) {
     for (int i = 0; i< (word_length+1); i++) {
         row[i] = i;
     }
-    printf("matching word: %s\n",word);
+    printf("doc id: %d matching word: %s\n",doc_id,word);
     printf("first   row               ");
     for (int i=0; i<word_length+1; i++) {
         printf("%d",row[i]);
