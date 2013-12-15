@@ -144,7 +144,7 @@ void SearchTree::addQueryToMap (  QueryID query_id
 void SearchTree::decrementQueryInDocumentMap (  DocID doc_id
                                               , QueryID query_id
                                               ) {
-    if (LOGALL) printf("%s\n",__func__);
+   printf("%s %d %d\n",__func__,doc_id,query_id);
     _query_ids_map_per_document->at(doc_id).at(query_id)--;
     if (_query_ids_map_per_document->at(doc_id).at(query_id) == 0) {
         //all search query words have been found, we have a hit)
