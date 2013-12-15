@@ -17,7 +17,7 @@
 #define LOGALL 0  //turn this off if measuring running time!
 #define EDIT_DISTANCE 0
 #define EDIT_DISTANCE_TEST 0
-#define DELETE_NODES 1
+#define DELETE_NODES 0
 #define DUPLICATE_WORD_FILTER 0
 
 //#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++. It provides us with <unordered_set>.
