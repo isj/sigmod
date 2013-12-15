@@ -200,7 +200,7 @@ ErrorCode StartQuery1(QueryID query_id, const char* query_str, MatchType match_t
             query_word_counter++;
             int length = i-query_str_idx;
             //char* word = (char*)malloc(length*sizeof(char));
-            char word[31] = {};
+            char word[MAX_WORD_LENGTH] = {};
             for (int j=0; j<length;j++) {
                 word[j] = query_str[query_str_idx + j];
             }
@@ -280,8 +280,34 @@ ErrorCode EndQuery(QueryID query_id)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
+ErrorCode MatchDocument(DocID doc_id, const char* doc_str) {
+    SearchTree::Instance()->addDocument ( doc_id
+                                         , doc_str
+                                         , 0
+                                         );
+    unsigned int word_start_idx = 0;
+    unsigned int word_length = 0;
+    char word[MAX_WORD_LENGTH];
 
-ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
+    while (doc_str[word_start_idx+word_length] != '\0') {
+        if (doc_str[word_start_idx+word_length]  != ' ' ) {
+            word[word_length] = doc_str[word_start_idx+word_length];
+            word_length++;
+        } else {
+            word[word_length] = '\0';
+            r2Search (doc_id, word,word_length, 3);
+            word_start_idx+=word_length+1;
+            word_length = 0;
+        }
+    }
+    //last word
+    word[word_length] = '\0';
+    r2Search (doc_id, word,word_length, 3);
+    return EC_SUCCESS;
+}
+
+
+ErrorCode MatchDocument3(DocID doc_id, const char* doc_str)
 {
     if (LOG) printf( " MatchDocument %d \n", doc_id );
     if (LOG) SearchTree::Instance()->print();

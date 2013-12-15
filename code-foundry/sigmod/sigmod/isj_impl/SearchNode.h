@@ -118,6 +118,9 @@ public:
 
     void reportResult (DocID doc_id);
 
+    void checkEditResult (DocID doc_id, int edit_distance, int word_length);
+
+
     SearchNode* child(unsigned int child_index);
 
 };

@@ -103,20 +103,7 @@ ErrorCode SearchTree::addDocument  (  DocID doc_id
                                             (doc_id,query_map)
                                             );
     }
-    if (EDIT_DISTANCE >0 ) {
-        _root->addDocumentL( doc_id
-                            , doc_str
-                            , doc_str_idx
-                            );
-
-
-    } else {
-        _root->addDocument(  doc_id
-                           , doc_str
-                           , doc_str_idx
-                           );
-    }
-    return EC_SUCCESS;
+       return EC_SUCCESS;
 }
 
 

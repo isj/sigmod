@@ -394,6 +394,23 @@ int minCurrentRow(int* row, int length) {
 
 //
 
+void rlimitSearch (
+                   SearchNode* node
+                   , char letter
+                   , const char* word
+                   , size_t length_word
+                   , int* previousRow
+                   , int max_cost
+
+
+
+                   ) {
+    max_cost = 3;
+    int columns = (int)max_cost+1;
+    int currentRow[columns];
+    currentRow[0] = previousRow[0]+1;
+
+}
 
 void rRecursiveSearch(
                                  SearchNode* node
@@ -402,7 +419,8 @@ void rRecursiveSearch(
                                  , const char* word
                                  , size_t length_word
                                  , int* previousRow
-                                 ,  int max_cost) {
+                                 ,  int max_cost
+                      ) {
 
     //   printf("letter %c ", letter);
     //   printf("word %s ", word);
@@ -516,5 +534,154 @@ void rSearch (std::vector<std::string>& results, const char* word, int limit) {
 }
 
 
-//do the thing in reverse
+
+
+
+////////////////////////////////////////////////////////////////////////
+////////////////////////rSearch2////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+
+/**
+ * recursiveSearch
+ * search (char* word, int limit)
+ *  http://stevehanov.ca/blog/index.php?id=114
+ *
+ * returns a _list of words_ from the searchtree
+ * that are less than the given max distance from the target word
+ * we can extend this by checking the node indexes for queries
+ */
+
+//
+
+void r2limitSearch (
+                   SearchNode* node
+                   , char letter
+                   , const char* word
+                   , size_t length_word
+                   , int* previousRow
+                   , int max_cost
+
+
+
+                   ) {
+    max_cost = 3;
+    int columns = (int)max_cost+1;
+    int currentRow[columns];
+    currentRow[0] = previousRow[0]+1;
+
+}
+
+void r2RecursiveSearch(
+                        DocID doc_id
+                      , SearchNode* node
+                      , char letter
+                      , const char* word
+                      , int length_word
+                      , int* previousRow
+                      ,  int max_cost
+                      ) {
+
+    int columns = (int)length_word+1;
+    int currentRow[columns];
+    currentRow[0] = previousRow[0]+1;
+    int replaceCost = 0;
+
+
+
+
+    for (int column=1; column <= columns; column++) {
+        int insertCost = currentRow[column-1] + 1;
+        int deleteCost = previousRow[column] + 1;
+        if (word[column -1] != letter) {
+            replaceCost = previousRow[column-1]+1;
+        } else {
+            replaceCost = previousRow[column-1];
+        }
+        int costToAdd = min(insertCost,min(deleteCost, replaceCost));
+        currentRow[column] = costToAdd;
+    }
+    printf("current row  %c            ",letter);
+    for (int i=0; i<columns; i++) {
+        printf("%d",currentRow[i]);
+    }
+    printf("\n");
+
+
+    //if the last entry in the row indicates the optimal cost is less than the max costs,
+    //and there is a word in this trie node, then add it
+
+    if ( currentRow[columns-1]<= max_cost && node->isTerminator() == true ) {
+        cout << "found word: " << node->string()<< endl;
+        cout << "match dist: " << currentRow[columns-1]<< endl;
+        node->checkEditResult (doc_id, currentRow[columns-1], length_word);
+
+
+    }else {
+        if (node->isTerminator()== true)
+            cout << "no match: " << node->string()<< endl;
+    }
+
+    //if any entries in the row are less than max cost, then recursively search each branch of the trie
+    //printf("minCurrentRow: %d",minCurrentRow(currentRow,columns));
+    //printf(" maxCost: %d\n",max_cost);
+
+    if (minCurrentRow(currentRow,columns) <= max_cost) {
+        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+            if (node->child(i) != nullptr) {
+                SearchNode* sNode = node->child(i);
+                char letter = sNode->nodeLetter();
+                r2RecursiveSearch(
+                                  doc_id
+                                 ,node->child(i)
+                                 ,letter
+                                 ,word
+                                 ,length_word
+                                 ,currentRow
+                                 , max_cost);
+            }
+        }
+
+    }else {
+        printf("exceeded costs, stop searching this branch\n");
+    }
+
+}
+
+void r2Search (DocID doc_id,  char* word,int word_length, int limit) {
+
+    // size_t length_word = sWord.length();
+
+    //build first row
+    int row[word_length+1];
+
+    for (int i = 0; i< (word_length+1); i++) {
+        row[i] = i;
+    }
+    printf("matching word: %s\n",word);
+    printf("first   row               ");
+    for (int i=0; i<word_length+1; i++) {
+        printf("%d",row[i]);
+    }
+    printf("\n");
+
+
+    //recursive search of each branch of our searchTree for letter in kids
+    SearchNode* node =SearchTree::Instance()->root();
+    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+        if (node->child(i) != nullptr) {
+            r2RecursiveSearch  (
+                                  doc_id
+                                , node->child(i)
+                                , node->child(i)->nodeLetter()
+                                , word
+                                , word_length
+                                , row
+                                , limit
+                                );
+        }
+    }
+    
+}
+
 

@@ -13,10 +13,11 @@
 #include <set>
 #include <string>
 #include <iostream>
-#define LOG 0  //turn this off if measuring running time!
+#define LOG 1  //turn this off if measuring running time!
 #define LOGALL 0  //turn this off if measuring running time!
 #define EDIT_DISTANCE 0
 #define EDIT_DISTANCE_TEST 0
+#define DELETE_NODES 1
 #define DUPLICATE_WORD_FILTER 0
 
 //#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++. It provides us with <unordered_set>.
@@ -69,25 +70,7 @@ typedef     std::map < unsigned int, std::set <unsigned int >  > MapofIntSetOfIn
  *  it holds the three values we need to return in GetNextAvailRes
  *  (we need to convert the set into an array before return it, see sigmod_utils)
  *
- *  ltstr
- *  this is the sort function for _p_query_ids set
- * http://stackoverflow.com/questions/3255971/method-declared-in-struct-in-c-stl
- * http://stackoverflow.com/questions/16966558/unordered-set-with-custom-predicate-make-linker-error-duplicate-symbol
- * problems with OSX http://stackoverflow.com/questions/19746903/cant-push-a-map-inside-a-vector
- * libc++ (OSX default) has this problem
- * libstdc++ (LINUX) does not understand unordered_set (which we use to store query_ids), need to use BOOST instead (or just not use)
- */
-
-
-//struct ltstr
-//{
-//    bool operator()(const char* s1, const char* s2) const
-//    {
-//        return strcmp(s1, s2) < 0;
-//    }
-//};
-
-
+  */
 
 
 /**

@@ -59,4 +59,7 @@ bool LevenshteinDistance(char* s, char* t, int limit);
 
 void rSearch (std::vector<std::string>&,const char* word, int limit);
 
+void r2Search (DocID doc_id,  char* word,int word_length, int limit);
+
+
 #endif /* defined(__sigmod__sigmod_utils__) */

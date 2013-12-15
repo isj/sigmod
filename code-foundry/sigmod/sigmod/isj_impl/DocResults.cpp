@@ -146,8 +146,8 @@ ErrorCode DocResults::AddToResult (DocID p_doc_id, unsigned int p_query_id) {
     } else {
         SingleDocResultSet* result = _docResultsMap[p_doc_id];
         result->insert(p_query_id);
+        printSetOfInts(result);
     }
-
     return EC_SUCCESS;
 }
 
