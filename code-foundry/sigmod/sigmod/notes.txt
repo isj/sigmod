@@ -240,7 +240,7 @@ results = search( TARGET, MAX_COST )
 end = time.time()
 
 for result in results: print result        
-
+1
 print "Search took %g s" % (end - start)
 
 
@@ -249,6 +249,27 @@ unordered_set + duplicates filter 1396 1393 1486 1387 1493 1317
 
 
 ordered set + duplicate filters 2684 2669 2492 2816 2349 2568
+
+
+r2RecursiveSearch
+        one wrapped-up search for edit, hamming and exact
+        we probe each child node
+        decide on appropriate search_types
+        process those search_types
+  
+typedef enum searchType {
+               kSearchTypeExact
+               kSearchTypeHamming << 1
+               kSearchType
+}
+        
+r2RecursiveSearch (
+        
+        
+
+        
+        
+
 
 
 

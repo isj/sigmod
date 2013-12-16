@@ -17,6 +17,7 @@
 class SearchTree;
 class WordTumbler;
 
+
 class SearchNode {
 private:
     unsigned int _depth;
@@ -58,6 +59,18 @@ private:
 
 
 
+    /**
+     *  _branch_matches
+     *  _struct to show maximum match types to be found by following this branch
+     *  incremented whenever a new descendent node is added,
+     *  decremeneted when a descendent is removed
+     */
+    BranchMatchTypes _branch_matches;
+
+
+
+
+
 
     
 public:
@@ -82,7 +95,13 @@ public:
                   , unsigned int  query_str_idx
                   , unsigned int  query_word_counter
                  );
-    
+
+    void incrementBranchMatches  ( MatchType match_type
+                                 , unsigned int match_distance
+                                 , IncrementType increment
+                                 );
+
+
     void addDocument(        DocID  doc_id
                      ,  const char* doc_str
                      ,         int  doc_str_idx
@@ -114,14 +133,19 @@ public:
 
     char getLetterFromParentForDepth(int depth);
 
-    char nodeLetter();
+    char letter();
+    unsigned int depth();
+
 
     void reportResult (DocID doc_id);
 
-    void checkEditResult (DocID doc_id, int edit_distance, int word_length);
+    void checkEditResult (DocID doc_id, int edit_distance, int word_length, int hamming_cost,bool exact_match);
 
 
     SearchNode* child(unsigned int child_index);
+
+    BranchMatchTypes  branch_matches();
+
 
 };
 

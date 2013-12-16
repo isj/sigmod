@@ -265,3 +265,4 @@ ErrorCode SearchTree::tumbleWord  ( WordTumbler* wordTumbler
 SearchNode* SearchTree::root (){
     return _root;
 }
+

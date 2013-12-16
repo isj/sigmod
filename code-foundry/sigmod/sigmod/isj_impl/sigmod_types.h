@@ -13,13 +13,14 @@
 #include <set>
 #include <string>
 #include <iostream>
-#define LOG 0  //turn this off if measuring running time!
+#define LOG 1  //turn this off if measuring running time!
 #define LOGALL 0  //turn this off if measuring running time!
 #define EDIT_DISTANCE 0
 #define EDIT_DISTANCE_TEST 0
 #define MATCHED_MAP 1 //do we cache a list of matched words so we don't have to match them again?
 #define DELETE_NODES 0 // don't use, has errors
 #define DUPLICATE_WORD_FILTER 0
+#define MATCH_TYPES_FILTER 0
 
 //#define USING_LIBCPP  //libc++ is OSX C++ library. Linux uses libstc++. It provides us with <unordered_set>.
 
@@ -35,12 +36,27 @@ typedef struct  {
 } Match;
 
 
-typedef struct {
-    unsigned int* elements;
-    unsigned int num_elements = 0; // Keeps track of the number of elements used
-    unsigned int num_allocated = 0; // This is essentially how large the array is
-} DynamicArray;
+//typedef struct {
+//    unsigned int* elements;
+//    unsigned int num_elements = 0; // Keeps track of the number of elements used
+//    unsigned int num_allocated = 0; // This is essentially how large the array is
+//} DynamicArray;
 
+typedef  struct {
+    int exact;
+    int hamming1;
+    int hamming2;
+    int hamming3;
+    int edit1;
+    int edit2;
+    int edit3;
+} BranchMatchTypes;
+
+typedef enum {
+    kIncrementTypeSubtract = -1,
+    kIncrementTypeAdd = 1
+
+}IncrementType;
 
 //typedef struct {
 //    unsigned int _p_doc_id = 0;

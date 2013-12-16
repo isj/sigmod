@@ -37,7 +37,6 @@
 //#include <unordered_set>
 
 #include "SearchTree.h"
-#include "WordTumbler.h"
 #include "sigmod_types.h"
 #include "sigmod_utils.h"
 #include "DocResults.h"
@@ -307,103 +306,7 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str) {
 }
 
 
-ErrorCode MatchDocument3(DocID doc_id, const char* doc_str)
-{
-    if (LOG) printf( " MatchDocument %d \n", doc_id );
-    if (LOG) SearchTree::Instance()->print();
 
-    unsigned int word_start_idx = 0;
-    unsigned int word_length = 0;
-    string s = "";
-    std::set<std::string> words;
-    std::vector<std::string>& results = *new std::vector<std::string>();
-    while (doc_str[word_start_idx+word_length] != '\0') {
-        if (doc_str[word_start_idx+word_length]  == ' ' ) {
-            bool not_duplicate = true;
-            if (DUPLICATE_WORD_FILTER){
-                not_duplicate  = words.insert(s).second;
-                if (LOG) {
-                if (not_duplicate) {
-                    cout << "unique word: " << s << endl;
-                } else {
-                    cout << "duplicate word: " << s << endl;
-                }
-                }
-                s = "";
-            }
-            if (not_duplicate == true) {
-                if (EDIT_DISTANCE_TEST) {
-                    const char* word = "edit";
-                    results.clear();
-                    printf("start search\n");
-                    rSearch (results, word, 3);
-                    printf("end search, printing results\n");
-
-                    rPrintVectorOfStrings(results);
-
-                }
-                SearchTree::Instance()->addDocument ( doc_id
-                                                     , doc_str
-                                                     , word_start_idx
-                                                     );
-
-            }
-
-            word_start_idx+=word_length+1;
-            word_length = 0;
-        } else {
-            if (DUPLICATE_WORD_FILTER)  {
-                s.push_back(doc_str[word_start_idx+word_length]);
-            }
-            word_length++;
-
-        }
-    }
-    //last word
-    SearchTree::Instance()->addDocument ( doc_id
-                                         , doc_str
-                                         , word_start_idx
-                                         );
-
-	return EC_SUCCESS;
-}
-/*
- 
- ErrorCode MatchDocument(DocID doc_id, const char* doc_str)
- {
- if (LOG) printf( " MatchDocument %d \n", doc_id );
- if (LOG) SearchTree::Instance()->print();
-
- unsigned int word_start_idx = 0;
- unsigned int word_length = 0;
-
- while (doc_str[word_start_idx+word_length] != '\0') {
- if (doc_str[word_start_idx+word_length]  == ' ') {
-
-
- const char* word = "edit";
-
- printf("start search\n");
- std::vector<std::string>* search_result = search (word, 3);
- printVectorOfStrings(search_result);
- printf("end search\n");
- SearchTree::Instance()->addDocument ( doc_id
- , doc_str
- , word_start_idx
- );
- word_start_idx+=word_length+1;
- word_length = 0;
- } else {
- word_length++;
-
- }
- }
- return EC_SUCCESS;
- }
-
-
-
- */
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -9,9 +9,9 @@
 #include "SearchNode.h"
 #include "SearchTree.h"
 #include "DocResults.h"
-#include "WordTumbler.h"
 #import "sigmod_utils.h"
 using namespace std;
+
 
 
 SearchNode::SearchNode() {
@@ -56,6 +56,15 @@ SearchNode::SearchNode (       QueryID  query_id
     //_match.all = new vector<int>();
 
     this->_letter = query_str[_depth+query_str_idx-1];
+
+    _branch_matches.exact = false;
+    _branch_matches.hamming1 = 0;
+    _branch_matches.hamming2 = 0;
+    _branch_matches.hamming3 = 0;
+    _branch_matches.edit1 = 0;
+    _branch_matches.edit2 = 0;
+    _branch_matches.edit3 = 0;
+
 
 }
 
@@ -115,6 +124,8 @@ void SearchNode::addQuery(       QueryID  query_id
                 break;
         }
         _match.all.push_back(query_id);
+        incrementBranchMatches(match_type, match_dist,kIncrementTypeAdd);
+
 
         if (query_str[_depth+query_str_idx]==' ') {
             //we have more words to add
@@ -166,6 +177,45 @@ void SearchNode::addQuery(       QueryID  query_id
                         , query_str_idx
                         , query_word_counter);
 
+    }
+}
+
+void SearchNode::incrementBranchMatches (MatchType match_type, unsigned int match_distance, IncrementType increment) {
+
+    switch (match_type) {
+        case MT_EXACT_MATCH:
+            _branch_matches.exact += increment;
+            break;
+        case MT_HAMMING_DIST:
+            switch (match_distance) {
+                case 1:
+                    _branch_matches.hamming1 += increment;
+                    break;
+                case 2:
+                    _branch_matches.hamming2 += increment;
+                    break;
+                case 3:
+                    _branch_matches.hamming3 += increment;
+                    break;
+
+            }
+        case MT_EDIT_DIST:
+            switch (match_distance) {
+                case 1:
+                    _branch_matches.edit1 += increment;
+                    break;
+                case 2:
+                    _branch_matches.edit2 += increment;
+                    break;
+                case 3:
+                    _branch_matches.edit3 += increment;
+                    break;
+            }
+            break;
+    }
+
+    if (_depth != 0) {
+        _parent_node->incrementBranchMatches(match_type, match_distance, increment);
     }
 }
 
@@ -412,16 +462,17 @@ void addToResults (std::vector<int>& resultsRef, std::vector<int> additions) {
 
 }
 
-void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_length) {
+void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_length, int hamming_cost, bool exact_match) {
 
     /**
-     *  we got a result from edit_match
+     *  we got a result
      *
      *  we need to know whether the match-type is in our matches_array
      * then check off any associated query_ids
      */
     std::string string = this->string();
     if (string == "amiri" && edit_distance>0) {
+        //debugging
         int i = 23;
         i++;
     }
@@ -445,33 +496,38 @@ void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_leng
     //an edit distance of E also satisfies edit distance E+1
     //a hamming distance of H also satisfies hamming distance H+1
     //an edit distance of E also satisfies a hamming distance of H if doc_word and query_word are same length (length_match==true)
-    printMatchIndex(_match,  string);
-    if (string=="suasa") {
+    if (LOG) printMatchIndex(_match,  string);
+    if (string=="karson") {
+        //debugging
         int i = 23;
         i++;
     }
-    if (edit_distance <=3) {
-        addToResults(resultsRef, *_match.edit[2]);
-        if (length_match == true) {
-            addToResults(resultsRef, *_match.hamming[2]);
-        }
-        if (edit_distance <= 2) {
+    cout <<"checking edit distance... " <<endl;
+
+    if (edit_distance >= 1) {
+        addToResults(resultsRef, *_match.edit[0]);
+        if (edit_distance >= 2) {
             addToResults(resultsRef, *_match.edit[1]);
-            if (length_match == true) {
-                addToResults(resultsRef, *_match.hamming[1]);
-            }
-            if (edit_distance <= 1) {
-                addToResults(resultsRef, *_match.edit[0]);
-                if (length_match == true) {
-                    addToResults(resultsRef, *_match.hamming[0]);
-                }
-                if (edit_distance == 0) {
-                    addToResults(resultsRef, _match.exact);
-                }
+            if (edit_distance >= 3) {
+                addToResults(resultsRef, *_match.edit[2]);
             }
         }
     }
+    cout <<"checking hamming distance... " <<endl;
+    if (length_match == true) {
+        if (hamming_cost >= 1) {
+            addToResults(resultsRef, *_match.hamming[0]);
+            if (hamming_cost >= 2) {
+                addToResults(resultsRef, *_match.hamming[1]);
+                if (hamming_cost  >= 3) {
+                    addToResults(resultsRef, *_match.hamming[2]);
+                }
+            }
+        }
+        if (edit_distance==0 || hamming_cost == 0) exact_match = true;
 
+    }
+    if (exact_match == true) addToResults(resultsRef, _match.exact);
 
 
     if (results.size()>0) {
@@ -539,9 +595,19 @@ SearchNode* SearchNode::child(unsigned int child_index) {
 }
 
 
-char SearchNode::nodeLetter() {
+char SearchNode::letter() {
     return _letter;
 }
+
+
+unsigned int SearchNode::depth() {
+    return _depth;
+}
+
+BranchMatchTypes  SearchNode::branch_matches() {
+    return _branch_matches;
+}
+
 
 
 
