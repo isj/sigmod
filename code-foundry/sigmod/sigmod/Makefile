@@ -29,7 +29,7 @@
 
 # Build targets (your implementation targets should go in IMPL_O)
 TEST_O=test_driver/test.o 
-IMPL_O=isj_impl/core.o isj_impl/SearchNode.cpp isj_impl/SearchTree.cpp isj_impl/WordTumbler.cpp isj_impl/DocResults.cpp isj_impl/sigmod_utils.cpp
+IMPL_O=isj_impl/core.o isj_impl/SearchNode.cpp isj_impl/SearchTree.cpp  isj_impl/DocResults.cpp isj_impl/sigmod_utils.cpp
 
 # Compiler flags
 CC  = gcc

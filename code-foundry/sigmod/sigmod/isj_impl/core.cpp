@@ -38,9 +38,9 @@
 
 #include "SearchTree.h"
 #include "sigmod_types.h"
-#include "sigmod_utils.h"
+//#include "sigmod_utils.h"
 #include "DocResults.h"
-
+#include "WordTumbler.h"
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -222,7 +222,6 @@ ErrorCode StartQuery1(QueryID query_id, const char* query_str, MatchType match_t
     printf("\nended string \n");
 
     if (LOG) printf( " StartQuery: id %d \n", query_id );
-    if (LOG) SearchTree::Instance()->print();
 	return EC_SUCCESS;
 }
 
@@ -251,8 +250,7 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
                                       );
 
     if (LOG) printf( " end of StatQuery: id %d \n", query_id );
-    if (LOG) SearchTree::Instance()->print();
-    
+
     
 	return EC_SUCCESS;
 }
@@ -284,6 +282,8 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str) {
                                          , doc_str
                                          , 0
                                          );
+    if (LOG) SearchTree::Instance()->print();
+
     unsigned int word_start_idx = 0;
     unsigned int word_length = 0;
     char word[MAX_WORD_LENGTH];
@@ -294,14 +294,17 @@ ErrorCode MatchDocument(DocID doc_id, const char* doc_str) {
             word_length++;
         } else {
             word[word_length] = '\0';
-            r2Search (doc_id, word,word_length, 3);
+            WordTumbler* tumbler  = new WordTumbler(doc_id, word,word_length, 3);
+            tumbler->tumble();
+            
             word_start_idx+=word_length+1;
             word_length = 0;
         }
     }
     //last word
     word[word_length] = '\0';
-    r2Search (doc_id, word,word_length, 3);
+    WordTumbler tumbler (doc_id, word,word_length, 3);
+    tumbler.tumble();
     return EC_SUCCESS;
 }
 

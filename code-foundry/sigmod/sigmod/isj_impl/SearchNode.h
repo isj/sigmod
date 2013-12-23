@@ -15,7 +15,6 @@
 #include <vector>
 
 class SearchTree;
-class WordTumbler;
 
 
 class SearchNode {
@@ -106,10 +105,7 @@ public:
                      ,  const char* doc_str
                      ,         int  doc_str_idx
                     );
-    void addDocumentL(        DocID  doc_id
-                     ,  const char* doc_str
-                     , unsigned int doc_str_idx
-                     );
+
 
     void matchWord (  DocID doc_id
                     , const char* doc_str
@@ -145,8 +141,15 @@ public:
     SearchNode* child(unsigned int child_index);
 
     BranchMatchTypes  branch_matches();
+    bool branchHasExactMatches();
+    unsigned int branchHasEditMatches();
+    unsigned int branchHasHammingMatches();
 
 
+    
+    
+    
+    
 };
 
 

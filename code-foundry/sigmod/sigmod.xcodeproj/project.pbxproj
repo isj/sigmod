@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AB424CD51866F581004E07C7 /* WordTumbler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB424CD31866F581004E07C7 /* WordTumbler.cpp */; };
+		AB424CD81867CCFA004E07C7 /* DataManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB424CD61867CCF9004E07C7 /* DataManager.cpp */; };
 		AB59D2361851C3F900DF114D /* DocResults.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB59D2341851C3F900DF114D /* DocResults.cpp */; };
 		AB59D23B18521A9400DF114D /* sigmod_utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = AB59D23918521A9400DF114D /* sigmod_utils.cpp */; };
 		AB660B9F1848D54F0063206B /* sigmod.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = AB660B9E1848D54F0063206B /* sigmod.1 */; };
@@ -33,6 +35,10 @@
 
 /* Begin PBXFileReference section */
 		AB0CD93E184CD9DF003BEC23 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		AB424CD31866F581004E07C7 /* WordTumbler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = WordTumbler.cpp; path = isj_impl/WordTumbler.cpp; sourceTree = "<group>"; };
+		AB424CD41866F581004E07C7 /* WordTumbler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WordTumbler.h; path = isj_impl/WordTumbler.h; sourceTree = "<group>"; };
+		AB424CD61867CCF9004E07C7 /* DataManager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = DataManager.cpp; sourceTree = "<group>"; };
+		AB424CD71867CCFA004E07C7 /* DataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataManager.h; sourceTree = "<group>"; };
 		AB59D2341851C3F900DF114D /* DocResults.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DocResults.cpp; path = isj_impl/DocResults.cpp; sourceTree = "<group>"; };
 		AB59D2351851C3F900DF114D /* DocResults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DocResults.h; path = isj_impl/DocResults.h; sourceTree = "<group>"; };
 		AB59D23918521A9400DF114D /* sigmod_utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = sigmod_utils.cpp; path = isj_impl/sigmod_utils.cpp; sourceTree = "<group>"; };
@@ -92,6 +98,10 @@
 				AB660B9E1848D54F0063206B /* sigmod.1 */,
 				AB59D23A18521A9400DF114D /* sigmod_utils.h */,
 				AB59D23918521A9400DF114D /* sigmod_utils.cpp */,
+				AB424CD41866F581004E07C7 /* WordTumbler.h */,
+				AB424CD31866F581004E07C7 /* WordTumbler.cpp */,
+				AB424CD71867CCFA004E07C7 /* DataManager.h */,
+				AB424CD61867CCF9004E07C7 /* DataManager.cpp */,
 				AB59D2351851C3F900DF114D /* DocResults.h */,
 				AB59D2341851C3F900DF114D /* DocResults.cpp */,
 				ABCC6280184DC0FA008AE20F /* SearchTree.h */,
@@ -154,10 +164,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AB424CD51866F581004E07C7 /* WordTumbler.cpp in Sources */,
 				AB59D23B18521A9400DF114D /* sigmod_utils.cpp in Sources */,
 				ABCC6281184DC0FA008AE20F /* SearchTree.cpp in Sources */,
 				AB660BA91848D6CD0063206B /* core.cpp in Sources */,
 				AB59D2361851C3F900DF114D /* DocResults.cpp in Sources */,
+				AB424CD81867CCFA004E07C7 /* DataManager.cpp in Sources */,
 				AB660BA61848D6430063206B /* test.cpp in Sources */,
 				ABCC6284184DC147008AE20F /* SearchNode.cpp in Sources */,
 			);

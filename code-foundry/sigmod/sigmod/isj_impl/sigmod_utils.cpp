@@ -304,120 +304,8 @@ void printMatchIndex (Match match, std::string word) {
 
 
 
-
-
-//https://en.wikipedia.org/wiki/Levenshtein_distance#cite_note-8
-//http://www.codeproject.com/Articles/13525/Fast-memory-efficient-Levenshtein-algorithm
-
-bool LevenshteinDistance(char* s, char* t, int limit)
-{
-    if (LOG)printf("%s %s %s %d",__func__, s, t, limit);
-    //filter for s=t before passing in here
-    // degenerate cases
-    int length_t = (int)strlen(t);
-    int length_s = (int)strlen(s);
-    //if (s == t) return 0;
-    if (length_s ==0) return length_t;
-    if (length_t ==0) return length_s;
-    int v0[31] = {};
-    int v1[31] = {};
-
-
-    for (int i = 0; i < length_t+1; i++)
-        v0[i] = i;
-
-    for (int i = 0; i < length_s; i++)
-    {
-        // calculate v1 (current row distances) from the previous row v0
-
-        // first element of v1 is A[i+1][0]
-        //   edit distance is delete (i+1) chars from s to match empty t
-        v1[0] = i + 1;
-
-        // use formula to fill in the rest of the row
-        for (int j = 0; j < length_t; j++)
-        {
-            int cost = (s[i] == t[j]) ? 0 : 1;
-            v1[j + 1] = min(v1[j] + 1, min(v0[j + 1] + 1,v0[j] + cost));
-            if (v1[j+1] > limit) {
-                if (LOG)printf("cost: %d \n",v1[j + 1]);
-                if (LOG)printf("no match\n");
-                return false;
-            }
-            if (LOG)printf("cost: %d \n",v1[j + 1]);
-        }
-
-        // copy v1 (current row) to v0 (previous row) for next iteration
-        for (int j = 0; j < 1+length_t; j++)
-            v0[j] = v1[j];
-    }
-    int result = v1[length_t];
-    printf("result: %d \n",result);
-    printf("match\n");
-    return true;
-   // free(v0);
-   // free(v1);
-}
-
-bool uiLevenshteinDistance(char* s, char* t, int limit)
-{
-    if (LOG)printf("%s %s %s %d",__func__, s, t, limit);
-    string s1 = string (s);
-    string s2 = string (t);
-    const size_t m(s1.size());
-    const size_t n(s2.size());
-
-    if( m==0 ) return n;
-    if( n==0 ) return m;
-
-    size_t *costs = new size_t[n + 1];
-
-    for( size_t k=0; k<=n; k++ ) costs[k] = k;
-
-    size_t i = 0;
-    for ( auto it1 = s1.begin(); it1 != s1.end(); ++it1, ++i )
-    {
-        costs[0] = i+1;
-        size_t corner = i;
-
-        size_t j = 0;
-        for ( auto it2 = s2.begin(); it2 != s2.end(); ++it2, ++j )
-        {
-            size_t upper = costs[j+1];
-            if( *it1 == *it2 )
-            {
-                costs[j+1] = corner;
-            }
-            else
-            {
-                size_t t(upper<corner?upper:corner);
-                costs[j+1] = (costs[j]<t?costs[j]:t)+1;
-                if (costs[j+1]> limit) {
-                    if (LOG)printf("cost: %zu \n",costs[j+1]);
-                    if (LOG)printf("no match\n");
-                    return false;
-                }
-                if (LOG)printf("cost: %zu \n",costs[j+1]);
-
-            }
-            
-            corner = upper;
-        }
-    }
-    
-    size_t result = costs[n];
-    delete [] costs;
-    printf("result: %zu \n",result);
-    printf("match\n");
-    return true;
-}
-
-
-
-
-
 ////////////////////////////////////////////////////////////////////////
-////////////////////////rSearch2////////////////////////////////////////
+////////////////////////rSearch3////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
 
@@ -446,191 +334,175 @@ int minCurrentRow(int* row, int length) {
 
 //
 
+//
+//typedef struct {
+//    bool test;
+//    int cost;
+//} ExactMatch;
+//
+//typedef struct {
+//    int current_cost;
+//    int max_cost;
+//} HammingDistance;
+//
+//typedef struct {
+//    int* previous_row;
+//    int max_cost;
+//} EditDistance;
+//
+//typedef struct {
+//    DocID doc_id
+//    ; SearchNode* node
+//    ; const char* doc_word
+//    ; int doc_word_length
+//    ; ExactMatch exact;
+//    ; HammingDistance hamming;
+//    ; EditDistance edit;
+//} WordTumbler;
+//
+//
+//std::map<char, SearchNode*> mapOfChildNodesToFollow (SearchNode* node) {
+//    std::map<char, SearchNode*> map;
+//    std::map<char,SearchNode*>::iterator it = map.begin();  //using iterator for position hints, more efficient insert
+//    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+//        if (node->child(i) != nullptr) {
+//            printf("inserting letter %c\n",node->child(i)->letter());
+//              map.insert ( it,std::pair<char,SearchNode*>(i,node->child(i)) );
+//        }
+//    }
+//    return map;
+//}
+//
+//void r3RecursiveSearch(WordTumbler& tumbler);
+//
+//static void searchChildNodes(WordTumbler& tumbler) {
+//    std::map<char, SearchNode*> map = mapOfChildNodesToFollow(tumbler.node);
+//    std::map<char,SearchNode*>::iterator it;
+//    for (it = map.begin(); it != map.end();it++) {
+//        SearchNode* child_node = it->second;
+//        printf("inserting letter %c\n",child_node->letter());
+//        tumbler.node = child_node;
+//        if (tumbler.exact.test) tumbler.exact.test = child_node->branchHasExactMatches();
+//        tumbler.exact.cost = (tumbler.exact.test) ? 1 : 0;
+//        tumbler.hamming.max_cost = child_node->branchHasHammingMatches();
+//        tumbler.edit.max_cost = child_node->branchHasEditMatches();
+//        if (tumbler.exact.cost + tumbler.hamming.max_cost + tumbler.edit.max_cost > 0) {
+//            r3RecursiveSearch(tumbler);
+//        }
+//    }
+//
+//}
+//
+//bool lettersMatch(WordTumbler& tumbler) {
+//    return (tumbler.doc_word[tumbler.node->depth()-1] == tumbler.node->letter());
+//}
+//
+//static void testExact(WordTumbler& tumbler) {
+//    if (tumbler.exact.test) {
+//        cout << " exact test " << tumbler.doc_id << " word "<<tumbler.doc_word << " node_string "<<tumbler.node->string()<<endl;
+//        if (!lettersMatch(tumbler)) {
+//            tumbler.exact.test = false;
+//        }
+//    }
+//}
+//
+//static void testHamming (WordTumbler& tumbler) {
+//    if (tumbler.hamming.max_cost > 0) {
+//        printf("hamming test\n");
+//        if (tumbler.hamming.current_cost <= tumbler.hamming.max_cost)
+//            if (!lettersMatch(tumbler)) {
+//                tumbler.hamming.current_cost ++;
+//            }
+//    }
+//}
+//
+//static void testEdit (WordTumbler& tumbler) {
+//    if (tumbler.edit.max_cost > 0) {
+//        printf("edit test\n");
+//
+//        int columns = (int)tumbler.doc_word_length+1;
+//        int currentRow[columns];
+//        currentRow[0] = tumbler.edit.previous_row[0]+1;
+//        int replaceCost = 0;
+//
+//        //edit match algorith
+//        // if (match_edit == true) {
+//        for (int column=1; column <= columns; column++) {
+//            int insertCost = currentRow[column-1] + 1;
+//            int deleteCost = tumbler.edit.previous_row[column] + 1;
+//            if (tumbler.doc_word[column -1] != tumbler.node->letter()) {
+//                replaceCost = tumbler.edit.previous_row[column-1]+1;
+//            } else {
+//                replaceCost = tumbler.edit.previous_row[column-1];
+//            }
+//            int costToAdd = min(insertCost,min(deleteCost, replaceCost));
+//            currentRow[column] = costToAdd;
+//        }
+//        if (LOG) {
+//            printf("current row  %c            ",tumbler.node->letter());
+//            for (int i=0; i<columns; i++) {
+//                printf("%d",currentRow[i]);
+//            }
+//            printf("\n");
+//        }
+//        //}
+//    }
+//}
+//
+//
+//static void testResults(WordTumbler& tumbler) {
+//    if (tumbler.node->isTerminator()) {
+//        printf("test results\n");
+//    }
+//
+//}
+//
+//void r3RecursiveSearch(WordTumbler& tumbler) {
+//    bool continue_searching = true;
+//    testExact(tumbler);
+//    //testHamming(tumbler);
+//    //testEdit(tumbler);
+//    testResults(tumbler);
+//    if (continue_searching) {
+//        searchChildNodes(tumbler);
+//    }
+//}
+//
+//WordTumbler newTumbler(DocID doc_id,  char* word,int word_length, int limit) {
+//    WordTumbler tumbler;
+//    SearchNode* node =SearchTree::Instance()->root();
+//    tumbler.node = node;
+//    tumbler.doc_id = doc_id;
+//    tumbler.doc_word = word;
+//    tumbler.doc_word_length = word_length;
+//    tumbler.exact.test = true;
+//    tumbler.exact.cost = 1;
+//    tumbler.hamming.max_cost = limit;
+//    tumbler.edit.max_cost = limit;
+//    tumbler.hamming.current_cost = 0;
+//    tumbler.edit.previous_row = nullptr;
+//
+//    //build first results row for edit match
+//    int row[word_length+1];
+//    for (int i = 0; i< (word_length+1); i++) {
+//        row[i] = i;
+//    }
+//    tumbler.edit.previous_row = row;
+//    return tumbler;
+//}
+//
+//void r2Search (DocID doc_id
+//               , char* word
+//               , int word_length
+//               , int limit) {
+//
+//    WordTumbler tumbler = newTumbler(doc_id
+//                                     ,word
+//                                     ,word_length
+//                                     ,limit);
+//    r3RecursiveSearch  (tumbler);
+//}
 
 
-void r2limitSearch (
-                   SearchNode* node
-                   , char letter
-                   , const char* word
-                   , size_t length_word
-                   , int* previousRow
-                   , int max_cost
-
-
-
-                   ) {
-    max_cost = 3;
-    int columns = (int)max_cost+1;
-    int currentRow[columns];
-    currentRow[0] = previousRow[0]+1;
-
-}
-
-int maxCost(BranchMatchTypes match_types, int max_cost) {
-    //TODO
-    return max_cost;
-}
-
-bool includesHammingMatch(BranchMatchTypes match_types) {
-    return (match_types.hamming1 > 0 || match_types.hamming2 > 0 || match_types.hamming3 > 0);
-}
-
-bool includesExactMatch(BranchMatchTypes match_types) {
-    return (match_types.exact > 0);
-}
-
-bool includesEditMatch(BranchMatchTypes match_types) {
-    return (match_types.edit1 > 0 || match_types.edit2 > 0 || match_types.edit3 > 0);
-}
-
-void r2RecursiveSearch(
-                         DocID doc_id
-                       , SearchNode* node
-                       , char letter
-                       , const char* word
-                       , int length_word
-                       , int* previousRow
-                       , int hamming_cost
-                       , int max_cost
-                       , bool match_exact
-                       , bool match_hamming
-                       , bool match_edit
-                       ) {
-    if (match_exact == true) {
-        if (word[node->depth()]!=letter) {
-            match_exact = false;
-        }
-    }
-    int columns = (int)length_word+1;
-    int currentRow[columns];
-    currentRow[0] = previousRow[0]+1;
-    int replaceCost = 0;
-
-//edit match algorith
-    if (match_edit == true) {
-        for (int column=1; column <= columns; column++) {
-            int insertCost = currentRow[column-1] + 1;
-            int deleteCost = previousRow[column] + 1;
-            if (word[column -1] != letter) {
-                replaceCost = previousRow[column-1]+1;
-            } else {
-                replaceCost = previousRow[column-1];
-            }
-            int costToAdd = min(insertCost,min(deleteCost, replaceCost));
-            currentRow[column] = costToAdd;
-        }
-        if (LOG) {
-            printf("current row  %c            ",letter);
-            for (int i=0; i<columns; i++) {
-                printf("%d",currentRow[i]);
-            }
-            printf("\n");
-        }
-    }
-
-    if (match_hamming == true) {
-        if (word[node->depth()] != node->letter()) hamming_cost++;
-    }
-    //if the last entry in the row indicates the optimal cost is less than the max costs,
-    //and there is a word in this trie node, then add it
-    if (node->isTerminator() == true) {
-        int edit_distance = 0;
-        if (match_edit == true && currentRow[columns-1]<= max_cost) {
-            edit_distance =currentRow[columns-1];
-        }
-    node->checkEditResult (doc_id, currentRow[columns-1], length_word, hamming_cost,match_exact);
-    }
-
-
-    //if any entries in the row are less than max cost, then recursively search each branch of the trie
-    //printf("minCurrentRow: %d",minCurrentRow(currentRow,columns));
-    //printf(" maxCost: %d\n",max_cost);
-
-    if (minCurrentRow(currentRow,columns) <= max_cost|| hamming_cost <= max_cost) {
-        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
-            if (node->child(i) != nullptr) {
-                SearchNode* search_node = node->child(i);
-                char letter = search_node->letter();
-                BranchMatchTypes match_types = search_node->branch_matches();
-                if (MATCH_TYPES_FILTER) {
-                    max_cost = maxCost(match_types,max_cost);
-                    match_hamming = includesHammingMatch(match_types);
-                    match_edit = includesEditMatch(match_types);
-                }
-                if (match_exact == true || match_hamming == true || match_edit==true) {
-                r2RecursiveSearch(
-                                  doc_id
-                                  , search_node
-                                  , letter
-                                  , word
-                                  , length_word
-                                  , currentRow
-                                  , hamming_cost
-                                  , max_cost
-                                  , match_exact
-                                  , match_hamming
-                                  , match_edit
-                                  );
-                }
-            }
-        }
-
-    }else {
-        if (LOG) printf("exceeded costs, stop searching this branch\n");
-    }
-
-}
-
-void r2Search (DocID doc_id,  char* word,int word_length, int limit) {
-
-    // size_t length_word = sWord.length();
-
-    //build first row
-    int row[word_length+1];
-
-    for (int i = 0; i< (word_length+1); i++) {
-        row[i] = i;
-    }
-    if (LOG) {
-        printf("doc id: %d matching word: %s\n",doc_id,word);
-        printf("first   row               ");
-        for (int i=0; i<word_length+1; i++) {
-            printf("%d",row[i]);
-        }
-        printf("\n");
-    }
-    int hamming_cost = 0;
-    //recursive search of each branch of our searchTree for letter in kids
-    SearchNode* node =SearchTree::Instance()->root();
-    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
-        if (node->child(i) != nullptr) {
-            SearchNode* search_node = node->child(i);
-            char letter = search_node->letter();
-            BranchMatchTypes match_types = search_node->branch_matches();
-            if (MATCH_TYPES_FILTER) limit = maxCost(match_types,limit);
-            bool match_hamming = true;
-            bool match_exact = true;
-            bool match_edit = true;
-            if (MATCH_TYPES_FILTER) {
-                 match_hamming = includesHammingMatch(match_types);
-                 match_edit = includesEditMatch(match_types);
-            }
-            r2RecursiveSearch  (
-                                doc_id
-                                , node->child(i)
-                                , letter
-                                , word
-                                , word_length
-                                , row
-                                , hamming_cost
-                                , limit
-                                , match_exact
-                                , match_hamming
-                                , match_edit
-                                );
-        }
-    }
-    
-}
 
 

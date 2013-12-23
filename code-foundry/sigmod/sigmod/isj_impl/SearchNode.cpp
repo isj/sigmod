@@ -30,11 +30,8 @@ SearchNode::SearchNode (       QueryID  query_id
                         , unsigned int  query_word_counter
                         , SearchNode*   parent_node
                         ) {
-    if (LOG) printf("SearchNode::%s\n",__func__);
     _parent_node = parent_node;
-    if (LOG) printf("%p parent depth %d\n",this,_parent_node->_depth);
     _depth = (_parent_node->_depth)+1;
-    if (LOG) printf("%p my depth %d\n",this,_depth);
 
     // _match stores QueryIDs of search queries
 
@@ -91,15 +88,6 @@ void SearchNode::addQuery(       QueryID  query_id
   //  if (LOG) printf("SearchNode::%s\n",__func__);
  //   if (LOG) printf("depth::%d\n",_depth);
 
-    if (_depth==0) {
-        if (LOG)  SearchTree::Instance()->print();
-        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
-            //printf("_child_letter %p",_child_letters[i]);
-
-        }
-
-
-    }
 
     if (query_str[_depth+query_str_idx]=='\0' || query_str[_depth+query_str_idx]==' ') {
         query_word_counter++;
@@ -155,8 +143,6 @@ void SearchNode::addQuery(       QueryID  query_id
         //we have not reached the end of the word, keep building...
         if (_child_letters[query_str[_depth+query_str_idx]]==0) {
             //need to create a new child
-
-            if (LOG) printf("%d creating search node for next letter:%c\n", query_id, query_str[_depth+query_str_idx]);
             SearchNode* next_letter = new SearchNode(  query_id
                                                  , query_str
                                                 , match_type
@@ -267,69 +253,7 @@ void SearchNode::addDocument(        DocID  doc_id
 
 }
 
-void SearchNode::addDocumentL(        DocID  doc_id
-                             ,  const char*  string
-                             ,  unsigned int string_idx
-                             ) {
 
-    if (string[string_idx+_depth]=='\0' || string[string_idx+_depth]==' ') {
-        //we have reached a word ending - are we on a terminator node?
-        if (_terminator == true) {
-            //we have a match - record it...
-            //            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
-            //            for (int i = 1; i<=_depth; i++) {
-            //               if (LOG)  printf("%c",getLetterFromParentForDepth(i));
-            //            }
-            //      cout << endl;
-            this->reportResult(doc_id);
-
-
-
-
-        }
-        if (string[string_idx+_depth]==' ') {
-            //we have more words to add
-            string_idx = string_idx+_depth+1;
-            if (string[string_idx] == '\0') {
-                if (LOG) printf("warning: appear to have a nil search query word\n");
-            } else {
-                SearchTree* tree = SearchTree::Instance();
-                tree->addDocument(doc_id, string, string_idx);
-            }
-        }
-    } else {
-        //we have not reached the end of the word...
-
-        for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
-            if (_child_letters[i]) {
-                SearchNode* node =_child_letters[i];
-               // char doc_prefix[_depth+1];
-                char doc_prefix[31];
-                char query_prefix[31];
-                //char* doc_prefix   = (char*)malloc(_depth+1*sizeof(char));
-                //char* query_prefix = (char*)malloc(_depth+1*sizeof(char));
-
-
-                for (int i=0; i<_depth+1; i++) {
-                    doc_prefix[i]=string[i];
-                }
-                for (int i=0; i<_depth+1; i++) {
-                    query_prefix[i] = node->getLetterFromParentForDepth(i+1);
-                }
-                if (LevenshteinDistance(doc_prefix, query_prefix,3) ) {
-                    node->addDocumentL(doc_id
-                                 , string
-                                 , string_idx
-                                       );
-                }
-               // free(doc_prefix);
-               // free(query_prefix);
-            }
-        }
-
-    }
-
-}
 
 void SearchNode::matchWord (  DocID doc_id
                 , const char* doc_str
@@ -417,6 +341,8 @@ string SearchNode::string() {
     return string;
 }
 
+
+
 void SearchNode::reportResult (DocID doc_id) {
 
     /**
@@ -477,6 +403,7 @@ void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_leng
         i++;
     }
     if (MATCHED_MAP && SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
+        //don't log results
         if (LOG)  cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
         return;
     }
@@ -606,6 +533,27 @@ unsigned int SearchNode::depth() {
 
 BranchMatchTypes  SearchNode::branch_matches() {
     return _branch_matches;
+}
+
+unsigned int SearchNode::branchHasEditMatches() {
+    unsigned int result =
+        (_branch_matches.edit3 > 0)? 3:
+        (_branch_matches.edit2 > 0)? 2:
+        (_branch_matches.edit1 > 0)? 1:0;
+    return result;
+}
+
+unsigned int SearchNode::branchHasHammingMatches() {
+    unsigned int result =
+        (_branch_matches.hamming3 > 0)? 3:
+        (_branch_matches.hamming2 > 0)? 2:
+        (_branch_matches.hamming1 > 0)? 1:0;
+    return result;
+}
+
+bool SearchNode::branchHasExactMatches() {
+    return _branch_matches.exact;
+
 }
 
 

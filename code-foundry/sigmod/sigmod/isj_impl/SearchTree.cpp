@@ -256,11 +256,7 @@ ErrorCode SearchTree::startMatching (  DocID doc_id
     return EC_SUCCESS;
 }
 
-ErrorCode SearchTree::tumbleWord  ( WordTumbler* wordTumbler
-                                   ) {
-    if (LOG) printf("%s\n",__func__);
-    return EC_SUCCESS;
-}
+
 
 SearchNode* SearchTree::root (){
     return _root;

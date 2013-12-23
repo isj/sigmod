@@ -19,7 +19,6 @@
 #include "core.h"
 #include "sigmod_types.h"
 
-class WordTumbler;
 
 class SearchTree {
 private:
@@ -130,7 +129,6 @@ public:
 
 
 
-    ErrorCode tumbleWord(WordTumbler* wordTumbler);
 
     ErrorCode startMatching (  DocID doc_id
                              , const char* doc_start
