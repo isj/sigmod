@@ -308,201 +308,42 @@ void printMatchIndex (Match match, std::string word) {
 ////////////////////////rSearch3////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////
 
+//
+//int minCurrentRow(int* row, int length) {
+//    int result = row[0];
+//    for (int i=0; i<length;i++) {
+//        if (row[i] < result) {
+//            result = row[i];
+//        }
+//    }
+//    return result;
+//
+//}
 
-int minCurrentRow(int* row, int length) {
-    int result = row[0];
-    for (int i=0; i<length;i++) {
-        if (row[i] < result) {
-            result = row[i];
-        }
-    }
-    return result;
 
+
+int deleteBit (int number, char bit) {
+
+    int num = number & bit;
+    return number - num;
 }
 
 
+int query_ref (int queryID, int wordNumber) {
+    int ref = queryID << 3;
+    ref += wordNumber;
+    return ref;
 
-/**
- * recursiveSearch
- * search (char* word, int limit)
- *  http://stevehanov.ca/blog/index.php?id=114
- *
- * returns a _list of words_ from the searchtree
- * that are less than the given max distance from the target word
- * we can extend this by checking the node indexes for queries
- */
+}
 
-//
+int queryIDfromRef (int query_ref) {
 
-//
-//typedef struct {
-//    bool test;
-//    int cost;
-//} ExactMatch;
-//
-//typedef struct {
-//    int current_cost;
-//    int max_cost;
-//} HammingDistance;
-//
-//typedef struct {
-//    int* previous_row;
-//    int max_cost;
-//} EditDistance;
-//
-//typedef struct {
-//    DocID doc_id
-//    ; SearchNode* node
-//    ; const char* doc_word
-//    ; int doc_word_length
-//    ; ExactMatch exact;
-//    ; HammingDistance hamming;
-//    ; EditDistance edit;
-//} WordTumbler;
-//
-//
-//std::map<char, SearchNode*> mapOfChildNodesToFollow (SearchNode* node) {
-//    std::map<char, SearchNode*> map;
-//    std::map<char,SearchNode*>::iterator it = map.begin();  //using iterator for position hints, more efficient insert
-//    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
-//        if (node->child(i) != nullptr) {
-//            printf("inserting letter %c\n",node->child(i)->letter());
-//              map.insert ( it,std::pair<char,SearchNode*>(i,node->child(i)) );
-//        }
-//    }
-//    return map;
-//}
-//
-//void r3RecursiveSearch(WordTumbler& tumbler);
-//
-//static void searchChildNodes(WordTumbler& tumbler) {
-//    std::map<char, SearchNode*> map = mapOfChildNodesToFollow(tumbler.node);
-//    std::map<char,SearchNode*>::iterator it;
-//    for (it = map.begin(); it != map.end();it++) {
-//        SearchNode* child_node = it->second;
-//        printf("inserting letter %c\n",child_node->letter());
-//        tumbler.node = child_node;
-//        if (tumbler.exact.test) tumbler.exact.test = child_node->branchHasExactMatches();
-//        tumbler.exact.cost = (tumbler.exact.test) ? 1 : 0;
-//        tumbler.hamming.max_cost = child_node->branchHasHammingMatches();
-//        tumbler.edit.max_cost = child_node->branchHasEditMatches();
-//        if (tumbler.exact.cost + tumbler.hamming.max_cost + tumbler.edit.max_cost > 0) {
-//            r3RecursiveSearch(tumbler);
-//        }
-//    }
-//
-//}
-//
-//bool lettersMatch(WordTumbler& tumbler) {
-//    return (tumbler.doc_word[tumbler.node->depth()-1] == tumbler.node->letter());
-//}
-//
-//static void testExact(WordTumbler& tumbler) {
-//    if (tumbler.exact.test) {
-//        cout << " exact test " << tumbler.doc_id << " word "<<tumbler.doc_word << " node_string "<<tumbler.node->string()<<endl;
-//        if (!lettersMatch(tumbler)) {
-//            tumbler.exact.test = false;
-//        }
-//    }
-//}
-//
-//static void testHamming (WordTumbler& tumbler) {
-//    if (tumbler.hamming.max_cost > 0) {
-//        printf("hamming test\n");
-//        if (tumbler.hamming.current_cost <= tumbler.hamming.max_cost)
-//            if (!lettersMatch(tumbler)) {
-//                tumbler.hamming.current_cost ++;
-//            }
-//    }
-//}
-//
-//static void testEdit (WordTumbler& tumbler) {
-//    if (tumbler.edit.max_cost > 0) {
-//        printf("edit test\n");
-//
-//        int columns = (int)tumbler.doc_word_length+1;
-//        int currentRow[columns];
-//        currentRow[0] = tumbler.edit.previous_row[0]+1;
-//        int replaceCost = 0;
-//
-//        //edit match algorith
-//        // if (match_edit == true) {
-//        for (int column=1; column <= columns; column++) {
-//            int insertCost = currentRow[column-1] + 1;
-//            int deleteCost = tumbler.edit.previous_row[column] + 1;
-//            if (tumbler.doc_word[column -1] != tumbler.node->letter()) {
-//                replaceCost = tumbler.edit.previous_row[column-1]+1;
-//            } else {
-//                replaceCost = tumbler.edit.previous_row[column-1];
-//            }
-//            int costToAdd = min(insertCost,min(deleteCost, replaceCost));
-//            currentRow[column] = costToAdd;
-//        }
-//        if (LOG) {
-//            printf("current row  %c            ",tumbler.node->letter());
-//            for (int i=0; i<columns; i++) {
-//                printf("%d",currentRow[i]);
-//            }
-//            printf("\n");
-//        }
-//        //}
-//    }
-//}
-//
-//
-//static void testResults(WordTumbler& tumbler) {
-//    if (tumbler.node->isTerminator()) {
-//        printf("test results\n");
-//    }
-//
-//}
-//
-//void r3RecursiveSearch(WordTumbler& tumbler) {
-//    bool continue_searching = true;
-//    testExact(tumbler);
-//    //testHamming(tumbler);
-//    //testEdit(tumbler);
-//    testResults(tumbler);
-//    if (continue_searching) {
-//        searchChildNodes(tumbler);
-//    }
-//}
-//
-//WordTumbler newTumbler(DocID doc_id,  char* word,int word_length, int limit) {
-//    WordTumbler tumbler;
-//    SearchNode* node =SearchTree::Instance()->root();
-//    tumbler.node = node;
-//    tumbler.doc_id = doc_id;
-//    tumbler.doc_word = word;
-//    tumbler.doc_word_length = word_length;
-//    tumbler.exact.test = true;
-//    tumbler.exact.cost = 1;
-//    tumbler.hamming.max_cost = limit;
-//    tumbler.edit.max_cost = limit;
-//    tumbler.hamming.current_cost = 0;
-//    tumbler.edit.previous_row = nullptr;
-//
-//    //build first results row for edit match
-//    int row[word_length+1];
-//    for (int i = 0; i< (word_length+1); i++) {
-//        row[i] = i;
-//    }
-//    tumbler.edit.previous_row = row;
-//    return tumbler;
-//}
-//
-//void r2Search (DocID doc_id
-//               , char* word
-//               , int word_length
-//               , int limit) {
-//
-//    WordTumbler tumbler = newTumbler(doc_id
-//                                     ,word
-//                                     ,word_length
-//                                     ,limit);
-//    r3RecursiveSearch  (tumbler);
-//}
+    return query_ref >> 3;
+}
 
+int queryWordFromRef (int query_ref) {
 
+    return query_ref - queryIDfromRef(query_ref);
 
+}
 

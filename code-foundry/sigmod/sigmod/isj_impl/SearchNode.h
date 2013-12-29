@@ -113,6 +113,8 @@ public:
                     , unsigned int word_length
                     );
 
+    Match match ();
+
     bool hasChildren();
     bool isTerminator();
     SearchNode** getChildren();

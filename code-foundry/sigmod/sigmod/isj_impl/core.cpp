@@ -41,6 +41,7 @@
 //#include "sigmod_utils.h"
 #include "DocResults.h"
 #include "WordTumbler.h"
+#include "DataManager.h"
 using namespace std;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -217,7 +218,7 @@ ErrorCode StartQuery1(QueryID query_id, const char* query_str, MatchType match_t
             query_str_idx += length+1;
         }
     }
-    SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
+    DataManager::Instance()->addQueryToMap(query_id, query_word_counter);
 
     printf("\nended string \n");
 
@@ -266,7 +267,7 @@ ErrorCode EndQuery(QueryID query_id)
     if (LOG)  SearchTree::Instance()->print();
     if (LOG) printf("removeQuery ....%d\n",query_id);
 
-    SearchTree::Instance()->removeQuery(query_id);
+    DataManager::Instance()->removeQueryID(query_id);
     if (LOG) printf("after removing query....\n");
     if (LOG) SearchTree::Instance()->print();
 
@@ -277,34 +278,51 @@ ErrorCode EndQuery(QueryID query_id)
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-ErrorCode MatchDocument(DocID doc_id, const char* doc_str) {
-    SearchTree::Instance()->addDocument ( doc_id
-                                         , doc_str
-                                         , 0
-                                         );
-    if (LOG) SearchTree::Instance()->print();
 
-    unsigned int word_start_idx = 0;
-    unsigned int word_length = 0;
+void tumbleWord (DocID doc_id,  char* word, unsigned int word_length) {
+    if (!DataManager::Instance()->wordIsInDocWordSet(doc_id, word)) {
+        DataManager::Instance()->addWordToDocWordSet(doc_id, word);
+        WordTumbler* tumbler  = new WordTumbler(doc_id, word,word_length, 3);
+        tumbler->tumble();
+    }
+}
+
+ErrorCode MatchDocument(DocID doc_id, const char* doc_str) {
+    //SearchTree::Instance()->addDocument ( doc_id
+    //                                     , doc_str
+    //                                     , 0
+    //                                     );
+   // if (LOG) SearchTree::Instance()->print();
+
+
+    /**
+     *  we need to feed the document in word by word
+     *  this is only because we need to know each word length in advance 
+     *  for the edit distance algortithm. If we can manage without
+     *  word length, we could use the whole document string with pointers.
+     *  WordTumbler could still handle this, and it would save a copy operation.
+     */
+
+    unsigned int start_idx = 0;
+    unsigned int word_idx = 0;
     char word[MAX_WORD_LENGTH];
 
-    while (doc_str[word_start_idx+word_length] != '\0') {
-        if (doc_str[word_start_idx+word_length]  != ' ' ) {
-            word[word_length] = doc_str[word_start_idx+word_length];
-            word_length++;
+    while (doc_str[start_idx+word_idx] != '\0') {
+        if (doc_str[start_idx+word_idx]  != ' ' ) {
+            word[word_idx] = doc_str[start_idx+word_idx];
+            word_idx++;
         } else {
-            word[word_length] = '\0';
-            WordTumbler* tumbler  = new WordTumbler(doc_id, word,word_length, 3);
-            tumbler->tumble();
-            
-            word_start_idx+=word_length+1;
-            word_length = 0;
+            word[word_idx] = '\0';
+            tumbleWord(doc_id, word, word_idx);
+            start_idx += word_idx+1;
+            word_idx = 0;
         }
     }
     //last word
-    word[word_length] = '\0';
-    WordTumbler tumbler (doc_id, word,word_length, 3);
-    tumbler.tumble();
+    word[word_idx] = '\0';
+    tumbleWord(doc_id, word, word_idx);
+    DataManager::Instance()->removeDocWordSet(doc_id);
+
     return EC_SUCCESS;
 }
 

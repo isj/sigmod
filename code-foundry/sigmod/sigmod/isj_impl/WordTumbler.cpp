@@ -7,9 +7,13 @@
 //
 
 #include "WordTumbler.h"
+#include "DataManager.h"
+
 using namespace std;
 
-
+#pragma mark ----------------------
+#pragma mark - initialise
+#pragma mark ----------------------
 
  WordTumbler::WordTumbler (DocID doc_id,  char* word,int word_length, int limit) {
     _node =SearchTree::Instance()->root();
@@ -31,7 +35,54 @@ using namespace std;
     _edit.previous_row = row;
 }
 
+#pragma mark ----------------------
+#pragma mark - tumbling
+#pragma mark ----------------------
 
+void WordTumbler::tumble() {
+    bool continue_searching = true;
+    testExact();
+    testHamming();
+    testEdit();
+    testResults();
+    if (continue_searching) {
+        searchChildNodes();
+    }
+}
+
+void WordTumbler::searchChildNodes() {
+    std::map<char, SearchNode*> map = mapOfChildNodesToFollow();
+    std::map<char,SearchNode*>::iterator it;
+    for (it = map.begin(); it != map.end();it++) {
+        SearchNode* child_node = it->second;
+        printf("inserting letter %c\n",child_node->letter());
+        _node = child_node;
+        if (_exact.test) _exact.test = child_node->branchHasExactMatches();
+        _exact.cost = (_exact.test) ? 1 : 0;
+        _hamming.max_cost = child_node->branchHasHammingMatches();
+        _edit.max_cost = child_node->branchHasEditMatches();
+        if (_exact.cost + _hamming.max_cost + _edit.max_cost > 0) {
+            tumble();
+        }
+    }
+}
+
+std::map<char, SearchNode*> WordTumbler::mapOfChildNodesToFollow () {
+    //TODO - implement this as data structure in node
+    std::map<char, SearchNode*> map;
+    std::map<char,SearchNode*>::iterator it = map.begin();  //using iterator for position hints, more efficient insert
+    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
+        if (_node->child(i) != nullptr) {
+            printf("inserting letter %c\n",_node->child(i)->letter());
+            map.insert ( it,std::pair<char,SearchNode*>(i,_node->child(i)) );
+        }
+    }
+    return map;
+}
+
+#pragma mark ----------------------
+#pragma mark - match tests
+#pragma mark ----------------------
 
 bool WordTumbler::lettersMatch() {
     return (_doc_word[_node->depth()-1] == _node->letter());
@@ -57,8 +108,8 @@ void WordTumbler::testHamming(){
 }
 
 /**
- * recursiveSearch
- * search (char* word, int limit)
+ * void WordTumbler::testEdit(){
+ *
  *  http://stevehanov.ca/blog/index.php?id=114
  *
  * returns a _list of words_ from the searchtree
@@ -100,6 +151,12 @@ void WordTumbler::testEdit(){
 
 }
 
+
+#pragma mark ----------------------
+#pragma mark -  results test
+#pragma mark ----------------------
+
+
 void WordTumbler::testResults(){
     if (_node->isTerminator()) {
         printf("test results\n");
@@ -112,43 +169,87 @@ void WordTumbler::testResults(){
 }
 
 
-void WordTumbler::tumble() {
-        bool continue_searching = true;
-        testExact();
-        testHamming();
-        testEdit();
-        testResults();
-        if (continue_searching) {
-            searchChildNodes();
-        }
+
+
+
+void addToResults (std::vector<int>& resultsRef, std::vector<int> additions) {
+    for (int i = 0; i < additions.size();i++) {
+        resultsRef.push_back(additions[i]);
+    }
+
 }
 
-void WordTumbler::searchChildNodes() {
-    std::map<char, SearchNode*> map = mapOfChildNodesToFollow();
-    std::map<char,SearchNode*>::iterator it;
-    for (it = map.begin(); it != map.end();it++) {
-        SearchNode* child_node = it->second;
-        printf("inserting letter %c\n",child_node->letter());
-        _node = child_node;
-        if (_exact.test) _exact.test = child_node->branchHasExactMatches();
-        _exact.cost = (_exact.test) ? 1 : 0;
-        _hamming.max_cost = child_node->branchHasHammingMatches();
-        _edit.max_cost = child_node->branchHasEditMatches();
-        if (_exact.cost + _hamming.max_cost + _edit.max_cost > 0) {
-            tumble();
+
+
+void WordTumbler::logResult () {
+
+    /**
+     *  we got a result
+     *
+     *  we need to know whether the match-type is in our matches_array
+     * then check off any associated query_ids
+     */
+    std::string string = _node->string();
+
+
+
+
+    vector<int> results;
+    vector<int>& resultsRef = results;
+
+    //an exact match also satisfies all edit and hamming matches
+    //an edit distance of E also satisfies edit distance E+1
+    //a hamming distance of H also satisfies hamming distance H+1
+    //an edit distance of E also satisfies a hamming distance of H if doc_word and query_word are same length (length_match==true)
+
+    cout <<"checking edit distance... " <<endl;
+
+    if (_edit.current_cost >= 1) {
+        addToResults(resultsRef, *_node->match().edit[0]);
+        if (_edit.current_cost >= 2) {
+            addToResults(resultsRef, *_node->match().edit[1]);
+            if (_edit.current_cost >= 3) {
+                addToResults(resultsRef, *_node->match().edit[2]);
+            }
         }
     }
+    cout <<"checking hamming distance... " <<endl;
+        if (_hamming.current_cost >= 1) {
+            addToResults(resultsRef, *_node->match().hamming[0]);
+            if (_hamming.current_cost >= 2) {
+                addToResults(resultsRef, *_node->match().hamming[1]);
+                if (_hamming.current_cost  >= 3) {
+                    addToResults(resultsRef, *_node->match().hamming[2]);
+                }
+            }
+        }
+    if (_exact.test) addToResults(resultsRef, _node->match().exact);
+
+
+    if (results.size()>0) {
+        bool hit = false;
+        for (int i=0;i<results.size();i++) {
+            QueryID query_id = results.at(i);
+            if (DataManager::Instance()->isValidQueryID(query_id)) {
+                hit = true;
+                DataManager::Instance()->decrementQueryInDocumentMap(_doc_id, query_id);
+            }
+        }
+        if (hit==false){
+            //TODO - fix
+            //all our queries are invalid, self-destruct
+            //this is not currently correct
+            //we should only delete a node if all of it's _match arrays are empty
+            //not just if THIS query gets us no hits
+            //if (DELETE_NODES) _node->remove();
+        } else {
+            //just for breakpoints
+            int x = 1;
+            x++;
+        }
+    }
+    
 }
 
-std::map<char, SearchNode*> WordTumbler::mapOfChildNodesToFollow () {
-    //TODO - implement this as data structure in node
-    std::map<char, SearchNode*> map;
-    std::map<char,SearchNode*>::iterator it = map.begin();  //using iterator for position hints, more efficient insert
-    for (int i=kFirstASCIIChar; i<=kLastASCIIChar; i++ ) {
-        if (_node->child(i) != nullptr) {
-            printf("inserting letter %c\n",_node->child(i)->letter());
-            map.insert ( it,std::pair<char,SearchNode*>(i,_node->child(i)) );
-        }
-    }
-    return map;
-}
+
+

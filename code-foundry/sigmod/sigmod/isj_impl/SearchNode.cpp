@@ -9,6 +9,7 @@
 #include "SearchNode.h"
 #include "SearchTree.h"
 #include "DocResults.h"
+#include "DataManager.h"
 #import "sigmod_utils.h"
 using namespace std;
 
@@ -136,7 +137,7 @@ void SearchNode::addQuery(       QueryID  query_id
             //with the tree's _query_ids_map
 
             //ADDBACK AFTER WE FIX RECURSION BUG
-            SearchTree::Instance()->addQueryToMap(query_id, query_word_counter);
+            DataManager::Instance()->addQueryToMap(query_id, query_word_counter);
 
         }
     } else {
@@ -204,7 +205,7 @@ void SearchNode::incrementBranchMatches (MatchType match_type, unsigned int matc
         _parent_node->incrementBranchMatches(match_type, match_distance, increment);
     }
 }
-
+/*
 void SearchNode::addDocument(        DocID  doc_id
                              ,  const char* string
                              ,         int  string_idx
@@ -253,7 +254,8 @@ void SearchNode::addDocument(        DocID  doc_id
 
 }
 
-
+*/
+/*
 
 void SearchNode::matchWord (  DocID doc_id
                 , const char* doc_str
@@ -264,6 +266,7 @@ void SearchNode::matchWord (  DocID doc_id
     
 
 }
+ */
 
 void validate (vector<int> match_vector) {
 
@@ -274,7 +277,7 @@ void print_match_vector (vector<int> match_vector){
 
     if (match_vector.size()>0) {
         for (int i =0; i<match_vector.size(); i++)
-            if (SearchTree::Instance()->isValidQuery(match_vector[i])) {
+            if (DataManager::Instance()->isValidQueryID(match_vector[i])) {
               cout <<match_vector[i]<<" ";
             }
     } else {
@@ -341,15 +344,14 @@ string SearchNode::string() {
     return string;
 }
 
+Match SearchNode::match () {
+    return _match;
+}
 
-
+/*
 void SearchNode::reportResult (DocID doc_id) {
 
-    /**
-     *  - add found word to "document's found set"
-     *  - find which query IDs we match against
-     *  - decrement our documents' queryIDsIndex for those IDs
-     */
+
     std::string string = this->string();
     if (MATCHED_MAP && SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
       if (LOG)  cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
@@ -380,104 +382,9 @@ void SearchNode::reportResult (DocID doc_id) {
 
 
 }
-
-void addToResults (std::vector<int>& resultsRef, std::vector<int> additions) {
-    for (int i = 0; i < additions.size();i++) {
-        resultsRef.push_back(additions[i]);
-    }
-
-}
-
-void SearchNode::checkEditResult (DocID doc_id, int edit_distance, int word_length, int hamming_cost, bool exact_match) {
-
-    /**
-     *  we got a result
-     *
-     *  we need to know whether the match-type is in our matches_array
-     * then check off any associated query_ids
-     */
-    std::string string = this->string();
-    if (string == "amiri" && edit_distance>0) {
-        //debugging
-        int i = 23;
-        i++;
-    }
-    if (MATCHED_MAP && SearchTree::Instance()->stringIsInMatchMap(doc_id, string)) {
-        //don't log results
-        if (LOG)  cout << string << " is already in matched map for doc id "<<doc_id<<", returning" << endl;
-        return;
-    }
-    if (LOG)  cout << endl <<  "checking edit distance  doc "<< doc_id  << " " << string << endl;
-
-    //
+ */
 
 
-    bool length_match = false;
-    if ( word_length == _depth ) {
-        length_match = true;
-    }
-    vector<int> results;
-    vector<int>& resultsRef = results;
-
-    //an exact match also satisfies all edit and hamming matches
-    //an edit distance of E also satisfies edit distance E+1
-    //a hamming distance of H also satisfies hamming distance H+1
-    //an edit distance of E also satisfies a hamming distance of H if doc_word and query_word are same length (length_match==true)
-    if (LOG) printMatchIndex(_match,  string);
-    if (string=="karson") {
-        //debugging
-        int i = 23;
-        i++;
-    }
-    cout <<"checking edit distance... " <<endl;
-
-    if (edit_distance >= 1) {
-        addToResults(resultsRef, *_match.edit[0]);
-        if (edit_distance >= 2) {
-            addToResults(resultsRef, *_match.edit[1]);
-            if (edit_distance >= 3) {
-                addToResults(resultsRef, *_match.edit[2]);
-            }
-        }
-    }
-    cout <<"checking hamming distance... " <<endl;
-    if (length_match == true) {
-        if (hamming_cost >= 1) {
-            addToResults(resultsRef, *_match.hamming[0]);
-            if (hamming_cost >= 2) {
-                addToResults(resultsRef, *_match.hamming[1]);
-                if (hamming_cost  >= 3) {
-                    addToResults(resultsRef, *_match.hamming[2]);
-                }
-            }
-        }
-        if (edit_distance==0 || hamming_cost == 0) exact_match = true;
-
-    }
-    if (exact_match == true) addToResults(resultsRef, _match.exact);
-
-
-    if (results.size()>0) {
-        if (MATCHED_MAP) SearchTree::Instance()->addStringToMatchMap(doc_id, this->string());
-        bool hit = false;
-        for (int i=0;i<results.size();i++) {
-            QueryID query = results.at(i);
-            if (SearchTree::Instance()->isValidQuery(query)) {
-                hit = true;
-                SearchTree::Instance()->decrementQueryInDocumentMap(doc_id, query);
-            }
-        }
-        if (hit==false){
-            //all our queries are invalid, self-destruct
-            if (DELETE_NODES) this->remove();
-        } else {
-            //just for breakpoints
-            int x = 1;
-            x++;
-        }
-    }
-    
-}
 
 
 

@@ -9,6 +9,7 @@
 #include "DocResults.h"
 #include "sigmod_utils.h"
 #include "SearchTree.h"
+#include "DataManager.h"
 
 
 using namespace std;
@@ -88,18 +89,17 @@ ErrorCode DocResults::GetNextAvailRes ( DocID* p_doc_id
     if (LOG) logMap(_docResultsMap);
     AllDocsResultsMap::iterator it=_docResultsMap.end();
     it--;
-    unsigned int key = it->first;
-    if (_docResultsMap.size()==0 || key == 0){
+    DocID doc_id = it->first;
+    if (_docResultsMap.size()==0 || doc_id == 0){
         if (LOG)  printf( " GetNextAvailRes: EC_NO_AVAIL_RES %d %d ", *p_doc_id, *p_num_res );
         return EC_NO_AVAIL_RES;
     } else {
 
         SingleDocResultSet* result = it->second;
 
-        _docResultsMap.erase(key);
-        SearchTree::Instance()->removeDocFromMatchedWordsMap(key);
+        _docResultsMap.erase(doc_id);
 
-        *p_doc_id = key;
+        *p_doc_id = doc_id;
         //remove the 0 entry
         if (LOG) printf("SingleDocResultSet before 0-removal\n");
         if (LOG) printSetOfInts(result);

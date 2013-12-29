@@ -1,5 +1,214 @@
 __notes__
 
+duplicate hits
+
+Q10 0 0 3 AND REGEX WILL
+Q11 3 3 4 AND REGEX WILL TEAT
+
+
+Doc   BAND   -> AND  edit_match_3, edit_match_2, edit_match_1   
+    -> hit (Q11)
+        ->  decrement Doc/Q11
+Doc   AND    -> AND  exact match, edit_match_3, edit_match_2, edit_match_1  
+    -> hit (Q10, Q11) 
+        -> decrement Doc/Q10 (only if we have not decremented it for this word already)
+        -> decrement Doc/Q11 (only if we have not decremented it for this word already)
+        so per document,we need to keep an index per query word, not just index of word counts.
+        this is because 
+            some matches cover more than one type
+            different doc words can match one query word
+            for a given doc, a terminal node must decrement a query ONLY ONCE
+            
+            10  3
+            11  2
+           
+           per DOC, per NODE [list of queries]
+           we'd keep a list of node references, with queries
+           OR... we'd keep a list of queries.wordnumber
+         or...
+           per NODE, per DOC [list of queries]
+           each node would keep a list of (docs, list of queries)
+           but when the doc is gone we would want to erase the doc's list
+           for a word, couldnt we just keep 
+           
+           max query words is 5
+           so we'd have doc_number*10+query_word_number
+           eg 105 241
+           or doc_number<<3 + query_word_number
+           so each doc_list would be 101,102,103 111,112,113,114,121,122,123,124
+           then we decrement (remove) exact number
+            101,102,103 111,112,113,114,121,122,123,124
+             101,102,103 111,112,113,114,121,122,124
+              101,102,103 111,112,113,114,121,122,124
+              
+              but how would we know which queries are completely satisfied?
+              
+              instead, we can keep a SCORE for each query, which is an elaboration of WORD COUNT
+              
+              instead of 
+               10->3
+               11->4
+               
+               we could have
+               10->00111  [=7]  (word count 3)
+               11->01111  [=15] (word count 4)
+               
+               
+               and fully...
+               ->00001 [= 1] (word count 1)
+               ->00011 [= 3] (word count 2)
+               ->00111 [= 7] (word count 3)
+               ->01111 [=15] (word count 4)
+               ->11111 [=31] (word count 5)
+               
+               Then to decrement, we decrement taking account of which word we have found
+               To remove word 1 decrement 2^0=1
+               decrement (number, 00001)
+               d ( 1,00001) =  0 = 00000;
+               d ( 3,00001) =  2 = 00010;
+               d ( 7,00001) =  6 = 00110;
+               d (15,00001) = 14 = 01110; 
+               d (31,00001) = 30 = 11110;
+               To remove word 2 decrement 2^1=2
+               decrement (number, 00010)
+               d ( 1,00010) =  1 = 00001; //no change, there is no word 2
+               d ( 3,00010) =  1 = 00001;
+               d ( 7,00010) =  5 = 00101;
+               d (15,00010) = 13 = 01101;
+               d (31,00010) = 29 = 11101;
+               To remove word 3 decrement 2^2=4
+               decrement (number, 00100)
+               d ( 1,00100) =  1 = 00001; //no change, there is no word 3
+               d ( 3,00100) =  3 = 00011; //no change, there is no word 3
+               d ( 7,00100) =  3 = 00011;
+               d (15,00100) = 13 = 01011;
+               d (31,00100) = 29 = 11011;   
+               To remove word 4 decrement 2^3=8
+               decrement (number, 01000)
+               d ( 1,01000) =  1 = 00001; //no change, there is no word 4
+               d ( 3,01000) =  3 = 00011; //no change, there is no word 4
+               d ( 7,01000) =  7 = 00111; //no change, there is no word 4
+               d (15,01000) =  7 = 00111;
+               d (31,01000) = 23 = 10111;
+               To remove word 5 decrement 2^4=16
+               decrement (number, 01000)
+               d ( 1,10000) =  1 = 00001; //no change, there is no word 5
+               d ( 3,10000) =  3 = 00011; //no change, there is no word 5
+               d ( 7,10000) =  7 = 00111; //no change, there is no word 5
+               d (15,10000) = 15 = 01111; //no change, there is no word 5
+               d (31,10000) = 15 = 01111;
+               decrement (number, 00100)
+               to remove word 4
+               decrement (number, 01000)
+               to remove word 5
+               decrement (number, 10000)
+               
+
+
+              
+              10->11111  - 31 - 5 words
+              11->11011  -
+              11->10011
+              set bits to 0
+              when all bits are 0 we have a hit
+              so we decrement a bit_place
+              so we need to know which bit_place to decrement
+              so we store 101(say)
+              bit number is 
+              
+            
+              
+              1 1 0
+              1 0 1
+              0 1 0
+              0 0 0
+              
+              
+              1 1 1
+              1 0 1
+              0 1 1
+              0 0 0  OR
+              
+              1 1 0
+              1 0 0
+              0 1 0
+              0 0 1 XOR
+              
+              1 1 1 
+              1 0 0
+              0 1 0
+              0 0 0 AND
+              
+              1 1 0
+              1 0 0
+              0 1 0
+              0 0 1 NOT
+              
+              1 1 0
+              1 0 1
+              0 1 1
+              0 0 1 NAND
+              
+              number:        11110    11010
+              bit to delete: 00100    00100
+
+              AND            00100 or 00000
+
+              SUBTRACt       11110 -  11010 -
+                             00100    00000
+                             
+                             11010    11010
+                             
+                             
+int deleteBit (number, bit) {
+
+        num = number & bit;
+        return number - num;
+}
+
+
+int query_ref (int queryID, int wordNumber) {
+       int ref = queryID << 3;
+       int ref += wordNumber;
+       return intRef;
+
+}
+
+int queryIDfromRef (int query_ref) {
+
+     return query_ref >> 3;
+}
+
+int queryWordFromRef (int query_ref) {
+
+    return query_ref - queryIDFromRef();
+
+}
+
+decrmeneet (QueryID, wordNumber) {
+
+       if wordNumber is 1, remove the first bit  // subtract 1
+       if wordNumber is 2, remove the second bit //subtract 2
+       if wordNumber is 3, remove the third bit //subtract 4
+       QueryIDVal = QUeryIDVal - wordNumberBit;
+
+}
+
+
+
+Eliminating duplicates
+
+EITHER
+1. As we process the document, we can accumulate a word set. If a word is in the set, don't tumble it again
+The set will be size <= document
+We will only tumble unique document words
+is there a way to index these words without copying?
+should we build a trie of the document?
+OR
+2. As we get hits, we cam accumultate a matched word set. If a hit is in the set, don't  score again
+The set will be size <= hits
+We will tumble every document word
+
 Exact match
 
 looping MatchDocument x 1000 on an exact-match-only set of queries (4 x queries, 60 x documents)

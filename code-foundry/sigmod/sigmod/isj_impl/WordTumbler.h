@@ -57,13 +57,14 @@ private:
     std::map<char, SearchNode*> mapOfChildNodesToFollow ();
     bool lettersMatch();
 
-
+    void logResult ();
 
 
 public:
     WordTumbler(DocID doc_id,  char* word,int word_length, int limit);
 
     void tumble();
+
 
 
 

@@ -59,7 +59,10 @@ bool LevenshteinDistance(char* s, char* t, int limit);
 
 
 
-
+int deleteBit (int number, char bit);
+int query_ref (int queryID, int wordNumber);
+int queryIDfromRef (int query_ref);
+int queryWordFromRef (int query_ref);
 
 
 #endif /* defined(__sigmod__sigmod_utils__) */
