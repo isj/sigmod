@@ -36,7 +36,7 @@ private:
     } HammingDistance;
 
     typedef struct {
-        int* previous_row;
+        int* row;
         int current_cost;
         int max_cost;
     } EditDistance;
@@ -50,10 +50,13 @@ private:
     EditDistance _edit;
 
     void searchChildNodes();
+
     void testExact();
     void testHamming();
     void testEdit();
     void testResults();
+    int  fixEditMatchMaxCostForNode(SearchNode* node);
+
     std::map<char, SearchNode*> mapOfChildNodesToFollow ();
     bool lettersMatch();
 

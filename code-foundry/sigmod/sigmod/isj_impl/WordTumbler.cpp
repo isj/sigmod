@@ -25,19 +25,34 @@ using namespace std;
     _hamming.max_cost = limit;
     _edit.max_cost = limit;
     _hamming.current_cost = 0;
-    _edit.previous_row = nullptr;
+    _edit.row = nullptr;
 
     //build first results row for edit match
     int row[word_length+1];
     for (int i = 0; i< (word_length+1); i++) {
         row[i] = i;
     }
-    _edit.previous_row = row;
+    _edit.row = row;
 }
 
 #pragma mark ----------------------
 #pragma mark - tumbling
 #pragma mark ----------------------
+
+////////////////////////////////////////////////////////////////////////
+
+
+int minCurrentRow(int* row, int length) {
+    int result = row[0];
+    for (int i=0; i<length;i++) {
+        if (row[i] < result) {
+            result = row[i];
+        }
+    }
+    return result;
+
+}
+
 
 void WordTumbler::tumble() {
     bool continue_searching = true;
@@ -50,6 +65,8 @@ void WordTumbler::tumble() {
     }
 }
 
+
+
 void WordTumbler::searchChildNodes() {
     std::map<char, SearchNode*> map = mapOfChildNodesToFollow();
     std::map<char,SearchNode*>::iterator it;
@@ -60,7 +77,7 @@ void WordTumbler::searchChildNodes() {
         if (_exact.test) _exact.test = child_node->branchHasExactMatches();
         _exact.cost = (_exact.test) ? 1 : 0;
         _hamming.max_cost = child_node->branchHasHammingMatches();
-        _edit.max_cost = child_node->branchHasEditMatches();
+        _edit.max_cost = (_edit.max_cost)? this->fixEditMatchMaxCostForNode(child_node):0;
         if (_exact.cost + _hamming.max_cost + _edit.max_cost > 0) {
             tumble();
         }
@@ -79,6 +96,30 @@ std::map<char, SearchNode*> WordTumbler::mapOfChildNodesToFollow () {
     }
     return map;
 }
+
+
+int WordTumbler::fixEditMatchMaxCostForNode(SearchNode* node) {
+    /*
+     *  to know whether to proceed further down the tree for edit matches
+     *  we need to search the current row for it's minimum value
+     *  if that value is below the branch' max_edit_cost,
+     *  we should continue down the tree
+     *  otherwise we should stop (set max_edit_distance to 0)
+     */
+    int result = 0;
+    int max_edit_cost = node->branchHasEditMatches();
+    int current_least_cost = _edit.row[0];
+    for (int i=0; i<sizeof(_edit.row)/sizeof(_edit.row[0]);i++) {
+        if (_edit.row[i] < current_least_cost) {
+            current_least_cost = _edit.row[i];
+        }
+    }
+    if (current_least_cost < max_edit_cost) {
+        result = max_edit_cost;
+    }
+    return result;
+}
+
 
 #pragma mark ----------------------
 #pragma mark - match tests
@@ -108,9 +149,9 @@ void WordTumbler::testHamming(){
 }
 
 /**
- * void WordTumbler::testEdit(){
+ *   edit distance algorithm
  *
- *  http://stevehanov.ca/blog/index.php?id=114
+ *   http://stevehanov.ca/blog/index.php?id=114
  *
  * returns a _list of words_ from the searchtree
  * that are less than the given max distance from the target word
@@ -118,35 +159,47 @@ void WordTumbler::testHamming(){
  */
 
 void WordTumbler::testEdit(){
+    /**
+     *  calculates the next row of the edit distance algorithm
+     *  if we are on a terminal word we check the bottom right 
+     *  value - which will be THIS row's rightmost value
+     *  that is the current edit distance from this node's word.
+     *
+     */
     if (_edit.max_cost > 0) {
         printf("edit test\n");
 
         int columns = (int)_doc_word_length+1;
-        int currentRow[columns];
-        currentRow[0] = _edit.previous_row[0]+1;
+        int next_row[columns];
+        next_row[0] = _edit.row[0]+1;
         int replaceCost = 0;
+        int minRowValue = MAX_WORD_LENGTH;
 
         //edit match algorith
         // if (match_edit == true) {
         for (int column=1; column <= columns; column++) {
-            int insertCost = currentRow[column-1] + 1;
-            int deleteCost = _edit.previous_row[column] + 1;
+            int insertCost = next_row[column-1] + 1;
+            int deleteCost = _edit.row[column] + 1;
             if (_doc_word[column -1] != _node->letter()) {
-                replaceCost = _edit.previous_row[column-1]+1;
+                replaceCost = _edit.row[column-1]+1;
             } else {
-                replaceCost = _edit.previous_row[column-1];
+                replaceCost = _edit.row[column-1];
             }
             int costToAdd = min(insertCost,min(deleteCost, replaceCost));
-            currentRow[column] = costToAdd;
+            next_row[column] = costToAdd;
         }
-        if (LOG) {
-            printf("current row  %c            ",_node->letter());
-            for (int i=0; i<columns; i++) {
-                printf("%d",currentRow[i]);
-            }
-            printf("\n");
-        }
-        //}
+        _edit.row = next_row;
+
+
+//        if (LOG) {
+//            printf("current row  %c            ",_node->letter());
+//            for (int i=0; i<columns; i++) {
+//                printf("%d",currentRow[i]);
+//            }
+//            printf("\n");
+//        }
+
+
     }
 
 }
@@ -161,6 +214,9 @@ void WordTumbler::testResults(){
     if (_node->isTerminator()) {
         printf("test results\n");
         int edit_distance = 0;
+        /**
+         *  edit distance result is value of last element of edit.row
+         */
 
 
         //_node->checkEditResult (_doc_id,  edit_distance, _doc_word_length,  _hamming.current_cost,  _exact.test);
