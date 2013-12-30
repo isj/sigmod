@@ -190,7 +190,7 @@ ErrorCode StartQuery1(QueryID query_id, const char* query_str, MatchType match_t
      */
 
     unsigned int query_str_idx = 0;
-    unsigned int query_word_counter = 0;
+    char query_word_counter = 0;
     size_t query_length = strlen(query_str);
     printf("starting string \n");
     for (int i = 0; i <= query_length; i++) {
@@ -239,7 +239,7 @@ ErrorCode StartQuery(QueryID query_id, const char* query_str, MatchType match_ty
      */
 
     unsigned int query_str_idx = 0;
-    unsigned int query_word_counter = 0;
+       char query_word_counter = 0;
 
     if (LOG) printf( " StartQuery: id %d \n", query_id );
     SearchTree::Instance()->addQuery ( query_id

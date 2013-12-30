@@ -28,7 +28,7 @@ SearchNode::SearchNode (       QueryID  query_id
                         ,    MatchType  match_type
                         , unsigned int  match_dist
                         , unsigned int  query_str_idx
-                        , unsigned int  query_word_counter
+                        ,         char  query_word_counter
                         , SearchNode*   parent_node
                         ) {
     _parent_node = parent_node;
@@ -83,7 +83,7 @@ void SearchNode::addQuery(       QueryID  query_id
                           ,    MatchType  match_type
                           , unsigned int  match_dist
                           , unsigned int  query_str_idx
-                          , unsigned int  query_word_counter
+                          ,         char  query_word_counter
                           ) {
 
   //  if (LOG) printf("SearchNode::%s\n",__func__);
@@ -91,28 +91,34 @@ void SearchNode::addQuery(       QueryID  query_id
 
 
     if (query_str[_depth+query_str_idx]=='\0' || query_str[_depth+query_str_idx]==' ') {
-        query_word_counter++;
         //we have reached the last letter - mark this node as a "terminator"
         _terminator = true;
+
+        query_word_counter++;
+
+        //make a query_ref from the query_id and the word_counter
+        //this allows us to retain both the queryID and the word number from the query in a single int.
+        unsigned int query_ref = makeQueryRef(query_id, query_word_counter);
+
 
         //now we need to record the search query index number against it's search type.
 
         switch (match_type) {
             case 0: //exact match
-                _match.exact.push_back(query_id);
+                _match.exact.push_back(query_ref);
                 break;
             case 1:
-                _match.hamming[match_dist-1]->push_back(query_id);
+                _match.hamming[match_dist-1]->push_back(query_ref);
                 break;
             case 2:
-                _match.edit[match_dist-1]->push_back(query_id);
+                _match.edit[match_dist-1]->push_back(query_ref);
                 break;
 
             default:
                 if (LOG) cout << "invalid match_type error\n";
                 break;
         }
-        _match.all.push_back(query_id);
+        //_match.all.push_back(query_ref);
         incrementBranchMatches(match_type, match_dist,kIncrementTypeAdd);
 
 
@@ -205,68 +211,7 @@ void SearchNode::incrementBranchMatches (MatchType match_type, unsigned int matc
         _parent_node->incrementBranchMatches(match_type, match_distance, increment);
     }
 }
-/*
-void SearchNode::addDocument(        DocID  doc_id
-                             ,  const char* string
-                             ,         int  string_idx
-                             ) {
 
-    if (string[string_idx+_depth]=='\0' || string[string_idx+_depth]==' ') {
-        //we have reached a word ending - are we on a terminator node?
-        if (_terminator == true) {
-            //do we have the RIGHT match_type?
-            //we have a match - record it...
-//            if (LOG) printf("\nfound match doc %d idx %d ",doc_id, string_idx);
-//            for (int i = 1; i<=_depth; i++) {
-//               if (LOG)  printf("%c",getLetterFromParentForDepth(i));
-//            }
-      //      cout << endl;
-            this->reportResult(doc_id);
-
-            
-            
-
-        }
-        if (string[string_idx+_depth]==' ') {
-            //we have more words to add
-            string_idx = string_idx+_depth+1;
-            if (string[string_idx] == '\0') {
-                if (LOG) printf("warning: appear to have a nil search query word\n");
-            } else {
-                SearchTree* tree = SearchTree::Instance();
-                tree->addDocument(doc_id, string, string_idx);
-            }
-        }
-    } else {
-        //we have not reached the end of the word...
-        if (_child_letters[string[string_idx+_depth]]==0) {
-            //no more nodes, stop the search
-        }   else {
-            //found a matching child node, keep searching
-            SearchNode* node =_child_letters[string[string_idx+_depth]];
-            node->addDocument(doc_id, string, string_idx);
-        }
-        
-        
-    }
-
-
-
-}
-
-*/
-/*
-
-void SearchNode::matchWord (  DocID doc_id
-                , const char* doc_str
-                , unsigned int word_start_idx
-                , unsigned int word_length
-                            ) {
-
-    
-
-}
- */
 
 void validate (vector<int> match_vector) {
 

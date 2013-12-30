@@ -81,7 +81,7 @@ public:
                 ,    MatchType  match_type
                 , unsigned int  match_dist
                 , unsigned int  query_str_idx
-                , unsigned int  query_word_counter
+                ,         char  query_word_counter
                 , SearchNode*   parent_node
                 );
 
@@ -92,7 +92,7 @@ public:
                   ,    MatchType  match_type
                   , unsigned int  match_dist
                   , unsigned int  query_str_idx
-                  , unsigned int  query_word_counter
+                  ,         char  query_word_counter
                  );
 
     void incrementBranchMatches  ( MatchType match_type

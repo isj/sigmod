@@ -48,7 +48,7 @@ public:
                        , MatchType match_type
                        , unsigned int match_dist
                        , unsigned int query_str_idx
-                       , unsigned int query_word_counter
+                       ,         char query_word_counter
                        );
 
     ErrorCode removeNode (SearchNode* node);
