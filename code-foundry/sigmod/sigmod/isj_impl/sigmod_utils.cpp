@@ -11,6 +11,7 @@
 #include <vector>
 #include <cstring>
 #include "SearchTree.h"
+#include <math.h>
 //#include "SearchNode.h"
 
 using namespace std;
@@ -126,8 +127,9 @@ unsigned int* SetToArray (SingleDocResultSet* set) {
 //    return array;
 //}
 
-#pragma mark - utility functions to print map data strucures
-
+#pragma mark ---------------------
+#pragma mark - printing data sets
+#pragma mark ---------------------
 
 //std::map < unsigned int, unsigned int > MapOfIntInt;
 
@@ -302,47 +304,53 @@ void printMatchIndex (Match match, std::string word) {
 }
 
 
+#pragma mark ---------------------
+#pragma mark - query indexing routines
+#pragma mark ---------------------
 
 
-////////////////////////////////////////////////////////////////////////
-////////////////////////rSearch3////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////
+char deleteWord (char words, char word) {
 
-//
-//int minCurrentRow(int* row, int length) {
-//    int result = row[0];
-//    for (int i=0; i<length;i++) {
-//        if (row[i] < result) {
-//            result = row[i];
-//        }
-//    }
-//    return result;
-//
-//}
-
-
-
-int deleteBit (int number, char bit) {
-
-    int num = number & bit;
-    return number - num;
+    word = words & word;
+    return words - word;
 }
 
 
-int query_ref (int queryID, int wordNumber) {
-    int ref = queryID << 3;
-    ref += wordNumber;
+unsigned int makeQueryRef (unsigned int queryID, char wordCount) {
+    /**
+     *  convert wordCount into a binary representation
+     *  for storing as a concatenation with the queryID
+     *  bitshift queryID by 5 postions to accomodate the bitCount
+     *  in the first five postions.
+     *  wordCount is max 5, so binaryCount is max 2^5-1 = 31
+     *  wordCount = 0, bitCount = 0
+     *  wordCount = 1, bitCount = 1  // 00001  2 ^ 0 pow(2,wordCount-1)
+     *  wordCOunt = 2, bitCount = 2  // 00010  2 ^ 1 pow(2,wordCount-1)
+     #  wordCount = 3, bitCount = 4  // 00100  2 ^ 2 pow(2,wordCount-1)
+     #  wordCount = 4, bitCount = 8  // 01000  2 ^ 3 pow(2,wordCount-1)
+     #  wordCount = 5, bitCOunt = 16 // 10000  2 ^ 4 pow(2,wordCount-1)
+     */
+    unsigned int ref = queryID << 5;
+    char bitCount = (wordCount > 0)? pow(2, wordCount-1):0;
+    ref += bitCount;
     return ref;
 
 }
 
-int queryIDfromRef (int query_ref) {
+unsigned int queryIDfromRef (unsigned int query_ref) {
+    /**
+     *  unpack the queryID from query_ref by bitshifting right 5.
+     *  this will lose the bitCount word count data
+     */
 
-    return query_ref >> 3;
+    return query_ref >> 5;
 }
 
-int queryWordFromRef (int query_ref) {
-
+char queryWordFromRef (unsigned int query_ref) {
+    /**
+     *  unpack the word number from query_ref by subtracting the queryID
+     *  this is still in bit form. word number = log2 of the result.
+     */
     return query_ref - queryIDfromRef(query_ref);
 
 }

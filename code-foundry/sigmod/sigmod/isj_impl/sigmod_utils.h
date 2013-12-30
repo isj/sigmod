@@ -40,7 +40,9 @@ unsigned int* SetToArray (SingleDocResultSet* set);
 
 //void printMap (std::map);
 
+#pragma mark ---------------------
 #pragma mark - printing data sets
+#pragma mark ---------------------
 
 void printMapOfIntInt          (MapOfIntInt* mapToPrint);
 void printMapOfIntMapOfIntInt  (MapOfIntMapOfIntInt* mapToPrint);
@@ -58,11 +60,14 @@ void printMatchIndex (Match match, std::string string);
 bool LevenshteinDistance(char* s, char* t, int limit);
 
 
+#pragma mark ---------------------
+#pragma mark - query indexing routines
+#pragma mark ---------------------
 
-int deleteBit (int number, char bit);
-int query_ref (int queryID, int wordNumber);
-int queryIDfromRef (int query_ref);
-int queryWordFromRef (int query_ref);
+char deleteWord (char wordNumbers, char word);
+unsigned int makeQueryRef (unsigned int queryID, char wordCount);
+unsigned int queryIDfromRef (unsigned int query_ref);
+char queryWordFromRef (unsigned int query_ref);
 
 
 #endif /* defined(__sigmod__sigmod_utils__) */
